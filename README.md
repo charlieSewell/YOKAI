@@ -35,8 +35,8 @@ git lfs install
 
 ### Cloning
 ```
-git clone https://github.com/charlieSewell/ICT397-Game-Engine.git
-cd ICT397-Game-Engine
+git clone https://github.com/charlieSewell/ICT398-Game-Engine.git
+cd ICT398-Game-Engine
 git checkout master
 git submodule update --init --recursive --depth 1
 ```
@@ -49,13 +49,13 @@ CXX=clang++ cmake -S . -B build -G Ninja -D CMAKE_BUILD_TYPE=Release
 ```
 Change directory to whatever you specified X as.
 ```
-cmake --build . && ./ICT397-Game-Engine
+cmake --build . && ./ICT398-Game-Engine
 ```
 #### Windows:
     * Open Visual Studio as Administrator (required to make symbolic links)
     * Press Continue without Code
     * In Visual Studio, select Open → CMake, Navigate to the project folder and select `CMakeLists.txt`
-    * From the "Select Startup Item" menu, select `ICT397-Game-Engine.exe`
+    * From the "Select Startup Item" menu, select `ICT398-Game-Engine.exe`
 
 ## License
 This project is licensed under the MIT license. Please see the [LICENSE](LICENSE) file
