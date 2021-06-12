@@ -1,0 +1,317 @@
+{
+    "asset" : {
+        "generator" : "Khronos glTF Blender I/O v1.4.40",
+        "version" : "2.0"
+    },
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                4,
+                6
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "mesh" : 0,
+            "name" : "base_carbine_0"
+        },
+        {
+            "children" : [
+                0
+            ],
+            "name" : "base",
+            "translation" : [
+                0,
+                0.9244911670684814,
+                0.5875365138053894
+            ]
+        },
+        {
+            "children" : [
+                1
+            ],
+            "name" : "carbine",
+            "translation" : [
+                0,
+                5.282999515533447,
+                -0.14303435385227203
+            ]
+        },
+        {
+            "children" : [
+                2
+            ],
+            "name" : "RootNode"
+        },
+        {
+            "children" : [
+                3
+            ],
+            "name" : "Node_3"
+        },
+        {
+            "name" : "Bone"
+        },
+        {
+            "children" : [
+                5
+            ],
+            "name" : "Armature",
+            "rotation" : [
+                -0.9919920563697815,
+                -0.11859283596277237,
+                -0.03296652063727379,
+                0.02829694002866745
+            ],
+            "scale" : [
+                -28.637237548828125,
+                -28.637237548828125,
+                -28.637237548828125
+            ],
+            "translation" : [
+                -0.26041340827941895,
+                13.511448860168457,
+                -5.958817958831787
+            ]
+        }
+    ],
+    "animations" : [
+        {
+            "channels" : [
+                {
+                    "sampler" : 0,
+                    "target" : {
+                        "node" : 2,
+                        "path" : "translation"
+                    }
+                },
+                {
+                    "sampler" : 1,
+                    "target" : {
+                        "node" : 2,
+                        "path" : "rotation"
+                    }
+                }
+            ],
+            "name" : "CINEMA_4D_Main",
+            "samplers" : [
+                {
+                    "input" : 6,
+                    "interpolation" : "LINEAR",
+                    "output" : 7
+                },
+                {
+                    "input" : 6,
+                    "interpolation" : "LINEAR",
+                    "output" : 8
+                }
+            ]
+        }
+    ],
+    "materials" : [
+        {
+            "name" : "carbine",
+            "normalTexture" : {
+                "index" : 0,
+                "texCoord" : 0
+            },
+            "occlusionTexture" : {
+                "index" : 1,
+                "texCoord" : 0
+            },
+            "pbrMetallicRoughness" : {
+                "baseColorTexture" : {
+                    "index" : 2,
+                    "texCoord" : 0
+                },
+                "metallicRoughnessTexture" : {
+                    "index" : 1,
+                    "texCoord" : 0
+                }
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "base_carbine_0",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "POSITION" : 0,
+                        "NORMAL" : 1,
+                        "TEXCOORD_0" : 2,
+                        "TEXCOORD_1" : 3,
+                        "TEXCOORD_2" : 4
+                    },
+                    "indices" : 5,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "sampler" : 0,
+            "source" : 0
+        },
+        {
+            "sampler" : 0,
+            "source" : 1
+        },
+        {
+            "sampler" : 0,
+            "source" : 2
+        }
+    ],
+    "images" : [
+        {
+            "mimeType" : "image/png",
+            "name" : "carbine_normal",
+            "uri" : "textures/carbine_normal.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "carbine_metallicRoughness",
+            "uri" : "textures/carbine_metallicRoughness.png"
+        },
+        {
+            "mimeType" : "image/png",
+            "name" : "carbine_baseColor",
+            "uri" : "textures/carbine_baseColor.png"
+        }
+    ],
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5126,
+            "count" : 10454,
+            "max" : [
+                3.291290760040283,
+                12.852898597717285,
+                66.27232360839844
+            ],
+            "min" : [
+                -3.7953991889953613,
+                -9.168933868408203,
+                -34.688209533691406
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 10454,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 10454,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5126,
+            "count" : 10454,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 10454,
+            "type" : "VEC2"
+        },
+        {
+            "bufferView" : 5,
+            "componentType" : 5123,
+            "count" : 23106,
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 6,
+            "componentType" : 5126,
+            "count" : 178,
+            "max" : [
+                7.375
+            ],
+            "min" : [
+                0
+            ],
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 7,
+            "componentType" : 5126,
+            "count" : 178,
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 8,
+            "componentType" : 5126,
+            "count" : 178,
+            "type" : "VEC4"
+        }
+    ],
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 125448,
+            "byteOffset" : 0
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 125448,
+            "byteOffset" : 125448
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 83632,
+            "byteOffset" : 250896
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 83632,
+            "byteOffset" : 334528
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 83632,
+            "byteOffset" : 418160
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 46212,
+            "byteOffset" : 501792
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 712,
+            "byteOffset" : 548004
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 2136,
+            "byteOffset" : 548716
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 2848,
+            "byteOffset" : 550852
+        }
+    ],
+    "samplers" : [
+        {
+            "magFilter" : 9729,
+            "minFilter" : 9986
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 553700,
+            "uri" : "gun.bin"
+        }
+    ]
+}

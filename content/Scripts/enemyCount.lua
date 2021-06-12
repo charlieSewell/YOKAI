@@ -1,0 +1,1 @@
+numZombies = numZombies - 1;
