@@ -23,8 +23,8 @@ jobs:
       # We'll use this as our working directory for all subsequent commands
       run: cmake -E make_directory ${{github.workspace}}/build
 
-    - name: Install Dependancies
-      run: sudo apt install libstdc++-9-dev ninja-build libgl1-mesa-dev libx11-dev \ libudev-dev libfreetype6-dev \ libflac++-dev libvorbis-dev \ libxcursor-dev libxi-dev -y
+    - uses: openrndr/setup-opengl@v1.1
+    - run: xvfb-run glxinfo
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
