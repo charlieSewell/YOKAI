@@ -23,8 +23,11 @@ jobs:
       # We'll use this as our working directory for all subsequent commands
       run: cmake -E make_directory ${{github.workspace}}/build
 
-    - uses: openrndr/setup-opengl@v1.1
-    - run: xvfb-run glxinfo
+    - name: Install Packages
+      run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y gcc-multilib python3 curl zip unzip
+          sudo apt-get install -y --no-install-recommends libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libxext-dev libxfixes-dev libgl1-mesa-dev
 
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
