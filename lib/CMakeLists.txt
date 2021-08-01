@@ -16,7 +16,6 @@ add_compile_options(
     $<$<CXX_COMPILER_ID:MSVC>:/W0>
 )
 add_subdirectory(glm)
-add_subdirectory(LuaBridge)
 add_subdirectory(assimp)
 add_subdirectory(glad)
 add_subdirectory(imgui)
@@ -43,7 +42,6 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
         glad/include
         glad/src
         assimp/include
-        LuaBridge/Source
         reactphysics3d/include
         imgui/imgui
         imgui/imgui/backends
