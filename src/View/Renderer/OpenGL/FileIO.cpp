@@ -3,7 +3,9 @@
 //
 #include "View/Renderer/OpenGL/FileIO.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 
 unsigned char* TextureFromFile(const std::string& filename, int &width,int &height, int &nrComponents,int reqComponents)
 {

@@ -132,18 +132,3 @@ bool KeyframeAnimation::getAnimationFinished() const
 {
     return animationFinished;
 }
-
-void KeyframeAnimation::registerClass() 
-{
-    luabridge::getGlobalNamespace(LuaManager::getInstance().getState())
-        .beginClass<KeyframeAnimation>("KeyframeAnimation")
-        //.addProperty("animationFinished", &KeyframeAnimation::getAnimationFinished, &KeyframeAnimation::setAnimationFinished)
-        .addProperty("ticksPerSecond", &KeyframeAnimation::getTPS,&KeyframeAnimation::setTPS)
-        .addFunction("getAnimationFinished", &KeyframeAnimation::getAnimationFinished)
-        .addFunction("checkAnimationFinished", &KeyframeAnimation::checkAnimationFinished)
-        .addFunction("getCurrentAnimation", &KeyframeAnimation::getCurrentAnimation)
-        .addFunction("setCurrentAnimation", &KeyframeAnimation::setAnimation)
-        .addFunction("addAnimation", &KeyframeAnimation::addAnimation)
-        .addFunction("readFile", &KeyframeAnimation::readFile)
-        .endClass();
-}

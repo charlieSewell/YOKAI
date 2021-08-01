@@ -4,8 +4,6 @@
 
 #include "Yokai.hpp"
 
-#include "DemoScene.hpp"
-#include "MainMenuScene.hpp"
 #include "spdlog/async.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
@@ -32,16 +30,7 @@ void Yokai::Init()
     }
     //Add layers to layer stack
     activeLayer = 0;
-    //layers.push_back(std::shared_ptr<Layer>(new DemoScene()));
-    layers.push_back(std::shared_ptr<Layer>(new MainMenuScene()));
-    layers.push_back(std::shared_ptr<Layer>(new DemoScene()));
-    try
-    {
-        TerrainFactory::getInstance().Init();
-    } catch (std::exception &e)
-    {
-        SPDLOG_ERROR(e.what());
-    }
+
     try
     {
         PhysicsSystem::getInstance().Init();
@@ -58,13 +47,10 @@ void Yokai::Init()
 
     isPaused = false;
     registerClose();
-    registerClass();
     SPDLOG_INFO("Engine Succesfully Initialised");
 }
 void Yokai::Run()
 {
-    PhysicsSystem::getInstance().addTerrain();
-
     const float timeStep = 1.0f / 60;
 
     double lastTime = 0;
@@ -87,21 +73,21 @@ void Yokai::Run()
 			accumulator += deltaTime;
 			while (accumulator >= timeStep) 
 			{
-				InputManagerGLFW::getInstance().processMouse(window.getWindow());
+				//InputManagerGLFW::getInstance().processMouse(window.getWindow());
 				InputManagerGLFW::getInstance().processGamepadAxis();
                 PhysicsSystem::getInstance().update(timeStep);
-                layers[activeLayer]->Update(static_cast<float>(timeStep));
+                //layers[activeLayer]->Update(static_cast<float>(timeStep));
 				accumulator -= timeStep;
 			}
         }
-        layers[activeLayer]->Draw();
+        //layers[activeLayer]->Draw();
 
         renderer.DrawGui();
         window.endFrame();
 	}
-    GameObjectManager::getInstance().DeInit();
+    //GameObjectManager::getInstance().DeInit();
     PhysicsSystem::getInstance().DeInit();
-    UIManager::getInstance().DeInit();
+    //UIManager::getInstance().DeInit();
     renderer.DeInit();
     window.DeInit();
 }
@@ -148,15 +134,6 @@ void Yokai::setIsPaused(bool p)
 bool Yokai::getIsPaused() const
 {
     return isPaused;
-}
-
-void Yokai::registerClass() 
-{
-    luabridge::getGlobalNamespace(LuaManager::getInstance().getState())
-        .beginClass<Yokai>("Yokai")
-        .addStaticFunction("getInstance", &Yokai::getInstance)
-        .addProperty("isPaused", &Yokai::getIsPaused, &Yokai::setIsPaused)
-        .endClass();
 }
 
 void Yokai::InitialiseLogger()

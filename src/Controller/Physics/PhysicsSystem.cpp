@@ -12,7 +12,7 @@ void PhysicsSystem::Init()
     settings.gravity = reactphysics3d::Vector3(0, -35, 0);
 
     physicsWorld = physicsCommon.createPhysicsWorld(settings);
-    physicsWorld->setEventListener(&listener);
+    //physicsWorld->setEventListener(&listener);
 }
 void PhysicsSystem::DeInit()
 {
@@ -79,21 +79,5 @@ void PhysicsSystem::deleteRigidBody(int ID)
 {
     m_colliders.at(ID).DeleteBody(physicsWorld,physicsCommon);
     m_colliders.erase(ID);
-}
-
-
-void PhysicsSystem::addTerrain()
-{
-    RigidBody terrain;
-    ReactTerrainShape terrShape;
-    glm::vec3 position(TerrainFactory::getInstance().getTerrainSize()/2, 128, TerrainFactory::getInstance().getTerrainSize()/2);
-    auto orientation = glm::identity<glm::quat>();
-    terrain.CreateBody(-2,physicsWorld,position,orientation);
-    terrShape.CreateTerrainShape(physicsCommon);
-    terrain.AddCollisionShape(terrShape);
-    terrain.SetBounciness(0.0);
-    terrain.SetRollingResistance(1.0);
-    terrain.SetBodyType(rp3d::BodyType::STATIC);
-    m_colliders.emplace(terrain.getColliderID(),terrain);
 }
 

@@ -1,16 +1,19 @@
 
 #include "SplashScreen.hpp"
 #include "Controller/Yokai.hpp"
+#include "Controller/TextureManager.hpp"
 
 SplashScreen::SplashScreen(const std::string& texturePath)
 {
     texture = TextureManager::getInstance().loadTexture(texturePath);
     active = true;
 }
+
 void SplashScreen::setTexture(const std::string& texturePath)
 {
     texture = TextureManager::getInstance().loadTexture(texturePath);
 }
+
 void SplashScreen::draw()
 {
     auto& engine = Yokai::getInstance();
