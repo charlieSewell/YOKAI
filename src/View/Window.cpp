@@ -3,9 +3,10 @@
 //
 
 #include "Window.hpp"
+#include <spdlog/spdlog.h>
 void error_callback(int error, const char* description)
 {
-    std::cout << "Error:" << error << " " << description << std::endl;
+    SPDLOG_ERROR("Error: {} {}",error, description);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -17,6 +18,7 @@ bool Window::Init()
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
     {
+        SPDLOG_ERROR("GLFW Failed to Initialise");
         return false;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -27,6 +29,7 @@ bool Window::Init()
 
     if (!window)
     {
+        spdlog::error("Failed to initialise the window");
         return false;
     }
 
@@ -35,6 +38,7 @@ bool Window::Init()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    SPDLOG_INFO("Window Initialised");
     return true;
 }
 bool Window::ImguiInit()
@@ -48,10 +52,11 @@ bool Window::ImguiInit()
 
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 130");
+        SPDLOG_INFO("Imgui Initialised");
         return true;
     }catch(std::exception &e)
     {
-        std::cout << e.what() <<std::endl;
+        SPDLOG_ERROR("{}",e.what());
     }
     return false;
 }

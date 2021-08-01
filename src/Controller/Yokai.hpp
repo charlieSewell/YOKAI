@@ -4,7 +4,7 @@
 #include "View/Renderer/Renderer.hpp"
 #include "View/Window.hpp"
 #include "Model/SplashScreen.hpp"
-
+#include <spdlog/spdlog.h>
 //workaround to allow vector of layer pointers
 class Layer;
 /**
@@ -78,6 +78,8 @@ class Yokai
      * @brief Deleted Copy Constructor
      */
     Yokai(const Yokai &) = delete;
+
+    void InitialiseLogger();
     /**
      * @brief Privatised assign operator
      */
@@ -90,4 +92,6 @@ class Yokai
     bool isPaused;
     ///active layer
     int activeLayer;
+    ///Log sinks for Engine class
+    std::vector<spdlog::sink_ptr> sinks;
 };

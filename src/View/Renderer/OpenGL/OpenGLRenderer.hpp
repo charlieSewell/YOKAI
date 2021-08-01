@@ -4,11 +4,13 @@
 #include <iostream>
 #include <vector>
 #include <glad/glad.h>
-#include "View/Renderer/RenderAPI.hpp"
 #include <glm/glm.hpp>
-#include <backends/imgui_impl_opengl3.h>
 #include <imgui.h>
+#include <spdlog/spdlog.h>
+#include <backends/imgui_impl_opengl3.h>
+#include "View/Renderer/RenderAPI.hpp"
 #include "View/Renderer/DataTypes.hpp"
+#include "GLFW/glfw3.h"
 
 /**
  * @class OpenGLRenderer

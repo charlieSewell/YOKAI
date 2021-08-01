@@ -4,23 +4,18 @@
 #pragma once
 #include "OpenGLRenderer.hpp"
 
-#include "GLFW/glfw3.h"
-#include "Controller/EventManager.hpp"
-
-
 void OpenGLRenderer::Init() 
 {
     if ((!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) )
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        SPDLOG_ERROR("Failed to initialize GLAD");
         return;
     }
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    std::cout << "Renderer Initialised: Using OpenGL" << std::endl;
-
+    SPDLOG_INFO("Renderer Initialised: Using OpenGL");
 }
 
 void OpenGLRenderer::DeInit() 

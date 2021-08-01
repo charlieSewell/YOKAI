@@ -2,6 +2,7 @@
 #include "stb_image.h"
 #include "TerrainFactory.hpp"
 #include <cmath>
+#include <spdlog/spdlog.h>
 TerrainFactory &TerrainFactory::getInstance()
 {
     static TerrainFactory instance;
@@ -42,7 +43,7 @@ void TerrainFactory::Init()
     terrainTextures.push_back(textureManager.loadTexture(sandTexture));
     terrainTextures.push_back(textureManager.loadTexture(snowTexture));
     terrainTextures.push_back(textureManager.loadTexture(detailTexture));
-    std::cout << "Terrain Factory Initialised" <<std::endl;
+    SPDLOG_INFO("Terrain Factory Initialised");
 }
 
 Chunk TerrainFactory::SetupChunk(unsigned int xStart,unsigned int zStart,int size)

@@ -3,6 +3,7 @@
 //
 
 #include "TerrainManager.hpp"
+#include <spdlog/spdlog.h>
 void TerrainManager::setTerrainTexture(std::vector<unsigned int> texturesToSet) {
     textures = std::move(texturesToSet);
 }
@@ -25,8 +26,7 @@ void TerrainManager::Init()
     terrainShader->setFloat("sandHeight",static_cast<float>(sandHeight));
     terrainShader->setFloat("grassHeight",static_cast<float>(grassHeight));
     terrainShader->setFloat("snowHeight",static_cast<float>(snowHeight));
-
-    std::cout << "Initialised Terrain Manager" << std::endl;
+    SPDLOG_INFO("Initialised Terrain Manager");
 }
 
 void TerrainManager::CreateTerrain() 
