@@ -42,7 +42,6 @@ target_sources(${PROJECT_NAME} PRIVATE
         Controller/Physics/PhysicsSystem.cpp
 		Controller/Physics/ReactMath.cpp
 		Controller/Physics/RigidBody.cpp
-
 		Controller/Animator.cpp
         Controller/Physics/Shapes/ReactBoxShape.cpp
         Controller/Physics/Shapes/ReactShape.cpp
@@ -55,7 +54,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Controller/KeyframeAnimation.cpp
 		Controller/MainMenuScene.cpp
 		Controller/UIManager.cpp
-
         )
 
 # Include project header files.

@@ -1,7 +1,7 @@
 #include "GameObjectManager.hpp"
 
 #include <utility>
-
+#include <spdlog/spdlog.h>
 GameObjectManager::GameObjectManager()
 	: elapsedTime(0)
 {
@@ -44,7 +44,7 @@ void GameObjectManager::init()
         .endNamespace();
 
     LuaManager::getInstance().runScript("content/Scripts/createObjects.lua");
-    std::cout << "Game Object Manager Initialised" << std::endl;
+    SPDLOG_INFO("Game Object Manager Initialised");
 }
 
 int GameObjectManager::CreateObject(GameObjectType type,std::string model)

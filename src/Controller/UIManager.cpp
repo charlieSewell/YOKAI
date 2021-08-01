@@ -1,5 +1,6 @@
 #include "Controller/UIManager.hpp"
 #include <glm/gtc/matrix_transform.hpp>
+#include <spdlog/spdlog.h>
 UIManager &UIManager::getInstance() 
 {
     static UIManager instance;
@@ -7,7 +8,7 @@ UIManager &UIManager::getInstance()
 }
 
 
-void UIManager::init() 
+void UIManager::init()
 {
     splashShader = new Shader("content/Shaders/vertexShader.vert","content/Shaders/splashFragment.frag");
     splashShader->useShader();
@@ -16,6 +17,7 @@ void UIManager::init()
     splashShader->setMat4("projection",glm::ortho(0.0f, (float)1920, (float)1080, 0.0f));
     splashShader->setInt("texture_diffuse1", 1);
     registerClass();
+    SPDLOG_INFO("UI Manger Initialised");
 }
 
 std::shared_ptr<SplashScreen> UIManager::create(const std::string& texturePath)
@@ -97,8 +99,6 @@ void UIManager::registerClass()
         .endClass();
 
     LuaManager::getInstance().runScript("content/Scripts/createUI.lua");
-    
-    std::cout << "UI Manager Initialised" << std::endl;
 }
 
 void UIManager::DeInit() 

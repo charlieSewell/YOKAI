@@ -6,14 +6,21 @@
 
 #include "DemoScene.hpp"
 #include "MainMenuScene.hpp"
+#include "spdlog/async.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/rotating_file_sink.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
 Yokai &Yokai::getInstance() 
 {
     static Yokai instance;
     return instance;
 }
 
-void Yokai::Init() 
+void Yokai::Init()
 {
+    InitialiseLogger();
+    SPDLOG_INFO("Engine Is Starting");
     if(!window.Init())
     {
         exit(0);
@@ -28,8 +35,22 @@ void Yokai::Init()
     //layers.push_back(std::shared_ptr<Layer>(new DemoScene()));
     layers.push_back(std::shared_ptr<Layer>(new MainMenuScene()));
     layers.push_back(std::shared_ptr<Layer>(new DemoScene()));
-    TerrainFactory::getInstance().Init();
-    PhysicsSystem::getInstance().Init();
+    try
+    {
+        TerrainFactory::getInstance().Init();
+    } catch (std::exception &e)
+    {
+        SPDLOG_ERROR(e.what());
+    }
+    try
+    {
+        PhysicsSystem::getInstance().Init();
+        SPDLOG_INFO("Physics System Initialised");
+    } catch (std::exception &e)
+    {
+        SPDLOG_ERROR(e.what());
+    }
+
     for(auto& layer: layers)
     {
         layer->Init();
@@ -38,6 +59,7 @@ void Yokai::Init()
     isPaused = false;
     registerClose();
     registerClass();
+    SPDLOG_INFO("Engine Succesfully Initialised");
 }
 void Yokai::Run()
 {
@@ -135,4 +157,27 @@ void Yokai::registerClass()
         .addStaticFunction("getInstance", &Yokai::getInstance)
         .addProperty("isPaused", &Yokai::getIsPaused, &Yokai::setIsPaused)
         .endClass();
+}
+
+void Yokai::InitialiseLogger()
+{
+    spdlog::init_thread_pool(8192, 1);
+
+    time_t ttime = time(nullptr);
+    tm* local_time = localtime(&ttime);
+    char buffer[24];
+    strftime(buffer, 24, "%Y-%m-%d %H-%M-%S.txt\0", local_time);
+    std::string filename = buffer;
+
+    auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/"+ filename,"Logger");
+    sinks.push_back(stdout_sink);
+    sinks.push_back(file_sink);
+
+    auto log = std::make_shared<spdlog::logger>("Yokai", sinks.begin(), sinks.end());
+
+
+    spdlog::set_default_logger(log);
+    spdlog::set_pattern("[%T][%s][%!][Line:%#]%^[%l]%$ %v");
+
 }
