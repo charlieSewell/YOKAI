@@ -3,7 +3,6 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/random.hpp>
 #include "Model/Model.hpp"
-#include "Controller/LuaManager.hpp"
 #include <utility>
 #include <vector>
 /**
@@ -46,10 +45,6 @@ class Animator{
         void endAnimation(){shouldEnd = true;}
         ///transforms to be fed into shader
         std::vector<glm::mat4> finalTransforms;
-        /**
-         * @brief Registers class in lua
-         */
-		static void registerClass();
 
     private:
         /**

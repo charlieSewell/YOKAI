@@ -6,7 +6,7 @@
 #include "Model/ObjectLoading/ModelLoader.hpp"
 #include <fstream>
 #include "Model/Components/Transform.hpp"
-#include "Controller/LuaManager.hpp"
+
 /**
  * @class KeyframeAnimation
  * @brief Class for storing keyframe animations
@@ -88,10 +88,6 @@ class KeyframeAnimation
          * @brief Checks to make sure animation isnt in progress before swapping
          */
         void swapAnimationCheck();
-        /**
-         * @brief Registers class in Lua
-         */
-        static void registerClass();
 
 	private:
       ///Shader for model

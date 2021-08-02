@@ -119,11 +119,3 @@ void Animator::setAnimation(std::string animationToSet)
 		}
 	}
 }
-
-void Animator::registerClass()
-{
-	luabridge::getGlobalNamespace(LuaManager::getInstance().getState())
-		.beginClass<Animator>("animator")
-		.addFunction("setAnimation", &Animator::setAnimation)
-		.endClass();
-}

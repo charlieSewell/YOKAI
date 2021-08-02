@@ -4,7 +4,6 @@
 #include <map>
 #include "Controller/Physics/RigidBody.hpp"
 #include "Model/Components/Transform.hpp"
-#include "CollisionEventHandler.hpp"
 #include "Controller/Physics/ReactMath.hpp"
 #include "Controller/Physics/Shapes/ReactTerrainShape.hpp"
 #include "Controller/Physics/Shapes/ReactSphereShape.hpp"
@@ -72,10 +71,7 @@ public:
      * @return unsigned int bodyID
      */
     unsigned int addSphere(unsigned int ID, Transform* transform,float radius);
-    /**
-     * @brief Adds Terrain to the Scene
-     */
-    void addTerrain();
+
     /**
      * @brief DeInitialises the physics simulation
      */
@@ -96,5 +92,4 @@ private:
     ///map of colliders
     std::map<int, RigidBody> m_colliders;	//TODO: make colliders so can add spheres
     ///Collision callback listener
-    CollisionEventHandler listener;
 };

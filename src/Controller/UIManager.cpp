@@ -16,7 +16,6 @@ void UIManager::init()
     splashShader->setMat4("view",glm::mat4(1.0));
     splashShader->setMat4("projection",glm::ortho(0.0f, (float)1920, (float)1080, 0.0f));
     splashShader->setInt("texture_diffuse1", 1);
-    registerClass();
     SPDLOG_INFO("UI Manger Initialised");
 }
 
@@ -34,14 +33,6 @@ std::string UIManager::add(std::string name, const std::string& texturePath)
     return name;
 }
 
-void UIManager::update(float dt) 
-{
-    //for (auto &gameObject : uiObjects) 
-    //{
-        //gameObject.second->update(dt);
-    //}
-    LuaManager::getInstance().runScript("content/Scripts/uiLogic.lua");
-}
 void UIManager::draw() 
 {
     splashShader->useShader();
@@ -62,43 +53,6 @@ std::shared_ptr<SplashScreen> UIManager::getObject(const std::string& name)
         return uiObjects[name];
     }
     return nullptr;
-}
-
-void UIManager::luaSetUpPanel(const std::string& name, float left, float right, float top, float bottom)
-{
-    getObject(name)->setupPanel(left, right, top, bottom);
-}
-
-void UIManager::luaSetTexture(const std::string& name, const std::string& texturePath)
-{
-    getObject(name)->setTexture(texturePath);
-}
-
-void UIManager::luaSetActive(const std::string& name, bool a)
-{
-    getObject(name)->setActive(a);
-}
-
-bool UIManager::luaGetActive(const std::string& name) 
-{
-    return getObject(name)->getActive();
-}
-
-void UIManager::registerClass() 
-{
-    luabridge::getGlobalNamespace(LuaManager::getInstance().getState())
-        .beginClass<UIManager>("UIManager")
-        .addStaticFunction("getInstance", &UIManager::getInstance)
-        .addFunction("add", &UIManager::add)
-        .addFunction("getObject", &UIManager::getObject)
-        .addFunction("update", &UIManager::update)
-        .addFunction("setUpPanel", &UIManager::luaSetUpPanel)
-        .addFunction("setTexture", &UIManager::luaSetTexture)
-        .addFunction("setActive", &UIManager::luaSetActive)
-        .addFunction("getActive", &UIManager::luaGetActive)
-        .endClass();
-
-    LuaManager::getInstance().runScript("content/Scripts/createUI.lua");
 }
 
 void UIManager::DeInit() 

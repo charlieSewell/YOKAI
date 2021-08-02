@@ -16,7 +16,7 @@ ModelManager::ModelManager()
     modelShader->useShader();
     modelShader->setVec3("skyColor",glm::vec3(0.05,0.05,0.05));
     modelShader->setVec3("lightColor",glm::vec3(1.0,1.0,1.0));
-    modelShader->setVec3("lightPos",glm::vec3(TerrainFactory::getInstance().getTerrainSize()/2,400,TerrainFactory::getInstance().getTerrainSize()/2));
+    modelShader->setVec3("lightPos",glm::vec3(100, 100, 100));
     models.resize(100);
 }
 

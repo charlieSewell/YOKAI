@@ -10,9 +10,6 @@
 [submodule "lib/reactphysics3d"]
 	path = lib/reactphysics3d
 	url = https://github.com/DanielChappuis/reactphysics3d
-[submodule "lib/LuaBridge"]
-	path = lib/LuaBridge
-	url = https://github.com/vinniefalco/LuaBridge
 [submodule "lib/imgui/imgui"]
 	path = lib/imgui/imgui
 	url = https://github.com/ocornut/imgui

@@ -1,8 +1,6 @@
 #pragma once
 
 #include <map>
-#include "Controller/LuaManager.hpp"
-//#include "Controller/LuaTypes.hpp"
 #include "Model/SplashScreen.hpp"
 
 /**
@@ -47,33 +45,6 @@ class UIManager
      * @brief Calls the draw function for all GameObjects
      */
     void draw();
-    /**
-     * @brief Registers class in Lua
-     */
-    static void registerClass();
-    /**
-     * Sets up a UI Panel in Lua
-     * @param name
-     * @param left
-     * @param right
-     * @param top
-     * @param bottom
-     */
-    void luaSetUpPanel(const std::string& name, float left, float right, float top, float bottom);
-    /**
-     * @brief Sets a texture in Lua
-     * @param name
-     * @param texturePath
-     */
-    void luaSetTexture(const std::string& name, const std::string& texturePath);
-    /**
-     * @brief Sets a panel active
-     * @param name
-     * @param a
-     */
-    void luaSetActive(const std::string& name, bool a);
-
-    bool luaGetActive(const std::string &name);
 
     void DeInit();
 
