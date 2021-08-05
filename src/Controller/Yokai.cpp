@@ -151,9 +151,9 @@ void Yokai::InitialiseLogger()
     sinks.push_back(stdout_sink);
     sinks.push_back(file_sink);
 
-    auto log = std::make_shared<spdlog::logger>("Yokai", sinks.begin(), sinks.end());
+    auto log = std::make_shared<spdlog::logger>("Yokai", begin(sinks), end(sinks));
 
-
+    spdlog::register_logger(log);
     spdlog::set_default_logger(log);
     spdlog::set_pattern("[%T][%s][%!][Line:%#]%^[%l]%$ %v");
 
