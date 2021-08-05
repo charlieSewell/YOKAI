@@ -15,12 +15,12 @@ class Layer;
  */
 class Yokai
 {
-  public:
+public:
     /**
      * @brief Returns an instance of the engine
      * @return Yokai&
      */
-    static Yokai & getInstance();
+    static Yokai& getInstance();
     /**
      * @brief Initialises the engine
      */
@@ -59,7 +59,7 @@ class Yokai
      */
     bool getIsPaused() const;
 
-  private:
+private:
     //Singleton pattern requires that all constructors,destructors and copy constructors be private
     /**
      * @brief Registers Engine close event with EMS
@@ -77,13 +77,13 @@ class Yokai
     /**
      * @brief Deleted Copy Constructor
      */
-    Yokai(const Yokai &) = delete;
+    Yokai(const Yokai&) = delete;
 
     void InitialiseLogger();
     /**
      * @brief Privatised assign operator
      */
-    Yokai &operator =(const Yokai &);
+    Yokai& operator =(const Yokai&);
     ///Is engine Running
     bool isRunning = true;
     ///Vector of Scene layers
@@ -94,4 +94,5 @@ class Yokai
     int activeLayer;
     ///Log sinks for Engine class
     std::vector<spdlog::sink_ptr> sinks;
+
 };
