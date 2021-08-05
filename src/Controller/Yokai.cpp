@@ -73,7 +73,7 @@ void Yokai::Run()
 			accumulator += deltaTime;
 			while (accumulator >= timeStep) 
 			{
-				//InputManagerGLFW::getInstance().processMouse(window.getWindow());
+				InputManagerGLFW::getInstance().processMouse(window.getWindow());
 				InputManagerGLFW::getInstance().processGamepadAxis();
                 PhysicsSystem::getInstance().update(timeStep);
                 //layers[activeLayer]->Update(static_cast<float>(timeStep));
@@ -92,20 +92,18 @@ void Yokai::Run()
     window.DeInit();
 }
 
-void Yokai::registerClose() {
+void Yokai::registerClose()
+{
     static bool isPressed = false;
     auto pauseRelease     = [&]() { isPressed = false; };
     EMS::getInstance().add(NoReturnEvent::pauseReleased, pauseRelease);
 
-    auto pausePress = [&]() {
-        if (!isPressed) {
-            isPaused = !isPaused;
-            if (isPaused) {
-                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            } else {
-                glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            }
-            isPressed = true;
+    auto pausePress = [&]()
+    {
+        if (!isPressed)
+        {
+            //TODO: Make better
+            isRunning = false;
         }
     };
     EMS::getInstance().add(NoReturnEvent::pausePressed, pausePress);

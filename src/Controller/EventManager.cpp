@@ -11,7 +11,7 @@ EMS& EMS::getInstance()
 
 void EMS::add(NoReturnEvent event, std::function<void()> func)
 {
-    m_NoReturnEventList.insert(std::pair<NoReturnEvent, std::function<void()>>(event, func));
+	m_NoReturnEventList.insert(std::pair<NoReturnEvent, std::function<void()>>(event, func));
 }
 
 void EMS::add(NoReturnEvent event, std::function<void(double, double)> func)
@@ -42,17 +42,25 @@ void EMS::add(ReturnIntEvent event, std::function<int()> func)
 
 void EMS::fire(NoReturnEvent event) 
 {
-	for(std::multimap<NoReturnEvent, std::function<void()>>::iterator itr = m_NoReturnEventList.begin(); itr != m_NoReturnEventList.end(); ++itr)
+	//TODO CONNOR: do exception handling / logging after rewrite
+	if (!m_NoReturnEventList.empty())
 	{
-		if(itr->first == event)
-			(itr->second)();
+		for (std::multimap<NoReturnEvent, std::function<void()>>::iterator itr = m_NoReturnEventList.begin(); itr != m_NoReturnEventList.end(); ++itr)
+		{
+			if (itr->first == event)
+				(itr->second)();
+		}
 	}
 }
 
 void EMS::fire(NoReturnEvent event, double x, double y)
 {
-	if (event == NoReturnEvent::xyLook)
-		m_xyLook(x, y);
+	//TODO CONNOR: do exception handling / logging after rewrite
+	if (m_xyLook)
+	{
+		if (event == NoReturnEvent::xyLook)
+			m_xyLook(x, y);
+	}
 }
 
 glm::mat4 EMS::fire(ReturnMat4Event event)
