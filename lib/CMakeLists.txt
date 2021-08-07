@@ -36,7 +36,7 @@ set_target_properties(glad PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(reactphysics3d PROPERTIES DEBUG_POSTFIX "")
 
 # Ignore warnings from library headers.
-target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
         glfw/include
         glfw/src
         glad/include
@@ -46,4 +46,5 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
         imgui/imgui
         imgui/imgui/backends
         spdlog/include
+        glm
 )
