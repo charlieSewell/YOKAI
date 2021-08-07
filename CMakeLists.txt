@@ -4,7 +4,7 @@ if(APPLE)
     set(CMAKE_MACOSX_RPATH ON)
 endif(APPLE)
 # Set the project details.
-set(PROJECT_NAME ICT398-Game-Engine)
+set(PROJECT_NAME YOKAI)
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 # If enabled, the post build symlink will copy instead.
