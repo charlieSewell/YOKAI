@@ -7,13 +7,19 @@
 #include "Controller/Layer.hpp"
 #include <spdlog/spdlog.h>
 
+#ifdef YOKAI_EXPORTS
+#define YOKAI_API __declspec(dllexport)
+#else
+#define YOKAI_API __declspec(dllimport)
+#endif
+
 //workaround to allow vector of layer pointers
 class Layer;
 /**
  * @class Yokai
  * @brief A class which ties together all game engine components
  */
-class Yokai
+class YOKAI_API Yokai 
 {
   public:
     /**
