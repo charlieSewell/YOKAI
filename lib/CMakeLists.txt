@@ -25,7 +25,17 @@ option(GLFW_BUILD_TESTS OFF)
 option(GLFW_BUILD_EXAMPLES OFF)
 add_subdirectory(glfw)
 add_subdirectory(spdlog)
-add_subdirectory(cpputest)
+
+# CppUTest
+include(FetchContent)
+FetchContent_Declare(
+    CppUTest
+    GIT_REPOSITORY https://github.com/cpputest/cpputest.git
+    GIT_TAG        latest-passing-build # or use release tag, eg. v3.8
+)
+# Set this to ON if you want to have the CppUTests in your project as well.
+set(TESTS OFF CACHE BOOL "Switch off CppUTest Test build")
+FetchContent_MakeAvailable(CppUTest)
 
 set_target_properties(reactphysics3d PROPERTIES ENABLE_EXPORTS ON)
 set_target_properties(reactphysics3d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -47,5 +57,4 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
         imgui/imgui
         imgui/imgui/backends
         spdlog/include
-        cpputest/include
 )
