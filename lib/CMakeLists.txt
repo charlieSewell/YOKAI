@@ -25,6 +25,7 @@ option(GLFW_BUILD_TESTS OFF)
 option(GLFW_BUILD_EXAMPLES OFF)
 add_subdirectory(glfw)
 add_subdirectory(spdlog)
+add_subdirectory(cpputest)
 
 set_target_properties(reactphysics3d PROPERTIES ENABLE_EXPORTS ON)
 set_target_properties(reactphysics3d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
@@ -46,4 +47,5 @@ target_include_directories(${PROJECT_NAME} SYSTEM PRIVATE
         imgui/imgui
         imgui/imgui/backends
         spdlog/include
+        cpputest/include
 )

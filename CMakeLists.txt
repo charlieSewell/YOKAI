@@ -47,7 +47,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG    ${PROJECT_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${PROJECT_BINARY_DIR}/lib)
 
 # Define the executable.
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME} src/main.cpp "src/Controller/exampletest_test.cpp" "src/main_tests.cpp")
 
 # Set C++ standard.
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -101,7 +101,7 @@ target_link_options(${PROJECT_NAME} PRIVATE
         )
 
 # Include and link against dependencies.
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL glfw glad assimp imgui glm reactphysics3d spdlog::spdlog ${CMAKE_DL_LIBS})
+target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL glfw glad assimp imgui glm reactphysics3d spdlog::spdlog cpputest ${CMAKE_DL_LIBS})
 
 # Create a SymLink or Copy resources into build folder
 if (NOT DisablePostBuild)
