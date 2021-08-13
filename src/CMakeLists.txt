@@ -5,9 +5,12 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Model/ObjectLoading/ModelLoader.cpp
 		Model/Mesh.cpp
         Model/Model.cpp
+        Model/GameObject.cpp
 		Model/SplashScreen.cpp
         Model/SkeletalAnimation.cpp
 		Model/Components/Transform.cpp
+        Model/Components/DrawableEntity.cpp
+
 
         View/Renderer/Shader.cpp
         View/Renderer/DataTypes.cpp
