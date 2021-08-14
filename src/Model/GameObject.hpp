@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Model/Component.hpp"
 #include <vector>
+#include <memory>
 class GameObject
 {
     public:
