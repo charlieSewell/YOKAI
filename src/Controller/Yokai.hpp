@@ -6,12 +6,7 @@
 #include "Model/SplashScreen.hpp"
 #include "Controller/Layer.hpp"
 #include <spdlog/spdlog.h>
-
-#ifdef YOKAI_EXPORTS
-#define YOKAI_API __declspec(dllexport)
-#else
-#define YOKAI_API __declspec(dllimport)
-#endif
+#include "Export.hpp"
 
 //workaround to allow vector of layer pointers
 class Layer;

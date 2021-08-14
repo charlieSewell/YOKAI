@@ -1,7 +1,5 @@
 # Add source files.
 target_sources(${PROJECT_NAME} PRIVATE
-        main.cpp
-
 		Model/ObjectLoading/ModelLoader.cpp
 		Model/Mesh.cpp
         Model/Model.cpp
