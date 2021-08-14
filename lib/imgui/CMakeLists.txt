@@ -11,5 +11,8 @@ target_sources(imgui PRIVATE
         imgui/backends/imgui_impl_glfw.cpp
         imgui/backends/imgui_impl_opengl3.cpp
         )
+        
+target_compile_options(${PROJECT_NAME} PRIVATE -fPIC)
+
 target_include_directories(imgui PUBLIC . imgui)
 target_link_libraries(imgui PRIVATE glfw glad ${APP_SERVICES_LIBRARY} ${COCOA_LIBRARY})

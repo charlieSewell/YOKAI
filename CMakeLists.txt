@@ -104,7 +104,7 @@ target_link_options(${PROJECT_NAME} PRIVATE
         )
 
 # Include and link against dependencies.
-target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glad assimp imgui glm reactphysics3d spdlog::spdlog ${CMAKE_DL_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glad assimp glm reactphysics3d spdlog::spdlog imgui ${CMAKE_DL_LIBS})
 
 # Create a SymLink or Copy resources into build folder
 if (NOT DisablePostBuild)
