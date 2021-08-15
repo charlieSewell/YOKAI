@@ -121,6 +121,6 @@ target_link_options(${PROJECT_NAME} PRIVATE
 # Include and link against dependencies.
 target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glad assimp glm reactphysics3d spdlog::spdlog imgui ${CMAKE_DL_LIBS})
 
-target_link_libraries(tests PUBLIC CppUTest CppUTestExt YOKAI${CMAKE_DL_LIBS})
+target_link_libraries(tests PUBLIC YOKAI CppUTest CppUTestExt ${CMAKE_DL_LIBS})
 
 target_include_directories(tests PUBLIC ${CppUTest_SOURCE_DIR}/include)
