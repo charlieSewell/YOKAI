@@ -7,9 +7,9 @@ DrawableEntity::DrawableEntity(GameObject* parent) : Component(parent){}
 
 void DrawableEntity::Start()
 {
-    if(parent->GetComponent<Transform>() == nullptr)
+    if(m_parent->GetComponent<Transform>() == nullptr)
     {
-        parent->AddComponent<Transform>();
+        m_parent->AddComponent<Transform>();
     }
 }
 void DrawableEntity::Update(float deltaTime)
@@ -18,7 +18,7 @@ void DrawableEntity::Update(float deltaTime)
 }
 void DrawableEntity::Draw()
 {
-    ModelManager::getInstance().DrawModel(modelID,parent->GetComponent<Transform>()->getMatrix());
+    ModelManager::getInstance().DrawModel(modelID,m_parent->GetComponent<Transform>()->getMatrix());
 }
 void DrawableEntity::LoadModel(std::string filename)
 {
