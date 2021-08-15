@@ -46,19 +46,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG    ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib)
 
-# CppUTest
-include(FetchContent)
-FetchContent_Declare(
-    CppUTest
-    GIT_REPOSITORY https://github.com/cpputest/cpputest.git
-    GIT_TAG        v3.8 # or use release tag, eg. v3.8
-)
-# Set this to ON if you want to have the CppUTests in your project as well.
-set(TESTS OFF CACHE BOOL "Switch off CppUTest Test build")
-FetchContent_MakeAvailable(CppUTest)
 
-# Define the executable.
-add_executable(${PROJECT_NAME} main_tests.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 
