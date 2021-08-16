@@ -4,7 +4,7 @@ if(APPLE)
     set(CMAKE_MACOSX_RPATH ON)
 endif(APPLE)
 # Set the project details.
-set(PROJECT_NAME ICT398-Game-Engine)
+set(PROJECT_NAME YOKAI)
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 # If enabled, the post build symlink will copy instead.
@@ -35,19 +35,34 @@ if(UNIX AND NOT APPLE)
 endif()
 
 # Set build output directories.
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG    ${PROJECT_BINARY_DIR})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE  ${PROJECT_BINARY_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG    ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE  ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG    ${PROJECT_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG    ${CMAKE_BINARY_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG    ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG    ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib)
+
+# CppUTest
+include(FetchContent)
+FetchContent_Declare(
+    CppUTest
+    GIT_REPOSITORY https://github.com/cpputest/cpputest.git
+    GIT_TAG        v3.8 # or use release tag, eg. v3.8
+)
+# Set this to ON if you want to have the CppUTests in your project as well.
+set(TESTS OFF CACHE BOOL "Switch off CppUTest Test build")
+FetchContent_MakeAvailable(CppUTest)
+
+# Define the Library.
+add_library(${PROJECT_NAME} SHARED)
 
 # Define the executable.
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(run_tests tests/main_tests.cpp)
+
 
 # Set C++ standard.
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -65,6 +80,9 @@ add_subdirectory(lib)
 
 # Define source files.
 add_subdirectory(src)
+
+# Define Tests
+add_subdirectory(tests)
 
 # Remove the default warning level from MSVC.
 if (MSVC)
@@ -101,17 +119,8 @@ target_link_options(${PROJECT_NAME} PRIVATE
         )
 
 # Include and link against dependencies.
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenGL::GL glfw glad assimp imgui glm reactphysics3d spdlog::spdlog ${CMAKE_DL_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glad assimp glm reactphysics3d spdlog::spdlog imgui ${CMAKE_DL_LIBS})
 
-# Create a SymLink or Copy resources into build folder
-if (NOT DisablePostBuild)
-    if (NOT CopyResources)
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E create_symlink
-                ${CMAKE_SOURCE_DIR}/content $<TARGET_FILE_DIR:${PROJECT_NAME}>/content)
-    else()
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_SOURCE_DIR}/content $<TARGET_FILE_DIR:${PROJECT_NAME}>/content)
-    endif()
-endif()
+target_link_libraries(run_tests PUBLIC YOKAI CppUTest CppUTestExt ${CMAKE_DL_LIBS})
+
+target_include_directories(run_tests PUBLIC ${CppUTest_SOURCE_DIR}/include)

@@ -3,38 +3,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include "Model/Component.hpp"
 /**
  * @class Transform
  * @brief Class that encapsulates glm mat4
  */
-class Transform
+class Transform : public Component
 {
 public:
-    /**
-     * @brief Default constructor
-     */
-	Transform();
-	/**
-	 * @brief Constructor that takes all raw elements
-	 * @param scale
-	 * @param rotation
-	 * @param position
-	 */
-	Transform(glm::vec3 scale, glm::quat rotation,glm::vec3 position);
-	/**
-	 * @brief Copy constructor
-	 * @param other
-	 */
-	Transform(const Transform &other);
-	/**
-	 * Constructor that take glm mat4
-	 * @param matrix
-	 */
-	Transform(glm::mat4 matrix);
-    /**
-     * @brief Translates the transform on a vector
-     * @param translation
-     */
+	Transform(GameObject* parent);
+	
 	void translate(glm::vec3 translation);
 	/**
 	 * @brief Translates the transform on a x,y,z coordinate

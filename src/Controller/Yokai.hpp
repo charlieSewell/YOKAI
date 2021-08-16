@@ -6,6 +6,7 @@
 #include "Model/SplashScreen.hpp"
 #include "Controller/Layer.hpp"
 #include <spdlog/spdlog.h>
+#include "Export.hpp"
 
 //workaround to allow vector of layer pointers
 class Layer;
@@ -13,7 +14,7 @@ class Layer;
  * @class Yokai
  * @brief A class which ties together all game engine components
  */
-class Yokai
+class YOKAI_API Yokai 
 {
 public:
     /**
