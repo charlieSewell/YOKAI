@@ -22,14 +22,6 @@ void Model::Draw(Shader &shader, glm::mat4 transform)
     shader.setMat4("projection",EMS::getInstance().fire(ReturnMat4Event::getPerspective));
     shader.setMat4("view",EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
 
-	/*/TEST
-	glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 frontDirection = glm::vec3(0.0f, 0.0f, -1.0f);
-	glm::vec3 upDirection = glm::vec3(0.0f, 1.0f, 0.0f);
-	shader.setMat4("projection", glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f));
-	shader.setMat4("view", glm::lookAt(position, position + frontDirection, upDirection));
-
-	//END TEST*/
     for(auto& mesh: meshes)
     {
         glm::mat4 model(1.0);

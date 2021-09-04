@@ -44,7 +44,7 @@ void ModelManager::DrawModel(size_t id, glm::mat4 transform)
 
     modelShader->setBool("isAnimated",false);
     //modelShader->setVec3("viewPos",EMS::getInstance().fire(ReturnVec3Event::getPlayerPosition));
-	modelShader->setVec3("viewPos", glm::vec3(0, 0, 0));
+	modelShader->setVec3("viewPos", glm::vec3(0, 0, 0));	//TODO: Fix this later 
     models[id].Draw(*modelShader, transform);
 }
 void ModelManager::DrawModel(size_t id, glm::mat4 transform, std::vector<glm::mat4> &finalTransforms)
