@@ -2,7 +2,8 @@
 
 #include "Controller/EventManager.hpp"
 
-Camera::Camera() 
+Camera::Camera(GameObject* parent)
+	: Component(parent)
 {
     registerViewMatrix();
     registerPerspective();

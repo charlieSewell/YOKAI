@@ -8,6 +8,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         Model/SkeletalAnimation.cpp
 		Model/Components/Transform.cpp
         Model/Components/DrawableEntity.cpp
+		Model/Components/PlayerControlledMotion.cpp
 
 
         View/Renderer/Shader.cpp

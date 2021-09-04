@@ -3,21 +3,25 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Model/Component.hpp"
+#include "Controller/Export.hpp"
+
 /**
  * @class Camera
  * @brief Camera component to attach to game object
  */
-class Camera
+class YOKAI_API Camera : public Component
 {
     public:
         /**
          * @brief Constructor for camera
          */
-        Camera();
+        Camera(GameObject* parent);
         /**
          * @brief Returns The view Matrix of the Camera
          * @return mat4
          */
+
         glm::mat4 getViewMatrix();
         /**
          * @brief Registers the View Matrix with the EMS
