@@ -8,6 +8,13 @@
  * @class InputManagerGLFW
  * @brief Manages the GLFW input
  */
+
+struct MouseOffset
+{
+	double x;
+	double y;
+};
+
 class InputManagerGLFW
 {
   public:
@@ -40,6 +47,10 @@ class InputManagerGLFW
 		* @brief Processes gamepad axis Input
 		*/
 	  void processGamepadAxis();
+
+	  bool m_keys[128];
+
+	  MouseOffset m_mouseOffset;
 
   private:
       /**

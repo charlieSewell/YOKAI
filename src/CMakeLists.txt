@@ -25,6 +25,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         Controller/ModelManager.cpp
 		Controller/EventManager.cpp
 		Controller/InputManagerGLFW.cpp
+		Controller/InputComponent.cpp
         Controller/Physics/Shapes/ReactTerrainShape.cpp
         Controller/Physics/PhysicsSystem.cpp
 		Controller/Physics/ReactMath.cpp

@@ -13,69 +13,17 @@ void InputManagerGLFW::processKeyboard(GLFWwindow* window)
 
 	if(!glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
+		m_keys['w'] = (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS);
+		m_keys['s'] = (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS);
+		m_keys['a'] = (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS);
+		m_keys['d'] = (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS);
+		m_keys[' '] = (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS);
+		m_keys['c'] = (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS);
+
 		if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
 			EMS::getInstance().fire(NoReturnEvent::closePressed);
 		if (glfwGetKey(window, GLFW_KEY_X) == GLFW_RELEASE)
 			EMS::getInstance().fire(NoReturnEvent::closeReleased);
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::moveForward);
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::moveBackward);
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::moveLeft);
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::moveRight);
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::jump);
-		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::moveDown);
-
-		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::togglePhysicsPressed);
-		if (glfwGetKey(window, GLFW_KEY_P) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::togglePhysicsReleased);
-
-		if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::toggleWireFramePressed);
-		if (glfwGetKey(window, GLFW_KEY_K) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::toggleWireFrameReleased);
-
-		if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::toggleMenuPressed);
-		if (glfwGetKey(window, GLFW_KEY_M) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::toggleMenuReleased);
-
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::sprintPressed);
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::sprintReleased);
-
-		//UI TESTING
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::pausePressed);
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::pauseReleased);
-	
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::reloadPressed);
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::reloadReleased);
-
-		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::meleePressed);
-		if (glfwGetKey(window, GLFW_KEY_F) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::meleeReleased);
-
-		/*if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS) {
-			if (isPressed) {
-				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-				isPressed = false;
-			}
-			else {
-				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-				isPressed = true;
-			}
-		}*/
 	}
 }
 
@@ -108,7 +56,10 @@ void InputManagerGLFW::processMouse(GLFWwindow* window)
 		double xoffset = xpos - lastX;
 		double yoffset = ypos - lastY;
 
-		EMS::getInstance().fire(NoReturnEvent::xyLook, xoffset, yoffset);
+		m_mouseOffset.x = xoffset;
+		m_mouseOffset.y = yoffset;
+
+		//EMS::getInstance().fire(NoReturnEvent::xyLook, xoffset, yoffset);
 
 		lastX = xpos;
 		lastY = ypos;
