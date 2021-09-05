@@ -21,6 +21,7 @@ void Model::Draw(Shader &shader, glm::mat4 transform)
     shader.useShader();
     shader.setMat4("projection",EMS::getInstance().fire(ReturnMat4Event::getPerspective));
     shader.setMat4("view",EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
+
     for(auto& mesh: meshes)
     {
         glm::mat4 model(1.0);

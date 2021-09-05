@@ -76,11 +76,11 @@ void Yokai::Run()
 				InputManagerGLFW::getInstance().processMouse(window.getWindow());
 				InputManagerGLFW::getInstance().processGamepadAxis();
                 PhysicsSystem::getInstance().update(timeStep);
-                //layers[activeLayer]->Update(static_cast<float>(timeStep));
+                layers[activeLayer]->Update(static_cast<float>(timeStep));
 				accumulator -= timeStep;
 			}
         }
-        //layers[activeLayer]->Draw();
+        layers[activeLayer]->Draw();
 
         renderer.DrawGui();
         window.endFrame();
@@ -155,4 +155,9 @@ void Yokai::InitialiseLogger()
     spdlog::set_default_logger(log);
     spdlog::set_pattern("[%T][%s][%!][Line:%#]%^[%l]%$ %v");
 
+}
+
+void Yokai::addScene(std::shared_ptr<Layer> scene)
+{
+	layers.push_back(std::shared_ptr<Layer>(scene));
 }

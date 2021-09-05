@@ -60,6 +60,8 @@ public:
      */
     bool getIsPaused() const;
 
+	void addScene(std::shared_ptr<Layer> scene);
+
 private:
     //Singleton pattern requires that all constructors,destructors and copy constructors be private
     /**

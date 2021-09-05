@@ -1,9 +1,11 @@
 #pragma once
-#include <iostream>
+
 #include "Model/Component.hpp"
+#include "Controller/Export.hpp"
 #include <vector>
 #include <memory>
-class GameObject
+
+class YOKAI_API GameObject
 {
     public:
         void Awake();
