@@ -16,6 +16,7 @@ class YOKAI_API Input : public Component
   public:
 	  Input(GameObject* parent);
 	  bool GetKeyState(unsigned int key);
-	  MouseOffset GetMouseOffset();
+	  bool GetKeyState(SPECIAL key);
+	  Mouse GetMouseState();
   private:
 };

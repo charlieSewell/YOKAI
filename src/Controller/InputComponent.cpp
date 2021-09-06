@@ -10,11 +10,24 @@ Input::Input(GameObject* parent)
 
 bool Input::GetKeyState(unsigned int key)
 {
-	return(InputManagerGLFW::getInstance().m_keys[key]);
+	key = towupper(key);
+
+	if(!InputManagerGLFW::getInstance().m_keyActive[key])
+	{
+		InputManagerGLFW::getInstance().m_keyActive[key] = true;
+		InputManagerGLFW::getInstance().m_activeKeys.push_back(key);
+	}
+
+	return(InputManagerGLFW::getInstance().m_keyStates[key]);
 }
 
-MouseOffset Input::GetMouseOffset()
+bool Input::GetKeyState(SPECIAL key)
 {
-	return(InputManagerGLFW::getInstance().m_mouseOffset);
+	return(GetKeyState((unsigned int)key));
+}
+
+Mouse Input::GetMouseState()
+{
+	return(InputManagerGLFW::getInstance().m_mouse);
 }
 
