@@ -9,6 +9,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Model/Components/Transform.cpp
         Model/Components/DrawableEntity.cpp
 		Model/Components/PlayerControlledMotion.cpp
+        Model/Components/ConcaveCollider.cpp
+		Model/Components/SphereCollider.cpp
 
 
         View/Renderer/Shader.cpp
@@ -25,7 +27,6 @@ target_sources(${PROJECT_NAME} PRIVATE
         Controller/ModelManager.cpp
 		Controller/EventManager.cpp
 		Controller/InputManagerGLFW.cpp
-        Controller/Physics/Shapes/ReactTerrainShape.cpp
         Controller/Physics/PhysicsSystem.cpp
 		Controller/Physics/ReactMath.cpp
 		Controller/Physics/RigidBody.cpp
@@ -33,6 +34,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         Controller/Physics/Shapes/ReactBoxShape.cpp
         Controller/Physics/Shapes/ReactShape.cpp
         Controller/Physics/Shapes/ReactSphereShape.cpp
+        Controller/Physics/Shapes/ReactTerrainShape.cpp
+        Controller/Physics/Shapes/ReactConcaveShape.cpp
         Controller/GameObjectManager.cpp
 		Controller/TextureManager.cpp
 		Controller/KeyframeAnimation.cpp

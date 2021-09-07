@@ -4,7 +4,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Model/Component.hpp"
+#include "Model/GameObject.hpp"
 #include "Controller/Export.hpp"
+#include "Model/Components/Transform.hpp"
 
 /**
  * @class Camera
@@ -17,6 +19,8 @@ class YOKAI_API Camera : public Component
          * @brief Constructor for camera
          */
         Camera(GameObject* parent);
+
+        void Update(float deltaTime) override;
         /**
          * @brief Returns The view Matrix of the Camera
          * @return mat4

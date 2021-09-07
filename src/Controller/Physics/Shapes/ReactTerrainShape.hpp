@@ -18,7 +18,7 @@ class ReactTerrainShape : public ReactShape{
      * @brief Creates a Terrain Shape
      * @param physicsCommon
      */
-    void CreateTerrainShape(reactphysics3d::PhysicsCommon &physicsCommon);
+    void CreateTerrainShape(reactphysics3d::PhysicsCommon &physicsCommon,std::vector<std::vector<float>> heightVals);
     /**
      * @brief Deletes a Terrain Shape
      * @param physicsCommon

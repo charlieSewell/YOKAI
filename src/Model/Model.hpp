@@ -91,6 +91,8 @@ class Model
      * @return mat4
      */
     std::vector<Bone>* getBones(){return &bones;}
+    
+    std::vector<Mesh>* getMeshes(){return &meshes;}
     /**
      * @brief gets the global inverse transform
      * @return mat4

@@ -4,11 +4,12 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include "Model/Component.hpp"
+#include "Controller/Export.hpp"
 /**
  * @class Transform
  * @brief Class that encapsulates glm mat4
  */
-class Transform : public Component
+class YOKAI_API Transform : public Component
 {
 public:
 	Transform(GameObject* parent);

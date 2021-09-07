@@ -40,23 +40,53 @@ void PhysicsSystem::update(float dt) const
 unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, float radius)
 {
     RigidBody object;
-    ReactSphereShape sphere;
+    auto* sphere = new ReactSphereShape();
     object.CreateBody(ID,physicsWorld,transform->getPosition(),transform->getRotation());
-    sphere.CreateSphereShape(radius,physicsCommon);
+    sphere->CreateSphereShape(radius,physicsCommon);
     object.AddCollisionShape(sphere);
     unsigned int temp = object.getColliderID();
     m_colliders.emplace(object.getColliderID(),object);
     return temp;
 }
 
+unsigned int PhysicsSystem::addConcaveShape(unsigned int ID, Transform* transform,unsigned int modelID)
+{
+    RigidBody object;
+    auto* shape = new ReactConcaveShape();
+    glm::vec3 newPos = glm::vec3(transform->getPosition().x,transform->getPosition().y,transform->getPosition().z);
+    object.CreateBody(ID,physicsWorld,newPos,transform->getRotation());
+    shape->CreateConcaveShape(physicsCommon,modelID);
+    object.AddCollisionShape(shape);
+    object.SetBodyType(rp3d::BodyType::STATIC);
+    unsigned int temp = object.getColliderID();
+    m_colliders.emplace(object.getColliderID(),object);
+    return temp;
+}
+
+unsigned int PhysicsSystem::addTerrainShape(unsigned int ID, Transform* transform,std::vector<std::vector<float>> heightvals)
+{
+    RigidBody terrain;
+    ReactTerrainShape* terrShape = new ReactTerrainShape();
+    glm::vec3 position(100, 123,100);
+    auto orientation = glm::identity<glm::quat>();
+    terrain.CreateBody(-2,physicsWorld,position,orientation);
+    terrShape->CreateTerrainShape(physicsCommon,heightvals);
+    terrain.AddCollisionShape(terrShape);
+    terrain.SetBounciness(0.0);
+    terrain.SetRollingResistance(1.0);
+    terrain.SetBodyType(rp3d::BodyType::STATIC);
+    unsigned int temp = terrain.getColliderID();
+    m_colliders.emplace(terrain.getColliderID(),terrain);
+    return temp;
+}
 
 unsigned int PhysicsSystem::addAABB(unsigned int ID,Transform* transform, float width, float height, float length)
 {
     RigidBody object;
-    ReactBoxShape box;
+    auto* box = new ReactBoxShape();
     glm::vec3 newPos = glm::vec3(transform->getPosition().x,transform->getPosition().y,transform->getPosition().z);
     object.CreateBody(ID,physicsWorld,newPos,transform->getRotation());
-    box.CreateBoxShape(glm::vec3(width,height,length),physicsCommon);
+    box->CreateBoxShape(glm::vec3(width,height,length),physicsCommon);
     object.AddCollisionShape(box);
     unsigned int temp = object.getColliderID();
     m_colliders.emplace(object.getColliderID(),object);

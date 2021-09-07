@@ -36,12 +36,12 @@ class Mesh
      * @brief returns a list of vertices
      * @return vector<Vertex>
      */
-    std::vector<Vertex> getVertices(){return vertices;}
+    std::vector<Vertex>* getVertices(){return &vertices;}
     /**
      * @brief returns a list of indices
      * @return vector<unsigned int>
      */
-    std::vector<unsigned int> getIndices(){return indices;}
+    std::vector<unsigned int>* getIndices(){return &indices;}
     /**
      * @brief returns a list of textures
      * @return vector<ModelTexture>

@@ -9,6 +9,13 @@ Camera::Camera(GameObject* parent)
     registerPerspective();
 }
 
+void Camera::Update(float deltaTime)
+{
+    glm::vec3 temp = m_parent->GetComponent<Transform>()->getPosition();
+    m_position = glm::vec3(temp.x,temp.y+2,temp.z);
+}
+
+
 glm::mat4 Camera::getViewMatrix()
 {
     return glm::lookAt(m_position, m_position + m_frontDirection, m_upDirection);

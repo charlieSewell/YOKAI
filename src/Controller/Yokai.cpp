@@ -24,6 +24,7 @@ void Yokai::Init()
         exit(0);
     }
     renderer.Init();
+    modelManager = new ModelManager();
     if(!window.ImguiInit())
     {
         exit(0);
