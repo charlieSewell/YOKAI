@@ -8,8 +8,6 @@ target_sources(${PROJECT_NAME} PRIVATE
         Model/SkeletalAnimation.cpp
 		Model/Components/Transform.cpp
         Model/Components/DrawableEntity.cpp
-		Model/Components/PlayerControlledMotion.cpp
-
 
         View/Renderer/Shader.cpp
         View/Renderer/DataTypes.cpp
@@ -25,6 +23,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         Controller/ModelManager.cpp
 		Controller/EventManager.cpp
 		Controller/InputManagerGLFW.cpp
+		Controller/InputComponent.cpp
         Controller/Physics/Shapes/ReactTerrainShape.cpp
         Controller/Physics/PhysicsSystem.cpp
 		Controller/Physics/ReactMath.cpp

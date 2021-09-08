@@ -4,6 +4,8 @@
 #include <map>
 #include <glm/glm.hpp>
 
+//TODO CONNOR: KILL
+
 enum class NoReturnEvent
 {
 	moveForward,

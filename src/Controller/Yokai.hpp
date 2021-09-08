@@ -7,6 +7,7 @@
 #include "Controller/Layer.hpp"
 #include <spdlog/spdlog.h>
 #include "Export.hpp"
+#include "InputComponent.hpp"
 
 //workaround to allow vector of layer pointers
 class Layer;

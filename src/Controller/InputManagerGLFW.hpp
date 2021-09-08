@@ -4,10 +4,44 @@
 #include <GLFW/glfw3.h>
 #include "EventManager.hpp"
 #include "Model/Components/Camera.hpp"
+#include <map>
+#include <vector>
+
 /**
  * @class InputManagerGLFW
  * @brief Manages the GLFW input
  */
+
+enum class SPECIAL
+{
+	LEFT_SHIFT			= 0,
+	LEFT_CONTROL		= 1,
+	LEFT_ALT			= 3,	
+	RIGHT_SHIFT			= 4,
+	RIGHT_CONTROL		= 5,
+	RIGHT_ALT			= 6,
+	ENTER				= 7,
+	TAB					= 8,
+	BACKSPACE			= 9,
+	LEFT_MOUSE_BUTTON	= 10,
+	RIGHT_MOUSE_BUTTON	= 11
+};
+
+struct Mouse
+{
+	struct
+	{
+		double x;
+		double y;
+	} position;
+
+	struct
+	{
+		double x;
+		double y;
+	} offset;
+};
+
 class InputManagerGLFW
 {
   public:
@@ -41,13 +75,23 @@ class InputManagerGLFW
 		*/
 	  void processGamepadAxis();
 
+	  //TODO CONNOR: These will be private with Getter/Setter
+	  bool m_keyStates[128];
+	  bool m_keyActive[128];
+	  std::vector<unsigned int> m_activeKeys;
+
+	  Mouse m_mouse;
+
   private:
       /**
        * @brief Privatised constructor for Singleton Pattern
        */
-	  InputManagerGLFW() : mouseInit(0) {}
+	  InputManagerGLFW();
       ///Mouse Init
-	  bool mouseInit;
+	  bool mouseInit = false;
       ///Last Mouse X and Y
 	  double lastX, lastY;
+
+	  std::map<unsigned int, unsigned int> m_keyMap;
+	  void createMap();
 };
