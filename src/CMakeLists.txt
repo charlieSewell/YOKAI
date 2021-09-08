@@ -8,7 +8,6 @@ target_sources(${PROJECT_NAME} PRIVATE
         Model/SkeletalAnimation.cpp
 		Model/Components/Transform.cpp
         Model/Components/DrawableEntity.cpp
-		Model/Components/PlayerControlledMotion.cpp
         Model/Components/ConcaveCollider.cpp
 		Model/Components/SphereCollider.cpp
         Model/Components/BoxCollider.cpp
@@ -28,6 +27,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         Controller/ModelManager.cpp
 		Controller/EventManager.cpp
 		Controller/InputManagerGLFW.cpp
+		Controller/InputComponent.cpp
+        Controller/Physics/Shapes/ReactTerrainShape.cpp
         Controller/Physics/PhysicsSystem.cpp
 		Controller/Physics/ReactMath.cpp
 		Controller/Physics/RigidBody.cpp

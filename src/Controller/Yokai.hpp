@@ -8,6 +8,8 @@
 #include <spdlog/spdlog.h>
 #include "Export.hpp"
 #include "ModelManager.hpp"
+#include "InputComponent.hpp"
+
 //workaround to allow vector of layer pointers
 class Layer;
 /**
