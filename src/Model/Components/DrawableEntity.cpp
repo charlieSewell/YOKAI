@@ -17,10 +17,10 @@ void DrawableEntity::Update(float deltaTime)
 
 void DrawableEntity::Draw()
 {
-    ModelManager::getInstance().DrawModel(modelID,m_parent->GetComponent<Transform>()->getMatrix());
+    Yokai::getInstance().getModelManager()->DrawModel(modelID,m_parent->GetComponent<Transform>()->getMatrix());
 }
 
 void DrawableEntity::LoadModel(std::string filename)
 {
-    modelID = ModelManager::getInstance().GetModelID(filename);
+    modelID = Yokai::getInstance().getModelManager()->GetModelID(filename);
 }

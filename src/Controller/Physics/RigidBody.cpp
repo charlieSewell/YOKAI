@@ -4,6 +4,7 @@
 
 #include "RigidBody.hpp"
 #include "Controller/Physics/ReactMath.hpp"
+
 void RigidBody::CreateBody(int gameObjID,rp3d::PhysicsWorld* physicsWorld,glm::vec3 position,glm::quat orientation)
 {
     gameObjectID = gameObjID;
@@ -12,8 +13,8 @@ void RigidBody::CreateBody(int gameObjID,rp3d::PhysicsWorld* physicsWorld,glm::v
 }
 void RigidBody::DeleteBody(rp3d::PhysicsWorld* physicsWorld,rp3d::PhysicsCommon &physicsCommon)
 {
-    shape.DeleteShape(physicsCommon);
     physicsWorld->destroyRigidBody(body);
+    shape->DeleteShape(physicsCommon);
 }
 void RigidBody::SetPosition(glm::vec3 position){
     rp3d::Transform currTransform = body->getTransform();
@@ -50,9 +51,9 @@ void RigidBody::ApplyForceToCentre(glm::vec3 force) {
     rp3d::Vector3 addedForce = ReactMath::glmVecToRP3d(force);
     body->applyForceToCenterOfMass(addedForce);
 }
-void RigidBody::AddCollisionShape(ReactShape shapeToInsert) {
-    shape = std::move(shapeToInsert);
-    collider = body->addCollider(this->shape.getShape(),rp3d::Transform::identity());
+void RigidBody::AddCollisionShape(ReactShape* shapeToInsert) {
+    shape = shapeToInsert;
+    collider = body->addCollider(shape->getCollisionShape(),rp3d::Transform::identity());
 
 }
 

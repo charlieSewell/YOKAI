@@ -91,13 +91,13 @@ endif()
 
 # Treat warnings as errors if enabled.
 if (WarningsAsErrors)
-    target_compile_options(${PROJECT_NAME} PRIVATE
+    target_compile_options(${PROJECT_NAME} PUBLIC
             $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:-Werror>
             $<$<CXX_COMPILER_ID:MSVC>:/WX>
             )
 endif()
 # Set compile flags.
-target_compile_options(${PROJECT_NAME} PRIVATE
+target_compile_options(${PROJECT_NAME} PUBLIC
         # Clang
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
         -Weverything -fcolor-diagnostics
@@ -114,10 +114,10 @@ target_compile_options(${PROJECT_NAME} PRIVATE
         )
 
 # Link against the clang sanitizer.
-target_link_options(${PROJECT_NAME} PRIVATE
+target_link_options(${PROJECT_NAME} PUBLIC
         $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>
         )
-
+set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Include and link against dependencies.
 target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glad assimp glm reactphysics3d spdlog::spdlog imgui ${CMAKE_DL_LIBS})
 

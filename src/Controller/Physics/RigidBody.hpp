@@ -1,6 +1,7 @@
 //
 // Created by charl on 19/05/2021.
 //
+#pragma once
 #include <iostream>
 #include <reactphysics3d/reactphysics3d.h>
 #include <glm/glm.hpp>
@@ -60,7 +61,7 @@ public:
      * @brief Adds a collision Shape
      * @param shape
      */
-    void AddCollisionShape(ReactShape shape);
+    void AddCollisionShape(ReactShape* shape);
     /**
      * @brief Sets the body Type
      * @param type
@@ -70,7 +71,7 @@ public:
      * @brief Sets the friction on the body
      * @param friction
      */
-    void SetFrictionCoefficient(float friction);\
+    void SetFrictionCoefficient(float friction);
     /**
      * @brief Sets the rolling Resistance
      * @param resistance
@@ -131,13 +132,17 @@ public:
      * @return
      */
     [[nodiscard]] int getGameObjectID() const{return gameObjectID;}
+
 private:
     ///Shape of collider
-    ReactShape shape;
+    ReactShape* shape;
     ///Owning game object ID
     int gameObjectID = -1;
     ///React Rigid Body
     reactphysics3d::RigidBody* body;
     ///React Collider
     reactphysics3d::Collider* collider;
+
+
+
 };

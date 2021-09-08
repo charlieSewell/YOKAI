@@ -7,20 +7,15 @@
 #include <map>
 #include <array>
 #include <glm/glm.hpp>
-
+#include "Controller/Export.hpp"
 
 /**
  * @class ModelManager
  * @brief Responsible for managing models
  */
-class ModelManager 
+class YOKAI_API ModelManager
 {
   public:
-    /*!
-     * @brief Singleton Pattern for a single instance of the class
-     * @return instance
-     */
-    static ModelManager &getInstance();
 
     /*!
      * @brief Constructor
@@ -39,7 +34,7 @@ class ModelManager
      * @param size_t - modelID
      * @return shared_ptr<Model>
      */
-    std::shared_ptr<Model> GetModel(size_t modelID);
+    Model* GetModel(size_t modelID);
 
     /*!
      * @brief Calls the draw function for the specified model

@@ -8,13 +8,13 @@
 #include "Controller/Physics/Shapes/ReactTerrainShape.hpp"
 #include "Controller/Physics/Shapes/ReactSphereShape.hpp"
 #include "Controller/Physics/Shapes/ReactBoxShape.hpp"
-//class ReactTerrainShape;
-
+#include "Controller/Physics/Shapes/ReactConcaveShape.hpp"
+#include "Controller/Export.hpp"
 /**
  * @class PhysicsSystem
  * @brief Singleton that Manages physics
  */
-class PhysicsSystem
+class YOKAI_API PhysicsSystem
 {
 public:
     /**
@@ -71,6 +71,10 @@ public:
      * @return unsigned int bodyID
      */
     unsigned int addSphere(unsigned int ID, Transform* transform,float radius);
+
+    unsigned int addConcaveShape(unsigned int ID, Transform* transform,unsigned int modelID);
+
+    unsigned int addTerrainShape(unsigned int ID, Transform* transform,std::vector<std::vector<float>> heightvals);
 
     /**
      * @brief DeInitialises the physics simulation

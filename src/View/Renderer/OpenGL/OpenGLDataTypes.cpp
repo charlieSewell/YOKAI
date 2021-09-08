@@ -5,6 +5,7 @@
 
 #include <memory>
 #include "View/Renderer/OpenGL/FileIO.hpp"
+#include <spdlog/spdlog.h>
 
 OpenGLTexture::OpenGLTexture(const std::string& path)
 {
@@ -25,7 +26,8 @@ OpenGLTexture::OpenGLTexture(const std::string& path)
 
         }
         catch (std::exception& e) {
-            std::cout << "Error:" <<e.what() << std::endl;
+            
+            SPDLOG_ERROR(e.what());
         }
 
         glBindTexture(GL_TEXTURE_2D, textureID);
@@ -43,7 +45,7 @@ OpenGLTexture::OpenGLTexture(const std::string& path)
     }
     else
     {
-        std::cout << "Texture failed to load at path: " << path << std::endl;
+        SPDLOG_ERROR("Texture failed to load at path: "+  path);
         FreeTextureData(data);
     }
 }

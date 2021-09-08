@@ -7,6 +7,7 @@
 #include "Controller/Layer.hpp"
 #include <spdlog/spdlog.h>
 #include "Export.hpp"
+#include "ModelManager.hpp"
 #include "InputComponent.hpp"
 
 //workaround to allow vector of layer pointers
@@ -63,6 +64,7 @@ public:
 
 	void addScene(std::shared_ptr<Layer> scene);
 
+	ModelManager* getModelManager(){return modelManager;}
 private:
     //Singleton pattern requires that all constructors,destructors and copy constructors be private
     /**
@@ -98,5 +100,6 @@ private:
     int activeLayer;
     ///Log sinks for Engine class
     std::vector<spdlog::sink_ptr> sinks;
+    ModelManager* modelManager;
 
 };
