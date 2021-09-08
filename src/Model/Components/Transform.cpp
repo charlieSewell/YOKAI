@@ -1,6 +1,16 @@
 #include "Transform.hpp"
 
-Transform::Transform(GameObject* parent) : Component(parent), m_transform(glm::mat4(1.0)){}
+Transform::Transform(GameObject* parent)
+	: Component(parent), m_transform(glm::mat4(1.0))
+{
+
+}
+
+Transform::Transform()
+	: Component(nullptr), m_transform(glm::mat4(1.0))
+{
+
+}
 
 void Transform::decompose()
 {

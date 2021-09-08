@@ -44,6 +44,7 @@ unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, floa
     object.CreateBody(ID,physicsWorld,transform->getPosition(),transform->getRotation());
     sphere->CreateSphereShape(radius,physicsCommon);
     object.AddCollisionShape(sphere);
+	object.SetBounciness(0.0);
     unsigned int temp = object.getColliderID();
     m_colliders.emplace(object.getColliderID(),object);
     return temp;

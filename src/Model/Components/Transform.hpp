@@ -13,6 +13,7 @@ class YOKAI_API Transform : public Component
 {
 public:
 	Transform(GameObject* parent);
+	Transform();
 	
 	void translate(glm::vec3 translation);
 	/**
