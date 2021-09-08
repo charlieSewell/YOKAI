@@ -76,6 +76,9 @@ public:
 
     unsigned int addTerrainShape(unsigned int ID, Transform* transform,std::vector<std::vector<float>> heightvals);
 
+    void RendererUpdate();
+
+    void Draw();
     /**
      * @brief DeInitialises the physics simulation
      */
@@ -87,9 +90,16 @@ public:
 private:
     ///Privatised Constructor
     PhysicsSystem() = default;
-
+    std::string path1;
+    std::string path2;
     ///Privatised destructor
+    //Test Renderer Values
+    unsigned int l_vbo_ = 0, l_vao_ = 0;
+    unsigned int t_vbo_ = 0, t_vao_ = 0;
+    unsigned int line_num_ = 0, triag_num_ = 0;
 
+    /// The shared pointer to draw react objects,
+    Shader* shader_ = nullptr;
 
     ///count of map
     int m_mapCount;
