@@ -11,6 +11,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Model/Components/PlayerControlledMotion.cpp
         Model/Components/ConcaveCollider.cpp
 		Model/Components/SphereCollider.cpp
+        Model/Components/BoxCollider.cpp
 
 
         View/Renderer/Shader.cpp

@@ -22,7 +22,7 @@ void ReactTerrainShape::CreateTerrainShape(reactphysics3d::PhysicsCommon &physic
         for(int z=0; z<100; ++z)
         {
             heightFieldArray[x * 100 + z] = heightVals.at(static_cast<float>(z)).at(static_cast<float>(x));
-            std::cout << heightFieldArray[x * 100 + z] <<std::endl;
+            //std::cout << heightFieldArray[x * 100 + z] <<std::endl;
         }
     }
     shape = physicsCommon.createHeightFieldShape(100,100, 0, 255, heightFieldArray, rp3d::HeightFieldShape::HeightDataType::HEIGHT_FLOAT_TYPE);

@@ -13,8 +13,8 @@ void RigidBody::CreateBody(int gameObjID,rp3d::PhysicsWorld* physicsWorld,glm::v
 }
 void RigidBody::DeleteBody(rp3d::PhysicsWorld* physicsWorld,rp3d::PhysicsCommon &physicsCommon)
 {
-    shape->DeleteShape(physicsCommon);
     physicsWorld->destroyRigidBody(body);
+    shape->DeleteShape(physicsCommon);
 }
 void RigidBody::SetPosition(glm::vec3 position){
     rp3d::Transform currTransform = body->getTransform();

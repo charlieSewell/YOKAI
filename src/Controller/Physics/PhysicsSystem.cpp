@@ -9,7 +9,7 @@ void PhysicsSystem::Init()
     reactphysics3d::PhysicsWorld::WorldSettings settings;
     //settings.defaultVelocitySolverNbIterations = 20;
     //settings.isSleepingEnabled = false;
-    settings.gravity = reactphysics3d::Vector3(0, -35, 0);
+    settings.gravity = reactphysics3d::Vector3(0, -1, 0);
 
     physicsWorld = physicsCommon.createPhysicsWorld(settings);
     //physicsWorld->setEventListener(&listener);
@@ -67,7 +67,7 @@ unsigned int PhysicsSystem::addTerrainShape(unsigned int ID, Transform* transfor
 {
     RigidBody terrain;
     ReactTerrainShape* terrShape = new ReactTerrainShape();
-    glm::vec3 position(100, 123,100);
+    glm::vec3 position(50, 123,50);
     auto orientation = glm::identity<glm::quat>();
     terrain.CreateBody(-2,physicsWorld,position,orientation);
     terrShape->CreateTerrainShape(physicsCommon,heightvals);

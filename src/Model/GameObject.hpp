@@ -8,11 +8,14 @@
 class YOKAI_API GameObject
 {
     public:
+        GameObject();
         void Awake();
         void Start();
         void Update(float timeDelta);
         void Draw();
+        unsigned int GetObjectID();
     private:
+        unsigned int gameObjectID;
         std::vector<std::shared_ptr<Component>> m_components;
     public:
         template <typename T> std::shared_ptr<T> AddComponent()

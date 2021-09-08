@@ -1,5 +1,10 @@
 #include "GameObject.hpp"
-
+#include <iostream>
+GameObject::GameObject()
+{
+    static unsigned int gameObjectCounter;
+    gameObjectID = gameObjectCounter++;
+}
 void GameObject::Awake()
 {
     for(int i = m_components.size() - 1; i >= 0; i--)
@@ -30,4 +35,8 @@ void GameObject::Draw()
     {
         m_components[i]->Draw();
     }
+}
+unsigned int GameObject::GetObjectID()
+{
+    return gameObjectID;
 }
