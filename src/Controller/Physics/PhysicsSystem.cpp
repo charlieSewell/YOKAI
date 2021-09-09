@@ -20,9 +20,9 @@ void PhysicsSystem::Init()
     DebugRenderer& debugRenderer = physicsWorld->getDebugRenderer(); 
 
     debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLISION_SHAPE, true); 
-    path1 ="content/Shaders/ds.vert";
-    path2 ="content/Shaders/fs.frag";
-    shader_ = new Shader(path1.c_str(),path2.c_str());
+    path1 ="content/Shaders/debugVertex.vs";
+    path2 ="content/Shaders/debugFragment.fs";
+    shader_ = new Shader("content/Shaders/debugVertex.vert","content/Shaders/debugFragment.frag");
 
     //Generate line buffers for test renderer
     glGenVertexArrays(1, &l_vao_);
@@ -145,15 +145,7 @@ void PhysicsSystem::Draw()
         shader_->setMat4("projection", EMS::getInstance().fire(ReturnMat4Event::getPerspective));
         shader_->setMat4("view", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
         shader_->setMat4("model", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
-//        const glm::mat4 localToCameraMatrix = view;
-//        const glm::mat4 normalMatrix = glm::transpose(glm::inverse(localToCameraMatrix));
-//        shader_->SetMat4("normalMatrix", normalMatrix);
-//
-//        // Set the model to camera matrix
-//        shader_->SetMat4("localToWorldMatrix", glm::mat4());
-//        shader_->SetMat4("worldToCameraMatrix", view);
-//        shader_->SetBool("isGlobalVertexColorEnabled", false);
-        // Lines
+
         if (line_num_ > 0) {
             // Bind the VAO
             glBindVertexArray(l_vao_);
@@ -161,10 +153,16 @@ void PhysicsSystem::Draw()
 
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (char*) nullptr);
+            
+            glEnableVertexAttribArray(1);
+            glVertexAttribIPointer(1, 3, GL_UNSIGNED_INT, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (void*) sizeof(rp3d::Vector3));
+            
             // Draw the lines geometry
+
             glDrawArrays(GL_LINES, 0, line_num_ * 2);
 
             glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(1);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         }
@@ -178,10 +176,14 @@ void PhysicsSystem::Draw()
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (char*) nullptr);
 
+            glEnableVertexAttribArray(1);
+            glVertexAttribIPointer(1, 3, GL_UNSIGNED_INT, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (void*) sizeof(rp3d::Vector3));
+
             // Draw the triangles geometry
             glDrawArrays(GL_TRIANGLES, 0, triag_num_ * 3);
 
             glDisableVertexAttribArray(0);
+            glDisableVertexAttribArray(1);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
         }
