@@ -28,9 +28,9 @@ auto ModelManager::GetModelID(const std::string& filename) -> size_t
     return(id->second);
 }
 
-Model* ModelManager::GetModel(size_t modelID)
+std::shared_ptr<Model> ModelManager::GetModel(size_t modelID)
 {
-    return(&models[modelID]);
+    return(std::make_shared<Model>(models[modelID]));
 }
 
 void ModelManager::DrawModel(size_t id, glm::mat4 transform) 

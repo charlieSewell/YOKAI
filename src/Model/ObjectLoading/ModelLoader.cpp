@@ -4,6 +4,7 @@
 
 #include "ModelLoader.hpp"
 #include <algorithm>
+#include <spdlog/spdlog.h>
 static inline glm::mat4 to_glm(aiMatrix4x4t<float> &m){return glm::transpose(glm::make_mat4(&m.a1));}
 static inline glm::vec3 vec3_cast(const aiVector3D &v) { return glm::vec3(v.x, v.y, v.z); }
 static inline glm::quat quat_cast(const aiQuaternion &q) { return glm::quat(q.w, q.x, q.y, q.z); }
@@ -20,7 +21,7 @@ Model ModelLoader::loadModel(const std::string& filename)
         filename, aiProcess_Triangulate | aiProcess_GenSmoothNormals  |aiProcess_LimitBoneWeights| aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        std::cout << "Error:" << importer.GetErrorString() << std::endl;
+        //SPDLOG_INFO("Error:" + importer.GetErrorString());
         return(Model(meshes));
     }
     // retrieve the directory path of the filepath
