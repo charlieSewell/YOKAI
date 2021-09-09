@@ -8,7 +8,7 @@ void SphereCollider::Start()
     {
         m_parent->AddComponent<Transform>();
     }
-    colliderID = PhysicsSystem::getInstance().addSphere(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),3);
+    colliderID = PhysicsSystem::getInstance().addSphere(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),1);
 }
 
 void SphereCollider::Update(float deltaTime)

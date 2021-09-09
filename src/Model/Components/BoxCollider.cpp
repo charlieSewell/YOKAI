@@ -4,7 +4,7 @@ BoxCollider::BoxCollider(GameObject* parent) : Component(parent){}
 
 void BoxCollider::Start()
 {
-    extents = glm::vec3(1,1,1);
+    //extents = glm::vec3(1,1,1);
     if(m_parent->GetComponent<Transform>() == nullptr)
     {
         m_parent->AddComponent<Transform>();
@@ -22,5 +22,5 @@ void BoxCollider::SetExtents(float x,float y, float z)
 
 void BoxCollider::Update(float deltaTime)
 {
- 
+	std::cout << " " << m_parent->GetComponent<Transform>()->getPosition().x << " " << m_parent->GetComponent<Transform>()->getPosition().y << " " << m_parent->GetComponent<Transform>()->getPosition().z << std::endl;
 }

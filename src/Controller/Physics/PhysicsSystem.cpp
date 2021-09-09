@@ -91,7 +91,7 @@ unsigned int PhysicsSystem::addAABB(unsigned int ID,Transform* transform, float 
     object.AddCollisionShape(box);
     unsigned int temp = object.getColliderID();
     m_colliders.emplace(object.getColliderID(),object);
-
+	object.SetBodyType(rp3d::BodyType::STATIC);
     return temp;
 }
 
