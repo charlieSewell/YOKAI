@@ -11,8 +11,9 @@ public:
     void Start();
     void Update(float deltaTime);
 
-	glm::vec3 NewPosition = glm::vec3(0, 0, 0);
+	glm::vec3 NewVelocity = glm::vec3(0, 0, 0);
+
 private:
     unsigned int colliderID;
-	glm::vec3 m_lastPosition = glm::vec3(0, 0, 0);
+	glm::vec3 m_lastVelocity = glm::vec3(0, 0, 0);
 };

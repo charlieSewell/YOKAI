@@ -15,6 +15,12 @@ void BoxCollider::SetExtents(glm::vec3 extent)
 {
    extents = extent;
 }
+
+void BoxCollider::SetOrientation(glm::quat orientation)
+{
+	PhysicsSystem::getInstance().getRigidBody(colliderID)->SetOrientation(orientation);
+}
+
 void BoxCollider::SetExtents(float x,float y, float z)
 {
    extents = glm::vec3(x,y,z);
@@ -22,5 +28,5 @@ void BoxCollider::SetExtents(float x,float y, float z)
 
 void BoxCollider::Update(float deltaTime)
 {
-	std::cout << " " << m_parent->GetComponent<Transform>()->getPosition().x << " " << m_parent->GetComponent<Transform>()->getPosition().y << " " << m_parent->GetComponent<Transform>()->getPosition().z << std::endl;
+	//std::cout << " " << m_parent->GetComponent<Transform>()->getPosition().x << " " << m_parent->GetComponent<Transform>()->getPosition().y << " " << m_parent->GetComponent<Transform>()->getPosition().z << std::endl;
 }

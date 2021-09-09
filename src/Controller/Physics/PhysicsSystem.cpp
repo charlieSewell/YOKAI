@@ -20,6 +20,8 @@ void PhysicsSystem::Init()
     DebugRenderer& debugRenderer = physicsWorld->getDebugRenderer(); 
 
     debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLISION_SHAPE, true); 
+	debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::CONTACT_POINT, true);
+	debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::CONTACT_NORMAL, true);
     path1 ="content/Shaders/debugVertex.vs";
     path2 ="content/Shaders/debugFragment.fs";
     shader_ = new Shader("content/Shaders/debugVertex.vert","content/Shaders/debugFragment.frag");
