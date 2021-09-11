@@ -27,7 +27,7 @@ public:
     /**
      * @brief Initialises the engine
      */
-    void Init();
+    bool Init();
     /**
      * @brief Runs the engine loop
      */

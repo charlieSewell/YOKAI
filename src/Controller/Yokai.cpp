@@ -15,19 +15,19 @@ Yokai &Yokai::getInstance()
     return instance;
 }
 
-void Yokai::Init()
+bool Yokai::Init()
 {
     InitialiseLogger();
     SPDLOG_INFO("Engine Is Starting");
     if(!window.Init())
     {
-        exit(0);
+        return(false);
     }
     renderer.Init();
     modelManager = new ModelManager();
     if(!window.ImguiInit())
     {
-        exit(0);
+        return(false);
     }
     //Add layers to layer stack
     activeLayer = 0;
@@ -49,6 +49,7 @@ void Yokai::Init()
     isPaused = false;
     registerClose();
     SPDLOG_INFO("Engine Succesfully Initialised");
+    return(true);
 }
 void Yokai::Run()
 {
@@ -154,6 +155,7 @@ void Yokai::InitialiseLogger()
 
     spdlog::register_logger(log);
     spdlog::set_default_logger(log);
+    spdlog::flush_on(spdlog::level::info);
     spdlog::set_pattern("[%T][%s][%!][Line:%#]%^[%l]%$ %v");
 
 }
