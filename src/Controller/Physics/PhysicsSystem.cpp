@@ -96,9 +96,9 @@ unsigned int PhysicsSystem::addTerrainShape(unsigned int ID, Transform* transfor
 {
     RigidBody terrain;
     ReactTerrainShape* terrShape = new ReactTerrainShape();
-    glm::vec3 position(50, 123,50);
+    glm::vec3 position = transform->getPosition();
     auto orientation = glm::identity<glm::quat>();
-    terrain.CreateBody(-2,physicsWorld,position,orientation);
+    terrain.CreateBody(ID,physicsWorld,position,orientation);
     terrShape->CreateTerrainShape(physicsCommon,heightvals);
     terrain.AddCollisionShape(terrShape);
     terrain.SetBounciness(0.0);
