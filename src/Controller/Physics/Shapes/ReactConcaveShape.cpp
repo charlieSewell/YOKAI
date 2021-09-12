@@ -46,6 +46,6 @@ void ReactConcaveShape::DeleteShape(reactphysics3d::PhysicsCommon &physicsCommon
     }
     triangleArrays.clear();
 };
-ReactConcaveShape::~ReactConcaveShape() {
-    std::cout << "GOOOODBYYYYEEEE" << std::endl;
+ReactConcaveShape::~ReactConcaveShape() 
+{
 }
