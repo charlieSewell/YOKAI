@@ -30,5 +30,6 @@ class Layer
      */
     virtual void Disable() = 0;
 
-  private:
+  protected:
+    GameObjectManager objectManager;
 };

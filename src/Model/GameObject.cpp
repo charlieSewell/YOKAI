@@ -1,10 +1,7 @@
 #include "GameObject.hpp"
 #include <iostream>
-GameObject::GameObject()
-{
-    static unsigned int gameObjectCounter;
-    gameObjectID = gameObjectCounter++;
-}
+GameObject::GameObject(unsigned int id): gameObjectID(id) {}
+
 void GameObject::Awake()
 {
     for(int i = m_components.size() - 1; i >= 0; i--)
