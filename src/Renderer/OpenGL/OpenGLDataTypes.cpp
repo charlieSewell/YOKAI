@@ -62,8 +62,9 @@ void OpenGLTexture::Bind(size_t slot)
 
 }
 
-void OpenGLTexture::UnBind() 
+void OpenGLTexture::UnBind(size_t slot) 
 {
+    glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D,0);
 }
 int OpenGLTexture::getID()

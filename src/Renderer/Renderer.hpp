@@ -6,8 +6,13 @@
 #include "Renderer/RenderAPI.hpp"
 #include "Renderer/DataTypes.hpp"
 #include "Engine/EventManager.hpp"
-
+#include "Components/Transform.hpp"
 #include <memory>
+
+struct DrawItem {
+  Transform transform;
+};
+
 /**
  * @class Renderer
  * @brief renders objects to the screen
@@ -32,7 +37,7 @@ class Renderer
      * @param VertexArrayBuffer& - VAO
      * @param size_t - indiceSize
      */
-    void Draw(VertexArrayBuffer& VAO,size_t indiceSize);
+    void DrawArrays(VertexArrayBuffer& VAO,size_t indiceSize);
     /**
      * @brief Draws GUI to screen
      */

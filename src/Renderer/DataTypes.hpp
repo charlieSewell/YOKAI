@@ -47,7 +47,7 @@ class Texture
     /**
      * @brief Unbinds a texture
      */
-    virtual void UnBind() =0;
+    virtual void UnBind(size_t slot) =0;
     /**
      * @brief Returns texture ID
      * @return int

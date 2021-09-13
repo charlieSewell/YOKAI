@@ -26,11 +26,6 @@ public:
      */
     std::shared_ptr<Texture> getTexture(unsigned int textureID);
     /**
-     * @brief Unbinds a texture
-     * @param textureID
-     */
-    void unBindTexture(unsigned int textureID);
-    /**
      * @brief Replace a texture with a new one
      * @param slot
      * @param newTexturePath

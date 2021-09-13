@@ -12,11 +12,12 @@ void Renderer::Init()
     registerToggleWireframe();
 }
 
-void Renderer::Draw(VertexArrayBuffer& VAO,size_t indiceSize)
+void Renderer::DrawArrays(VertexArrayBuffer& VAO,size_t indiceSize)
 {
-    renderApi->Draw(VAO,indiceSize);
+    renderApi->DrawArrays(VAO,indiceSize);
 }
-void Renderer::DrawGui() {
+void Renderer::DrawGui() 
+{
     renderApi->DrawGui();
 }
 void Renderer::ToggleWireFrame()

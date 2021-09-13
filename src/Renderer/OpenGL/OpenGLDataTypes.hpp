@@ -30,7 +30,7 @@ class OpenGLTexture : public Texture
     /**
      * @brief Unbinds the texture
      */
-    void UnBind() override;
+    void UnBind(size_t slot) override;
     /**
      * @brief Returns the TextureID
      * @return int

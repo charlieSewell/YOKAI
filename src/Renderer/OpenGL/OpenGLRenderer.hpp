@@ -44,7 +44,7 @@ class OpenGLRenderer : public RenderAPI
      * @param VertexArrayBuffer& - VAO
      * @param size_t - indiceSize
      */
-    void Draw(VertexArrayBuffer& VAO,size_t indiceSize) override;
+    void DrawArrays(VertexArrayBuffer& VAO,size_t indiceSize) override;
     /**
      * @brief Clears the Screen after Rendering
      */

@@ -12,10 +12,6 @@ std::shared_ptr<Texture> TextureManager::getTexture(unsigned int textureID)
 {
     return textures.at(textureID).second;
 }
-void TextureManager::unBindTexture(unsigned int textureID)
-{
-    textures.at(textureID).second->UnBind();
-}
 unsigned int TextureManager::loadTexture(const std::string &textureName)
 {
     for(auto& texture : textures)

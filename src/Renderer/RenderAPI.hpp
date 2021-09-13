@@ -33,7 +33,7 @@ class RenderAPI
      * @param VertexArrayBuffer& - VAO
      * @param size_t - indiceSize
      */
-    virtual void Draw(VertexArrayBuffer& VAO,size_t indiceSize) = 0;
+    virtual void DrawArrays(VertexArrayBuffer& VAO,size_t indiceSize) = 0;
     /**
      * @brief Clears the screen
      */
