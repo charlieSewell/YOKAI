@@ -3,7 +3,7 @@
 //
 #pragma once
 #include "ReactShape.hpp"
-
+#include <vector>
 class ReactTerrainShape : public ReactShape{
   public:
     /**

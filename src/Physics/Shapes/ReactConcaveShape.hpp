@@ -2,6 +2,7 @@
 // Created by Charlie Sewell on 13/05/2021.
 //
 #pragma once
+#include <vector>
 #include "ReactShape.hpp"
 #include "Engine/Yokai.hpp"
 class ReactConcaveShape : public ReactShape{
