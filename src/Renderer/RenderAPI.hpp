@@ -5,6 +5,12 @@
 #pragma once
 #include "Renderer/DataTypes.hpp"
 #include "Renderer/Shader.hpp"
+#include <functional>
+#include <vector>
+struct DrawItem {
+  glm::mat4 transform;
+  std::function<void(Shader* shader)> drawFunction;
+};
 /**
  * @class RenderAPI
  * @brief Interface for a renderAPI
@@ -47,10 +53,17 @@ class RenderAPI
      * @param bool - isEnabled
      */
     virtual void SetDepthTesting(bool isEnabled) = 0;
+    virtual void DrawScene() = 0;
+    
+    void SubmitDraw(DrawItem drawItem){drawQueue.push_back(drawItem);}
     /**
      * @brief Creates a specific rendering API
      * @return shared_ptr<RenderAPI> - renderAPI
      */
     static std::shared_ptr<RenderAPI> Create();
+  protected:
+    std::vector<DrawItem>& GetDrawQueue(){return drawQueue;}
+  private:
+    std::vector<DrawItem> drawQueue;
 };
 

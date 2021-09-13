@@ -3,7 +3,6 @@
 //
 #pragma once
 #include "OpenGLRenderer.hpp"
-
 void OpenGLRenderer::Init() 
 {
     if ((!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) )
@@ -14,7 +13,13 @@ void OpenGLRenderer::Init()
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    shader = new Shader("content/Shaders/vertexShader.vert", "content/Shaders/fragmentShader.frag");
+    shader->useShader();
+    shader->setVec3("skyColor",glm::vec3(0.05,0.05,0.05));
+    shader->setVec3("lightColor",glm::vec3(1.0,1.0,1.0));
+    shader->setVec3("lightPos",glm::vec3(100, 100, 100));
     SPDLOG_INFO("Renderer Initialised: Using OpenGL");
+
 }
 
 void OpenGLRenderer::DeInit() 
@@ -48,6 +53,20 @@ void OpenGLRenderer::DrawArrays(VertexArrayBuffer& VAO, size_t indicesSize)
     VAO.Bind();
     glDrawElements(GL_TRIANGLES, indicesSize, GL_UNSIGNED_INT, 0);
 
+}
+void OpenGLRenderer::DrawScene()
+{
+    shader->setMat4("projection",EMS::getInstance().fire(ReturnMat4Event::getPerspective));
+    shader->setMat4("view",EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
+    shader->setBool("isAnimated",false);
+    shader->setVec3("viewPos", glm::vec3(0, 0, 0));	//TODO: Fix this later 
+    auto& vector = GetDrawQueue();
+    for(auto&drawItem : vector)
+    {
+        shader->setMat4("model",drawItem.transform);
+        drawItem.drawFunction(shader);
+    }
+    vector.clear();
 }
 void OpenGLRenderer::DrawGui() {
     ImGui::Render();

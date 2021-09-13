@@ -83,7 +83,7 @@ void Yokai::Run()
 			}
         }
         layers[activeLayer]->Draw();
-
+        renderer.DrawScene();
         renderer.DrawGui();
         window.endFrame();
 	}

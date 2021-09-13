@@ -9,9 +9,7 @@
 #include "Components/Transform.hpp"
 #include <memory>
 
-struct DrawItem {
-  Transform transform;
-};
+
 
 /**
  * @class Renderer
@@ -51,6 +49,10 @@ class Renderer
      * @brief bool - isEnabled
      */
     void SetDepthTesting(bool isEnabled);
+    
+    void SubmitDraw(DrawItem drawItem);
+
+    void DrawScene();
   private:
     /**
      * @brief Registers button to wireframe toggle

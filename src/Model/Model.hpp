@@ -64,7 +64,7 @@ class Model
      * @param Shader& - shader
      * @param mat4 - transform
      */
-    void Draw(Shader &shader, glm::mat4 transform);
+    void Draw(glm::mat4 transform);
     /**
      * @brief Gets animation by Name
      * @param name

@@ -11,7 +11,7 @@
 #include "Renderer/RenderAPI.hpp"
 #include "Renderer/DataTypes.hpp"
 #include "GLFW/glfw3.h"
-
+#include "Engine/EventManager.hpp"
 /**
  * @class OpenGLRenderer
  * @brief OpenGL rendering api implementation
@@ -58,7 +58,9 @@ class OpenGLRenderer : public RenderAPI
      * @param bool - isEnabled
      */
     void SetDepthTesting(bool isEnabled) override;
+    void DrawScene() override;
   private:
     ///Boolean to check whether it is in wireframe
     bool isWireFrame = false;
+    Shader* shader;
 };

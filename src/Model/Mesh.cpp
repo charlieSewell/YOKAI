@@ -16,11 +16,10 @@ void Mesh::SetupMesh()
      VAO = VertexArrayBuffer::Create(this->vertices,this->indices);
 }
 
- const void Mesh::Draw(Shader &shader)
+ const void Mesh::Draw(Shader* shader)
  {
      unsigned int diffuseNr = 1;
      unsigned int specularNr = 1;
-
      for(size_t i = 0; i < textures.size(); i++)
      {
          TextureManager::getInstance().getTexture(textures[i].texture)->Bind(i);
@@ -31,7 +30,7 @@ void Mesh::SetupMesh()
          else if(name == "texture_specular")
              number = std::to_string(specularNr++);
 
-         shader.setFloat(("material." + name + number).c_str(), static_cast<float>(i));
+         shader->setFloat(("material." + name + number).c_str(), static_cast<float>(i));
      }
      // draw mesh
      auto& engine = Yokai::getInstance();
@@ -42,6 +41,17 @@ void Mesh::SetupMesh()
 		TextureManager::getInstance().getTexture(textures[i].texture)->UnBind(i);
 	}
      
+}
+void Mesh::AddToDraw(glm::mat4 model)
+{
+    std::function<void(Shader* shader)> e = [&](Shader* shader) 
+    {
+		this->Draw(shader);
+	};
+    DrawItem drawItem;
+    drawItem.transform = model;
+    drawItem.drawFunction = e;
+    Yokai::getInstance().renderer.SubmitDraw(drawItem);
 }
 void Mesh::addBoneData(unsigned int vertexID,unsigned int boneID, float weight)
 {

@@ -96,7 +96,7 @@ void KeyframeAnimation::draw(Transform t)
     shader->useShader();
     shader->setVec3("viewPos", EMS::getInstance().fire(ReturnVec3Event::getPlayerPosition));
 
-    models[currentFrame]->Draw(*shader, t.getMatrix());
+    models[currentFrame]->Draw(t.getMatrix());
 
 }
 

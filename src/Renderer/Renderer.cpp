@@ -16,6 +16,10 @@ void Renderer::DrawArrays(VertexArrayBuffer& VAO,size_t indiceSize)
 {
     renderApi->DrawArrays(VAO,indiceSize);
 }
+void Renderer::DrawScene()
+{
+	renderApi->DrawScene();
+}
 void Renderer::DrawGui() 
 {
     renderApi->DrawGui();
@@ -44,6 +48,11 @@ void Renderer::registerToggleWireframe()
 		}
 	};
 	EMS::getInstance().add(NoReturnEvent::toggleWireFramePressed, toggleWireFramePressed);
+}
+
+void Renderer::SubmitDraw(DrawItem drawItem)
+{
+	renderApi->SubmitDraw(drawItem);
 }
 
 void Renderer::Clear() 

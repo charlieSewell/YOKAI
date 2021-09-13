@@ -56,14 +56,14 @@ class Mesh
      * @brief Draws the mesh
      * @param shader
      */
-    const void Draw(Shader &shader);
+    const void Draw(Shader* shader);
     /**
      * @brief Sets up the mesh
      */
     void SetupMesh();
 
     void addBoneData(unsigned int vertexID,unsigned int boneID, float weight);
-
+    void AddToDraw(glm::mat4 model);
   private:
     ///Pointer to the Mesh vertex array
     std::shared_ptr<VertexArrayBuffer> VAO;
