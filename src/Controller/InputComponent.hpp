@@ -6,7 +6,7 @@
 #include "Model/Component.hpp"
 #include "Controller/Export.hpp"
 #include "Controller/InputManagerGLFW.hpp"
-
+#include <wctype.h>
 /**
  * @class InputManagerGLFW
  * @brief Manages the GLFW input

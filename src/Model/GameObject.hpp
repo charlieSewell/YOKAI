@@ -8,7 +8,7 @@
 class YOKAI_API GameObject
 {
     public:
-        GameObject();
+        GameObject(unsigned int id);
         void Awake();
         void Start();
         void Update(float timeDelta);
@@ -31,6 +31,7 @@ class YOKAI_API GameObject
                 }
             }
             std::shared_ptr<T> newComponent = std::make_shared<T>(this); 
+            newComponent->Awake();
             m_components.push_back(newComponent);
             
             return newComponent;

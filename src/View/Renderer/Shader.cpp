@@ -24,6 +24,7 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath)
         fragmentShaderFile.close();
         vertexShaderSource = vertexShaderSS.str();
         fragmentShaderSource = fragmentShaderSS.str();
+
     }
     catch(std::ifstream::failure& e)
     {

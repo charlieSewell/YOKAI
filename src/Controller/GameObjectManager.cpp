@@ -3,59 +3,47 @@
 #include <utility>
 #include <spdlog/spdlog.h>
 
-GameObjectManager::GameObjectManager()
-	: elapsedTime(0)
-{
-
-}
-
-GameObjectManager& GameObjectManager::getInstance() 
-{
-    static GameObjectManager instance;
-    return instance;
-}
+GameObjectManager::GameObjectManager() : objectCount(0) {}
 
 GameObjectManager::~GameObjectManager()
 {
-
+    gameObjects.clear();
 }
 
-void GameObjectManager::init()
+
+unsigned int GameObjectManager::CreateObject()
 {
-    SPDLOG_INFO("Game Object Manager Initialised. FIX ME");
+    gameObjects.emplace(objectCount,std::make_shared<GameObject>(objectCount));
+    return objectCount++;
 }
 
-/*int GameObjectManager::CreateObject(GameObjectType type,std::string model)
+
+void GameObjectManager::DeleteGameObject(unsigned int id)
 {
+    gameObjects.erase(id);
+}
 
-}*/
-
-/*int GameObjectManager::add(std::shared_ptr<GameObject>& gameObject)
+void GameObjectManager::Update(float dt)
 {
+    for(auto& object : gameObjects)
+    {
+        object.second->Update(dt);
+    }
+}
 
-}*/
-
-/*void GameObjectManager::DeInit()
+void GameObjectManager::Draw()
 {
+    for(auto& object : gameObjects)
+    {
+        object.second->Draw();
+    }
+}
 
-}*/
-
-/*void GameObjectManager::DeleteGameObject(unsigned int id)
+std::shared_ptr<GameObject> GameObjectManager::GetObject(unsigned int id) 
 {
-
-}*/
-
-/*void GameObjectManager::update(float dt)
-{
-
-}*/
-
-/*void GameObjectManager::draw()
-{
-
-}*/
-
-/*std::shared_ptr<GameObject> GameObjectManager::getObject(int id) 
-{
-
-}*/
+    if(gameObjects.at(id)->GetObjectID() == id)
+    {
+        return gameObjects[id];
+    }
+    return nullptr; 
+}

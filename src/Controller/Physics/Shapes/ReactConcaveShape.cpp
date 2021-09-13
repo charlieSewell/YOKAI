@@ -5,7 +5,7 @@ void ReactConcaveShape::CreateConcaveShape(reactphysics3d::PhysicsCommon &physic
 {
     
     triangleMesh = physicsCommon.createTriangleMesh(); 
-    Model* model = Yokai::getInstance().getModelManager()->GetModel(modelID);
+    std::shared_ptr<Model> model = Yokai::getInstance().getModelManager()->GetModel(modelID);
     vertices.resize(model->getMeshes()->size());
     indices.resize(model->getMeshes()->size());
     triangleArrays.resize(model->getMeshes()->size());
@@ -46,6 +46,6 @@ void ReactConcaveShape::DeleteShape(reactphysics3d::PhysicsCommon &physicsCommon
     }
     triangleArrays.clear();
 };
-ReactConcaveShape::~ReactConcaveShape() {
-    std::cout << "GOOOODBYYYYEEEE" << std::endl;
+ReactConcaveShape::~ReactConcaveShape() 
+{
 }
