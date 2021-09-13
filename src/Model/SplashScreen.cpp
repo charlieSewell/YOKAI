@@ -1,7 +1,7 @@
 
 #include "SplashScreen.hpp"
-#include "Controller/Yokai.hpp"
-#include "Controller/TextureManager.hpp"
+#include "Engine/Yokai.hpp"
+#include "Engine/TextureManager.hpp"
 
 SplashScreen::SplashScreen(const std::string& texturePath)
 {

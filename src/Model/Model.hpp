@@ -4,7 +4,7 @@
 #pragma once
 #include <iostream>
 #include <glm/glm.hpp>
-#include "View/Renderer/Shader.hpp"
+#include "Renderer/Shader.hpp"
 #include "Model/Mesh.hpp"
 #include "Model/SkeletalAnimation.hpp"
 

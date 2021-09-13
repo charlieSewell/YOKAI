@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "View/Renderer/Renderer.hpp"
+#include "Renderer/Renderer.hpp"
 /**
  * @class SplashScreen
  * @brief Class that creates Splash screens for rendering
