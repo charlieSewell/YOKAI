@@ -4,12 +4,9 @@
 #pragma once
 
 #include "Renderer/RenderAPI.hpp"
-#include "Renderer/DataTypes.hpp"
 #include "Engine/EventManager.hpp"
 #include "Components/Transform.hpp"
 #include <memory>
-
-
 
 /**
  * @class Renderer
@@ -18,6 +15,7 @@
 class Renderer 
 {
   public:
+    static Renderer& getInstance();
     /**
      * @brief Initialises the Renderer
      */
@@ -54,6 +52,8 @@ class Renderer
 
     void DrawScene();
   private:
+    Renderer() = default;
+    ~Renderer() = default;
     /**
      * @brief Registers button to wireframe toggle
      */

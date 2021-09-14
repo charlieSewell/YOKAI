@@ -1,5 +1,10 @@
 #include "Renderer/Renderer.hpp"
 
+Renderer& Renderer::getInstance()
+{
+    static Renderer instance;
+    return instance;
+}
 void Renderer::Init() 
 {
     try

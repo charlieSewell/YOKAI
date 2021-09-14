@@ -3,6 +3,7 @@
 //
 #pragma once
 #include "OpenGLRenderer.hpp"
+#include "Engine/TextureManager.hpp"
 void OpenGLRenderer::Init() 
 {
     if ((!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) )
@@ -56,17 +57,17 @@ void OpenGLRenderer::DrawArrays(VertexArrayBuffer& VAO, size_t indicesSize)
 }
 void OpenGLRenderer::DrawScene()
 {
+    shader->useShader();
     shader->setMat4("projection",EMS::getInstance().fire(ReturnMat4Event::getPerspective));
     shader->setMat4("view",EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
     shader->setBool("isAnimated",false);
     shader->setVec3("viewPos", glm::vec3(0, 0, 0));	//TODO: Fix this later 
-    auto& vector = GetDrawQueue();
-    for(auto&drawItem : vector)
+    for(auto& drawItem : drawQueue)
     {
         shader->setMat4("model",drawItem.transform);
-        drawItem.drawFunction(shader);
+        DrawMesh(drawItem.mesh);
     }
-    vector.clear();
+    drawQueue.clear();
 }
 void OpenGLRenderer::DrawGui() {
     ImGui::Render();
@@ -82,4 +83,34 @@ void OpenGLRenderer::SetDepthTesting(bool isEnabled)
         {
         glDisable(GL_DEPTH_TEST);
     }
+}
+ const void OpenGLRenderer::DrawMesh(Mesh* mesh)
+ {
+     unsigned int diffuseNr = 1;
+     unsigned int specularNr = 1;
+     auto& textures = mesh->getTextures();
+     for(size_t i = 0; i < textures.size(); i++)
+     {
+         TextureManager::getInstance().getTexture(textures[i].texture)->Bind(i);
+         std::string number;
+         std::string name = textures[i].type;
+         if(name == "texture_diffuse")
+             number = std::to_string(diffuseNr++);
+         else if(name == "texture_specular")
+             number = std::to_string(specularNr++);
+
+         shader->setFloat(("material." + name + number).c_str(), static_cast<float>(i));
+     }
+
+     DrawArrays(*mesh->GetVAO(),mesh->getIndices()->size());
+
+    // Reset to defaults
+	for (size_t i = 0; i < textures.size(); i++) {
+		TextureManager::getInstance().getTexture(textures[i].texture)->UnBind(i);
+	}
+     
+}
+void OpenGLRenderer::SubmitDraw(DrawItem drawItem)
+{
+    drawQueue.push_back(drawItem);
 }

@@ -8,6 +8,8 @@
 #include <array>
 #include <glm/glm.hpp>
 #include "Export.hpp"
+#include <memory>
+#include <vector>
 
 /**
  * @class ModelManager

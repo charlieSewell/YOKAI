@@ -5,7 +5,6 @@
 #include "ModelLoader.hpp"
 #include <algorithm>
 #include <spdlog/spdlog.h>
-#include <assimp/pbrmaterial.h>
 static inline glm::mat4 to_glm(aiMatrix4x4t<float> &m){return glm::transpose(glm::make_mat4(&m.a1));}
 static inline glm::vec3 vec3_cast(const aiVector3D &v) { return glm::vec3(v.x, v.y, v.z); }
 static inline glm::quat quat_cast(const aiQuaternion &q) { return glm::quat(q.w, q.x, q.y, q.z); }
@@ -22,7 +21,7 @@ Model ModelLoader::loadModel(const std::string& filename)
         filename, aiProcess_Triangulate | aiProcess_GenSmoothNormals  |aiProcess_LimitBoneWeights| aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_OptimizeMeshes);
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        //SPDLOG_INFO("Error:" + importer.GetErrorString());
+        SPDLOG_ERROR(importer.GetErrorString());
         return(Model(meshes));
     }
     // retrieve the directory path of the filepath
@@ -30,6 +29,7 @@ Model ModelLoader::loadModel(const std::string& filename)
     glm::mat4 globalInverseTransform = glm::inverse(to_glm(scene->mRootNode->mTransformation));
     // process ASSIMP's root node recursively
     processNode(animations,meshes,bones,boneMap,scene->mRootNode, scene,to_glm(scene->mRootNode->mTransformation));
+    
     for(auto& mesh: meshes)
     {
         mesh.SetupMesh();

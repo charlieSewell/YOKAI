@@ -4,10 +4,8 @@
 #pragma once
 #include <iostream>
 #include <glm/glm.hpp>
-#include "Renderer/Shader.hpp"
-#include "Model/Mesh.hpp"
 #include "Model/SkeletalAnimation.hpp"
-
+#include "Renderer/Renderer.hpp"
 /**
  * @struct Node
  * @brief Struct to hold info about a assimp node
@@ -112,5 +110,7 @@ class Model
     Node rootNode;
     ///Animations
     std::vector<SkeletalAnimation> animations;
+
+    void AddToDraw(Mesh* mesh, glm::mat4 model);
 };
 

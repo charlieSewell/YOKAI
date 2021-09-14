@@ -23,7 +23,7 @@ bool Yokai::Init()
     {
         return(false);
     }
-    renderer.Init();
+    Renderer::getInstance().Init();
     modelManager = new ModelManager();
     if(!window.ImguiInit())
     {
@@ -67,7 +67,7 @@ void Yokai::Run()
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        renderer.Clear();
+        Renderer::getInstance().Clear();
         window.startFrame();
 
         if (!isPaused)
@@ -82,15 +82,18 @@ void Yokai::Run()
 				accumulator -= timeStep;
 			}
         }
+
+        ImGui::Begin("Debug Menu");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
         layers[activeLayer]->Draw();
-        renderer.DrawScene();
-        renderer.DrawGui();
+        Renderer::getInstance().DrawScene();
+        Renderer::getInstance().DrawGui();
         window.endFrame();
 	}
-    //GameObjectManager::getInstance().DeInit();
     PhysicsSystem::getInstance().DeInit();
     //UIManager::getInstance().DeInit();
-    renderer.DeInit();
+    Renderer::getInstance().DeInit();
     window.DeInit();
 }
 

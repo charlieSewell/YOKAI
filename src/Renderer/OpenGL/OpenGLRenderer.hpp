@@ -59,8 +59,11 @@ class OpenGLRenderer : public RenderAPI
      */
     void SetDepthTesting(bool isEnabled) override;
     void DrawScene() override;
+    void SubmitDraw(DrawItem drawItem) override; 
   private:
     ///Boolean to check whether it is in wireframe
     bool isWireFrame = false;
+    const void DrawMesh(Mesh* mesh);
     Shader* shader;
+    std::vector<DrawItem> drawQueue;
 };
