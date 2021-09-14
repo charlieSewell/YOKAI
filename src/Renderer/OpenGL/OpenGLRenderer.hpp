@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include <glad/glad.h>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <imgui.h>
 #include <spdlog/spdlog.h>
@@ -62,8 +62,34 @@ class OpenGLRenderer : public RenderAPI
     void SubmitDraw(DrawItem drawItem) override; 
   private:
     ///Boolean to check whether it is in wireframe
+    glm::ivec2 SCREEN_SIZE;
+    const int NUM_LIGHTS = 2;
     bool isWireFrame = false;
-    const void DrawMesh(Mesh* mesh);
-    Shader* shader;
+    void DrawQuad();
+    void SetupDepthMap();
+    void SetupHDRBuffer();
+    const void DrawMesh(Shader* shader, Mesh* mesh);
+    Shader* depthShader;
+    Shader* lightAccumulationShader;
+    Shader* lightCullingShader;
+    Shader* hdr;
     std::vector<DrawItem> drawQueue;
+    //For Lighting passes
+    GLuint lightBuffer = 0;
+    //For Light culling
+    GLuint visibleLightIndicesBuffer = 0;
+    GLuint workGroupsX = 0;
+    GLuint workGroupsY = 0;
+
+    //Quad For post Processing effects
+    GLuint quadVAO = 0;
+    GLuint quadVBO = 0;
+    //Depth map for Z fighting pass
+    GLuint depthMapFBO = 0;
+    GLuint depthMap = 0;
+    //Final Scene FrameBuffer
+    GLuint hdrFBO;
+    //Render Buffer attatch to HDR Frame Buffer
+    GLuint rboDepth;
+    GLuint colorBuffer;
 };

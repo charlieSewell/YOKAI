@@ -42,5 +42,5 @@ class YOKAI_API Camera : public Component
         ///up direction of the camera
         glm::vec3 m_upDirection = glm::vec3(0.0f, 1.0f, 0.0f);
         ///perspective of the camera
-        glm::mat4 m_perspective = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 1000.0f);
+        glm::mat4 m_perspective = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 300.0f);
 };

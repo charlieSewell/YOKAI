@@ -83,12 +83,12 @@ void Yokai::Run()
 			}
         }
 
-        ImGui::Begin("YOKAI DEBUG");
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
+        //ImGui::Begin("YOKAI DEBUG");
+        //ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        //ImGui::End();
         layers[activeLayer]->Draw();
         Renderer::getInstance().DrawScene();
-        Renderer::getInstance().DrawGui();
+        //Renderer::getInstance().DrawGui();
         window.endFrame();
 	}
     PhysicsSystem::getInstance().DeInit();

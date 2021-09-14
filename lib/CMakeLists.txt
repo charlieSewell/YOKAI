@@ -17,7 +17,7 @@ add_compile_options(
 )
 add_subdirectory(glm)
 add_subdirectory(assimp)
-add_subdirectory(glad)
+add_subdirectory(glew)
 add_subdirectory(imgui)
 add_subdirectory(reactphysics3d)
 option(GLFW_BUILD_DOCS OFF)
@@ -32,15 +32,15 @@ set_target_properties(reactphysics3d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 # Puts a stop to the endlessly irritating practise postfixing 'd' onto debug libraries.
 set_target_properties(assimp PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(glfw PROPERTIES DEBUG_POSTFIX "")
-set_target_properties(glad PROPERTIES DEBUG_POSTFIX "")
+set_target_properties(glew PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(reactphysics3d PROPERTIES DEBUG_POSTFIX "")
 
 # Ignore warnings from library headers.
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
         glfw/include
         glfw/src
-        glad/include
-        glad/src
+        glew/include
+        glew/src
         assimp/include
         reactphysics3d/include
         imgui/imgui

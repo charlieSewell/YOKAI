@@ -12,6 +12,16 @@
  * @class RenderAPI
  * @brief Interface for a renderAPI
  */
+struct PointLight {
+	glm::vec4 color;
+	glm::vec4 position;
+	glm::vec4 paddingAndRadius;
+};
+
+struct VisibleIndex {
+	int index;
+};
+
 class RenderAPI 
 {
   public:

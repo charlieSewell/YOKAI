@@ -16,9 +16,9 @@ Model ModelLoader::loadModel(const std::string& filename)
     std::vector<Bone> bones;
     std::vector<SkeletalAnimation> animations;
     std::map<std::string,unsigned int> boneMap;
-    Assimp::Importer importer;
+    Assimp::Importer importer; 
     const aiScene *scene = importer.ReadFile(
-        filename, aiProcess_Triangulate | aiProcess_GenSmoothNormals  |aiProcess_LimitBoneWeights| aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_OptimizeMeshes);
+        filename, aiProcess_Triangulate  | aiProcess_GenSmoothNormals |  aiProcess_LimitBoneWeights| aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_OptimizeMeshes);
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         SPDLOG_ERROR(importer.GetErrorString());
