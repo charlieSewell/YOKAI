@@ -58,7 +58,4 @@ class YOKAI_API ModelManager
 
     /// Vector of models
     std::vector<Model> models;
-
-    /// Shader pointer
-    Shader *modelShader;
 };

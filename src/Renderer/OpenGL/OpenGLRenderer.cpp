@@ -4,6 +4,7 @@
 #pragma once
 #include "OpenGLRenderer.hpp"
 #include "Engine/TextureManager.hpp"
+#include <glm/gtx/string_cast.hpp>
 void OpenGLRenderer::Init() 
 {
     if ((!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) )
@@ -57,11 +58,13 @@ void OpenGLRenderer::DrawArrays(VertexArrayBuffer& VAO, size_t indicesSize)
 }
 void OpenGLRenderer::DrawScene()
 {
+    glm::mat4 inv = glm::inverse(EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
     shader->useShader();
     shader->setMat4("projection",EMS::getInstance().fire(ReturnMat4Event::getPerspective));
     shader->setMat4("view",EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
     shader->setBool("isAnimated",false);
-    shader->setVec3("viewPos", glm::vec3(0, 0, 0));	//TODO: Fix this later 
+    glm::vec3 viewPos = glm::vec3(inv[3].x,inv[3].y,inv[3].z);
+    shader->setVec3("viewPos", viewPos);
     for(auto& drawItem : drawQueue)
     {
         shader->setMat4("model",drawItem.transform);

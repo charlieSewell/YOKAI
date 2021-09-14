@@ -1,7 +1,7 @@
 #include "Camera.hpp"
-
+#include <glm/gtx/string_cast.hpp>
 #include "Engine/EventManager.hpp"
-
+#include <iostream>
 Camera::Camera(GameObject* parent)
 	: Component(parent)
 {
@@ -12,7 +12,6 @@ Camera::Camera(GameObject* parent)
 void Camera::Update(float deltaTime)
 {
     //glm::vec3 temp = m_parent->GetComponent<Transform>()->getPosition();
-    //m_position = glm::vec3(temp.x,temp.y+2,temp.z);
 }
 
 
