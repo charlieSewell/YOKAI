@@ -28,7 +28,7 @@ void OpenGLRenderer::Init()
 	lightDebug = new Shader("content/Shaders/lightDebug.vert", "content/Shaders/lightDebug.frag");
     
 	lightDebug->useShader();
-	lightDebug->setInt("lightCount",NUM_LIGHTS);
+	lightDebug->setInt("totalLightCount",NUM_LIGHTS);
 	lightDebug->setInt("numberOfTilesX", workGroupsX);
 	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
     std::cout << "Depth Shader ID:"<< depthShader->getShaderID() <<std::endl;
@@ -74,7 +74,7 @@ void OpenGLRenderer::Init()
 	// Bind visible light indices buffer
     
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, numberOfTiles * sizeof(VisibleIndex) * NUM_LIGHTS, 0, GL_STATIC_DRAW);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, numberOfTiles * sizeof(VisibleIndex) * NUM_LIGHTS, NULL, GL_DYNAMIC_DRAW);
 
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -268,28 +268,18 @@ void OpenGLRenderer::DrawScene()
     // Dispatch the compute shader, using the workgroup values calculated earlier
 	glDispatchCompute(workGroupsX, workGroupsY, 1);
     
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
-	VisibleIndex *pointLights = (VisibleIndex*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
-
-	for (int i = 0; i < NUM_LIGHTS; i++) {
-		VisibleIndex &light = pointLights[i];
-		std::cout << light.index << std::endl;
-	}
-
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-	
 	//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	// Unbind the depth map
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
+	/*
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	lightAccumulationShader->useShader();
+	
     lightAccumulationShader->setMat4("projection",perspective);
     lightAccumulationShader->setMat4("view",view);
 	lightAccumulationShader->setVec3("viewPosition",viewpos);
@@ -310,6 +300,21 @@ void OpenGLRenderer::DrawScene()
 		
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
+	*/
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		lightDebug->useShader();
+		lightDebug->setMat4("projection",perspective);
+    	lightDebug->setMat4("view",view);
+		lightDebug->setVec3("viewPosition",viewpos);
+		for(auto& drawItem : drawQueue)
+		{
+			lightDebug->setMat4("model",drawItem.transform);
+			DrawMesh(lightDebug,drawItem.mesh);
+		}
+
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
     drawQueue.clear();
 }
 void OpenGLRenderer::DrawGui() {
