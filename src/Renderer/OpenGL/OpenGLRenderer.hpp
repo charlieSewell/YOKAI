@@ -5,6 +5,8 @@
 #include <vector>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 #include <spdlog/spdlog.h>
 #include <backends/imgui_impl_opengl3.h>
@@ -12,6 +14,7 @@
 #include "Renderer/DataTypes.hpp"
 #include "GLFW/glfw3.h"
 #include "Engine/EventManager.hpp"
+#include <random>
 /**
  * @class OpenGLRenderer
  * @brief OpenGL rendering api implementation
@@ -63,7 +66,7 @@ class OpenGLRenderer : public RenderAPI
   private:
     ///Boolean to check whether it is in wireframe
     glm::ivec2 SCREEN_SIZE;
-    const int NUM_LIGHTS = 2;
+    const int NUM_LIGHTS = 100;
     bool isWireFrame = false;
     void DrawQuad();
     void SetupDepthMap();
@@ -73,6 +76,8 @@ class OpenGLRenderer : public RenderAPI
     Shader* lightAccumulationShader;
     Shader* lightCullingShader;
     Shader* hdr;
+    Shader* depthDebug;
+    Shader* lightDebug;
     std::vector<DrawItem> drawQueue;
     //For Lighting passes
     GLuint lightBuffer = 0;
@@ -92,4 +97,9 @@ class OpenGLRenderer : public RenderAPI
     //Render Buffer attatch to HDR Frame Buffer
     GLuint rboDepth;
     GLuint colorBuffer;
+    glm::vec3 RandomPosition(std::uniform_real_distribution<> dis, std::mt19937 gen);
+    void UpdateLights();
+    const glm::vec3 LIGHT_MIN_BOUNDS = glm::vec3(-135.0f, -20.0f, -60.0f);
+    const glm::vec3 LIGHT_MAX_BOUNDS = glm::vec3(135.0f, 170.0f, 60.0f);
+
 };

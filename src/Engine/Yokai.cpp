@@ -67,7 +67,7 @@ void Yokai::Run()
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        Renderer::getInstance().Clear();
+        //Renderer::getInstance().Clear();
         window.startFrame();
 
         if (!isPaused)

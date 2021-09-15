@@ -20,68 +20,97 @@ void OpenGLRenderer::Init()
 
     SCREEN_SIZE.x = 1920;
     SCREEN_SIZE.y = 1080;
-    depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
-    lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
-    lightCullingShader = new Shader("content/Shaders/light_culling.comp");
-    hdr = new Shader("content/Shaders/hdr.vert", "content/Shaders/hdr.frag");
+
+	depthDebug = new Shader("content/Shaders/depthDebug.vert", "content/Shaders/depthDebug.frag");
+	depthDebug->useShader();
+	depthDebug->setFloat("near",0.1f);
+	depthDebug->setFloat("far",300.0f);
+	lightDebug = new Shader("content/Shaders/lightDebug.vert", "content/Shaders/lightDebug.frag");
+    
+	lightDebug->useShader();
+	lightDebug->setInt("lightCount",NUM_LIGHTS);
+	lightDebug->setInt("numberOfTilesX", workGroupsX);
+	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
+    std::cout << "Depth Shader ID:"<< depthShader->getShaderID() <<std::endl;
+    
+	lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
+	std::cout << "Light Accumulation Shader ID:"<< lightAccumulationShader->getShaderID() <<std::endl;
+    
+	lightCullingShader = new Shader("content/Shaders/light_culling.comp");
+    std::cout << "Light Culling Shader ID:"<< lightCullingShader->getShaderID() <<std::endl;
+    
+	hdr = new Shader("content/Shaders/hdr.vert", "content/Shaders/hdr.frag");
+    std::cout << "HDR Shader ID:"<< hdr->getShaderID() <<std::endl;
 
     lightCullingShader->useShader();
     lightCullingShader->setInt("lightCount",NUM_LIGHTS);
-    lightCullingShader->setIvec2("lightCount",SCREEN_SIZE);
+    glUniform2iv(glGetUniformLocation(lightCullingShader->getShaderID(), "screenSize"), 1, &SCREEN_SIZE[0]);
 
     lightAccumulationShader->useShader();
     lightAccumulationShader->setInt("numberOfTilesX", workGroupsX);
 
-    SPDLOG_INFO(glGetString(GL_VERSION));
-	//SPDLOG_INFO("GLSL version: ",glGetString(GL_SHADING_LANGUAGE_VERSION));
-	//SPDLOG_INFO("Vendor: ",glGetString(GL_VENDOR));
-	//SPDLOG_INFO("Renderer: ", glGetString(GL_RENDERER));
+    SPDLOG_INFO("OpenGL version: {}",glGetString(GL_VERSION));
+	SPDLOG_INFO("GLSL version: {}",glGetString(GL_SHADING_LANGUAGE_VERSION));
+	SPDLOG_INFO("Vendor: {}",glGetString(GL_VENDOR));
+	SPDLOG_INFO("Renderer: {}", glGetString(GL_RENDERER));
     if (!GLEW_VERSION_4_5) 
     {
-		SPDLOG_ERROR("OPENGL IS TO OLD");
-        throw std::runtime_error("OpenGL 4.5 API is not available.");
+		SPDLOG_ERROR("OpenGL version be >= 4.5");
+       // throw std::runtime_error("OpenGL 4.5 API is not available.");
 	}
     // Define work group sizes in x and y direction based off screen size and tile size (in pixels)
 	workGroupsX = (SCREEN_SIZE.x + (SCREEN_SIZE.x % 16)) / 16;
 	workGroupsY = (SCREEN_SIZE.y + (SCREEN_SIZE.y % 16)) / 16;
 	size_t numberOfTiles = workGroupsX * workGroupsY;
 
-    SetupDepthMap();
-    SetupHDRBuffer();
 	// Generate our shader storage buffers
 	glGenBuffers(1, &lightBuffer);
 	glGenBuffers(1, &visibleLightIndicesBuffer);
 
 	// Bind light buffer
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_LIGHTS * sizeof(PointLight), 0, GL_DYNAMIC_DRAW);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_LIGHTS * sizeof(PointLight), NULL, GL_DYNAMIC_DRAW);
 
 	// Bind visible light indices buffer
+    
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, numberOfTiles * sizeof(VisibleIndex) * 1024, 0, GL_STATIC_DRAW);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, numberOfTiles * sizeof(VisibleIndex) * NUM_LIGHTS, 0, GL_STATIC_DRAW);
 
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    
+    std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dis(0, 1);
 
-    glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
 	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
 
-	pointLights[0].position = glm::vec4(16.0f,3.0f,-5.0f,1.0f);
-    pointLights[0].color = glm::vec4(200, 50, 50, 1.0f);
-	pointLights[0].paddingAndRadius = glm::vec4(glm::vec3(0.0f), 0.4);
-    pointLights[1].position = glm::vec4(17.0f,2.0f,-4.0f,1.0f);
-	pointLights[1].color = glm::vec4(200, 50, 50, 1.0f);
-	pointLights[1].paddingAndRadius = glm::vec4(glm::vec3(0.0f), 0.3);
-
+	for (int i = 0; i < NUM_LIGHTS; i++) {
+		PointLight &light = pointLights[i];
+		light.position = glm::vec4(RandomPosition(dis, gen), 1.0f);
+		light.color = glm::vec4(1.0f + dis(gen), 1.0f + dis(gen), 1.0f + dis(gen), 1.0f);
+		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 30.0f);
+	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-
-
+	SetupDepthMap();
+    SetupHDRBuffer();
+	glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
     SPDLOG_INFO("Renderer Initialised: Using OpenGL");
 
 }
+glm::vec3 OpenGLRenderer::RandomPosition(std::uniform_real_distribution<> dis, std::mt19937 gen) {
+	glm::vec3 position = glm::vec3(0.0);
+	for (int i = 0; i < 3; i++) {
+		float min = LIGHT_MIN_BOUNDS[i];
+		float max = LIGHT_MAX_BOUNDS[i];
+		position[i] = (GLfloat)dis(gen) * (max - min) + min;
+	}
 
+	return position;
+}
 void OpenGLRenderer::DeInit() 
 {
     ImGui_ImplOpenGL3_Shutdown();
@@ -141,7 +170,7 @@ void OpenGLRenderer::SetupHDRBuffer()
 	
 	glGenTextures(1, &colorBuffer);
 	glBindTexture(GL_TEXTURE_2D, colorBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 1920, 1080, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCREEN_SIZE.x, SCREEN_SIZE.y, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -149,7 +178,7 @@ void OpenGLRenderer::SetupHDRBuffer()
 	
 	glGenRenderbuffers(1, &rboDepth);
 	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1920, 1080);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, SCREEN_SIZE.x, SCREEN_SIZE.y);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuffer, 0);
@@ -162,6 +191,22 @@ void OpenGLRenderer::Clear()
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 }
+void OpenGLRenderer::UpdateLights() {
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
+	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
+
+	for (int i = 0; i < NUM_LIGHTS; i++) {
+		PointLight &light = pointLights[i];
+		float min = LIGHT_MIN_BOUNDS[1];
+		float max = LIGHT_MAX_BOUNDS[1];
+
+		light.position.y = fmod((light.position.y + (-4.5f * 0.1) - min + max), max) + min;
+	}
+
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+}
+
 
 void OpenGLRenderer::ToggleWireFrame() 
 {
@@ -189,11 +234,15 @@ void OpenGLRenderer::DrawScene()
     glm::mat4 view = EMS::getInstance().fire(ReturnMat4Event::getViewMatrix);
     glm::mat4 inverseview = glm::inverse(EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
     glm::vec3 viewpos = glm::vec3(inverseview[3].x,inverseview[3].y,inverseview[3].z);
+	std::cout <<glm::to_string(viewpos) <<std::endl;
     
-    depthShader->useShader();
+    size_t numberOfTiles = workGroupsX * workGroupsY;
+    UpdateLights();
+
+	depthShader->useShader();
     depthShader->setMat4("projection",perspective);
     depthShader->setMat4("view",view);
-    
+
     //DEPTH PASS
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -203,14 +252,14 @@ void OpenGLRenderer::DrawScene()
         DrawMesh(depthShader,drawItem.mesh);
     }
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
+
     lightCullingShader->useShader();
     lightCullingShader->setMat4("projection",perspective);
     lightCullingShader->setMat4("view",view);
 	
     // Bind depth map texture to texture location 4 (which will not be used by any model texture)
 	glActiveTexture(GL_TEXTURE4);
-    lightCullingShader->setInt("depthMap",4);
+    lightCullingShader->setInt("depthMap", 4);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightBuffer);
@@ -218,11 +267,24 @@ void OpenGLRenderer::DrawScene()
 
     // Dispatch the compute shader, using the workgroup values calculated earlier
 	glDispatchCompute(workGroupsX, workGroupsY, 1);
+    
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
+	VisibleIndex *pointLights = (VisibleIndex*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
 
+	for (int i = 0; i < NUM_LIGHTS; i++) {
+		VisibleIndex &light = pointLights[i];
+		std::cout << light.index << std::endl;
+	}
+
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	
+	//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	// Unbind the depth map
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
+	
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -230,24 +292,25 @@ void OpenGLRenderer::DrawScene()
 	lightAccumulationShader->useShader();
     lightAccumulationShader->setMat4("projection",perspective);
     lightAccumulationShader->setMat4("view",view);
-	lightAccumulationShader->setVec3("viewpos",viewpos);
-
+	lightAccumulationShader->setVec3("viewPosition",viewpos);
     for(auto& drawItem : drawQueue)
     {
         lightAccumulationShader->setMat4("model",drawItem.transform);
         DrawMesh(lightAccumulationShader,drawItem.mesh);
     }
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Weirdly, moving this call drops performance into the floor
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// Weirdly, moving this call drops performance into the floor
 	hdr->useShader();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorBuffer);
-    hdr->setFloat("exposure", 1.0);
+    hdr->setFloat("exposure", 1.0f);
 	DrawQuad();
 		
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
+    drawQueue.clear();
 }
 void OpenGLRenderer::DrawGui() {
     ImGui::Render();
