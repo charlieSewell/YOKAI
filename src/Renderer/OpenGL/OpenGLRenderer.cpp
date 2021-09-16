@@ -29,7 +29,7 @@ void OpenGLRenderer::Init()
     
 	lightDebug->useShader();
 	lightDebug->setInt("totalLightCount",NUM_LIGHTS);
-	lightDebug->setInt("numberOfTilesX", workGroupsX);
+	lightDebug->setInt("numberOfTilesX", 120);
 	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
     std::cout << "Depth Shader ID:"<< depthShader->getShaderID() <<std::endl;
     
@@ -47,7 +47,7 @@ void OpenGLRenderer::Init()
     glUniform2iv(glGetUniformLocation(lightCullingShader->getShaderID(), "screenSize"), 1, &SCREEN_SIZE[0]);
 
     lightAccumulationShader->useShader();
-    lightAccumulationShader->setInt("numberOfTilesX", workGroupsX);
+    lightAccumulationShader->setInt("numberOfTilesX", 120);
 
     SPDLOG_INFO("OpenGL version: {}",glGetString(GL_VERSION));
 	SPDLOG_INFO("GLSL version: {}",glGetString(GL_SHADING_LANGUAGE_VERSION));
@@ -62,7 +62,6 @@ void OpenGLRenderer::Init()
 	workGroupsX = (SCREEN_SIZE.x + (SCREEN_SIZE.x % 16)) / 16;
 	workGroupsY = (SCREEN_SIZE.y + (SCREEN_SIZE.y % 16)) / 16;
 	size_t numberOfTiles = workGroupsX * workGroupsY;
-
 	// Generate our shader storage buffers
 	glGenBuffers(1, &lightBuffer);
 	glGenBuffers(1, &visibleLightIndicesBuffer);
@@ -74,7 +73,7 @@ void OpenGLRenderer::Init()
 	// Bind visible light indices buffer
     
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, numberOfTiles * sizeof(VisibleIndex) * NUM_LIGHTS, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, numberOfTiles * sizeof(VisibleIndex) * NUM_LIGHTS, NULL, GL_STATIC_DRAW);
 
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -90,7 +89,7 @@ void OpenGLRenderer::Init()
 		PointLight &light = pointLights[i];
 		light.position = glm::vec4(RandomPosition(dis, gen), 1.0f);
 		light.color = glm::vec4(1.0f + dis(gen), 1.0f + dis(gen), 1.0f + dis(gen), 1.0f);
-		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 30.0f);
+		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 40.0f);
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
@@ -232,13 +231,12 @@ void OpenGLRenderer::DrawScene()
 {
     glm::mat4 perspective = EMS::getInstance().fire(ReturnMat4Event::getPerspective);
     glm::mat4 view = EMS::getInstance().fire(ReturnMat4Event::getViewMatrix);
-    glm::mat4 inverseview = glm::inverse(EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
+    glm::mat4 inverseview = glm::inverse(view);
     glm::vec3 viewpos = glm::vec3(inverseview[3].x,inverseview[3].y,inverseview[3].z);
-	std::cout <<glm::to_string(viewpos) <<std::endl;
-    
-    size_t numberOfTiles = workGroupsX * workGroupsY;
+	//std::cout <<glm::to_string(viewpos) <<std::endl;
     UpdateLights();
-
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	//glCullFace(GL_FRONT); // Solve peter-panning
 	depthShader->useShader();
     depthShader->setMat4("projection",perspective);
     depthShader->setMat4("view",view);
@@ -253,14 +251,16 @@ void OpenGLRenderer::DrawScene()
     }
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	glCullFace(GL_BACK);
     lightCullingShader->useShader();
     lightCullingShader->setMat4("projection",perspective);
     lightCullingShader->setMat4("view",view);
 	
     // Bind depth map texture to texture location 4 (which will not be used by any model texture)
 	glActiveTexture(GL_TEXTURE4);
-    lightCullingShader->setInt("depthMap", 4);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
+    lightCullingShader->setInt("depthMap", 4);
+	
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, visibleLightIndicesBuffer);   
@@ -268,53 +268,39 @@ void OpenGLRenderer::DrawScene()
     // Dispatch the compute shader, using the workgroup values calculated earlier
 	glDispatchCompute(workGroupsX, workGroupsY, 1);
     
-	//glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	// Unbind the depth map
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	
-	/*
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	
 	lightAccumulationShader->useShader();
 	
     lightAccumulationShader->setMat4("projection",perspective);
     lightAccumulationShader->setMat4("view",view);
 	lightAccumulationShader->setVec3("viewPosition",viewpos);
+
     for(auto& drawItem : drawQueue)
     {
         lightAccumulationShader->setMat4("model",drawItem.transform);
         DrawMesh(lightAccumulationShader,drawItem.mesh);
     }
-
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// Weirdly, moving this call drops performance into the floor
 	hdr->useShader();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorBuffer);
-    hdr->setFloat("exposure", 1.0f);
+    hdr->setFloat("exposure", 0.5f);
 	DrawQuad();
 		
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
-	*/
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		lightDebug->useShader();
-		lightDebug->setMat4("projection",perspective);
-    	lightDebug->setMat4("view",view);
-		lightDebug->setVec3("viewPosition",viewpos);
-		for(auto& drawItem : drawQueue)
-		{
-			lightDebug->setMat4("model",drawItem.transform);
-			DrawMesh(lightDebug,drawItem.mesh);
-		}
-
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
-		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
+	
     drawQueue.clear();
 }
 void OpenGLRenderer::DrawGui() {
@@ -339,7 +325,7 @@ void OpenGLRenderer::SetDepthTesting(bool isEnabled)
      unsigned int normalNumber = 1;
 	 unsigned int heightNumber = 1;
      auto& textures = mesh->getTextures();
-     for(size_t i = 0; i < textures.size(); i++)
+     for(int i = 0; i < textures.size(); i++)
      {
          TextureManager::getInstance().getTexture(textures[i].texture)->Bind(i);
          std::string number;
@@ -352,9 +338,7 @@ void OpenGLRenderer::SetDepthTesting(bool isEnabled)
              number = std::to_string(normalNumber++);
          else if(name == "texture_height")
              number = std::to_string(heightNumber++);
-        
-
-         shader->setFloat(("material." + name + number).c_str(), static_cast<float>(i));
+        shader->setInt((name + number).c_str(), i);
      }
 
      DrawArrays(*mesh->GetVAO(),mesh->getIndices()->size());

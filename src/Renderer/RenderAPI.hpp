@@ -13,13 +13,13 @@
  * @brief Interface for a renderAPI
  */
 struct PointLight {
-	glm::vec4 color;
-	glm::vec4 position;
-	glm::vec4 paddingAndRadius;
+	glm::vec4 color = {};
+	glm::vec4 position = {};
+	glm::vec4 paddingAndRadius = {};
 };
 
 struct VisibleIndex {
-	int index;
+	int index = 0;
 };
 
 class RenderAPI 
