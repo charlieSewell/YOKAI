@@ -66,7 +66,7 @@ class OpenGLRenderer : public RenderAPI
   private:
     ///Boolean to check whether it is in wireframe
     glm::ivec2 SCREEN_SIZE;
-    const int NUM_LIGHTS = 1024;
+    const int NUM_LIGHTS = 128;
     bool isWireFrame = false;
     void DrawQuad();
     void SetupDepthMap();
@@ -76,8 +76,6 @@ class OpenGLRenderer : public RenderAPI
     Shader* lightAccumulationShader;
     Shader* lightCullingShader;
     Shader* hdr;
-    Shader* depthDebug;
-    Shader* lightDebug;
     std::vector<DrawItem> drawQueue;
     //For Lighting passes
     GLuint lightBuffer = 0;

@@ -21,33 +21,28 @@ void OpenGLRenderer::Init()
     SCREEN_SIZE.x = 1920;
     SCREEN_SIZE.y = 1080;
 
-	depthDebug = new Shader("content/Shaders/depthDebug.vert", "content/Shaders/depthDebug.frag");
-	depthDebug->useShader();
-	depthDebug->setFloat("near",0.1f);
-	depthDebug->setFloat("far",300.0f);
-	lightDebug = new Shader("content/Shaders/lightDebug.vert", "content/Shaders/lightDebug.frag");
-    
-	lightDebug->useShader();
-	lightDebug->setInt("totalLightCount",NUM_LIGHTS);
-	lightDebug->setInt("numberOfTilesX", 120);
-	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
-    std::cout << "Depth Shader ID:"<< depthShader->getShaderID() <<std::endl;
-    
-	lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
-	std::cout << "Light Accumulation Shader ID:"<< lightAccumulationShader->getShaderID() <<std::endl;
-    
-	lightCullingShader = new Shader("content/Shaders/light_culling.comp");
-    std::cout << "Light Culling Shader ID:"<< lightCullingShader->getShaderID() <<std::endl;
-    
-	hdr = new Shader("content/Shaders/hdr.vert", "content/Shaders/hdr.frag");
-    std::cout << "HDR Shader ID:"<< hdr->getShaderID() <<std::endl;
+	workGroupsX = (SCREEN_SIZE.x + (SCREEN_SIZE.x % 16)) / 16;
+	workGroupsY = (SCREEN_SIZE.y + (SCREEN_SIZE.y % 16)) / 16;
 
-    lightCullingShader->useShader();
+	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
+	lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
+	lightCullingShader = new Shader("content/Shaders/light_culling.comp");
+	hdr = new Shader("content/Shaders/hdr.vert", "content/Shaders/hdr.frag");
+    
+	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 300.0f);
+	depthShader->useShader();
+	depthShader->setMat4("projection",perspective);
+
+	lightCullingShader->useShader();
     lightCullingShader->setInt("lightCount",NUM_LIGHTS);
+	lightCullingShader->setMat4("projection",perspective);
+	//lightCullingShader->setIvec2("screenSize",SCREEN_SIZE);
     glUniform2iv(glGetUniformLocation(lightCullingShader->getShaderID(), "screenSize"), 1, &SCREEN_SIZE[0]);
 
     lightAccumulationShader->useShader();
-    lightAccumulationShader->setInt("numberOfTilesX", 120);
+    lightAccumulationShader->setInt("numberOfTilesX", workGroupsX);
+	lightAccumulationShader->setMat4("projection",perspective);
+	lightAccumulationShader->setInt("numberOfLights",NUM_LIGHTS);
 
     SPDLOG_INFO("OpenGL version: {}",glGetString(GL_VERSION));
 	SPDLOG_INFO("GLSL version: {}",glGetString(GL_SHADING_LANGUAGE_VERSION));
@@ -73,7 +68,7 @@ void OpenGLRenderer::Init()
 	// Bind visible light indices buffer
     
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, numberOfTiles * sizeof(VisibleIndex) * NUM_LIGHTS, NULL, GL_STATIC_DRAW);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, numberOfTiles * sizeof(VisibleIndex) * NUM_LIGHTS, NULL, GL_DYNAMIC_DRAW);
 
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -89,7 +84,7 @@ void OpenGLRenderer::Init()
 		PointLight &light = pointLights[i];
 		light.position = glm::vec4(RandomPosition(dis, gen), 1.0f);
 		light.color = glm::vec4(1.0f + dis(gen), 1.0f + dis(gen), 1.0f + dis(gen), 1.0f);
-		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 40.0f);
+		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 30.0f);
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
@@ -229,16 +224,11 @@ void OpenGLRenderer::DrawArrays(VertexArrayBuffer& VAO, size_t indicesSize)
 }
 void OpenGLRenderer::DrawScene()
 {
-    glm::mat4 perspective = EMS::getInstance().fire(ReturnMat4Event::getPerspective);
     glm::mat4 view = EMS::getInstance().fire(ReturnMat4Event::getViewMatrix);
     glm::mat4 inverseview = glm::inverse(view);
     glm::vec3 viewpos = glm::vec3(inverseview[3].x,inverseview[3].y,inverseview[3].z);
-	//std::cout <<glm::to_string(viewpos) <<std::endl;
     UpdateLights();
-	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
-	//glCullFace(GL_FRONT); // Solve peter-panning
 	depthShader->useShader();
-    depthShader->setMat4("projection",perspective);
     depthShader->setMat4("view",view);
 
     //DEPTH PASS
@@ -251,16 +241,12 @@ void OpenGLRenderer::DrawScene()
     }
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	glCullFace(GL_BACK);
     lightCullingShader->useShader();
-    lightCullingShader->setMat4("projection",perspective);
     lightCullingShader->setMat4("view",view);
-	
+	lightCullingShader->setInt("depthMap", 4);
     // Bind depth map texture to texture location 4 (which will not be used by any model texture)
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
-    lightCullingShader->setInt("depthMap", 4);
-	
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightBuffer);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, visibleLightIndicesBuffer);   
@@ -278,8 +264,6 @@ void OpenGLRenderer::DrawScene()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	lightAccumulationShader->useShader();
-	
-    lightAccumulationShader->setMat4("projection",perspective);
     lightAccumulationShader->setMat4("view",view);
 	lightAccumulationShader->setVec3("viewPosition",viewpos);
 
@@ -295,7 +279,7 @@ void OpenGLRenderer::DrawScene()
 	hdr->useShader();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorBuffer);
-    hdr->setFloat("exposure", 0.5f);
+    hdr->setFloat("exposure", 1.0f);
 	DrawQuad();
 		
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);

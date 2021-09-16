@@ -79,9 +79,9 @@ GLFWwindow* Window::getWindow()
 void Window::startFrame()
 {
     glfwPollEvents();
-    //ImGui_ImplOpenGL3_NewFrame();
-    //ImGui_ImplGlfw_NewFrame();
-    //ImGui::NewFrame();
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
 }
 void Window::endFrame()
 {
