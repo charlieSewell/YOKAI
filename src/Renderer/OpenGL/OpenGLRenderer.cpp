@@ -21,16 +21,16 @@ void OpenGLRenderer::Init()
     SCREEN_SIZE.x = 1920;
     SCREEN_SIZE.y = 1080;
 	float zFar = 300.0f;
-	float zNear = 0.3f;
+	float zNear = 0.5f;
 	size_t numberOfTiles = workGroupsX * workGroupsY;
-	unsigned int totalNumLights =  numClusters * 128; 
+	unsigned int totalNumLights =  numClusters * 50; 
 	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
 	lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
 	lightCullingShader = new Shader("content/Shaders/clusterLightCuller.comp");
 	hdr = new Shader("content/Shaders/hdr.vert", "content/Shaders/hdr.frag");
 	gridShader = new Shader("content/Shaders/clusterGenerator.comp");
     
-	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, zNear, zFar);
+	glm::mat4 perspective = glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, zNear, zFar);
 	depthShader->useShader();
 	depthShader->setMat4("projection",perspective);
 
@@ -238,7 +238,7 @@ void OpenGLRenderer::UpdateLights() {
 		float min = LIGHT_MIN_BOUNDS[1];
 		float max = LIGHT_MAX_BOUNDS[1];
 
-		//light.position.y = fmod((light.position.y + (-4.5f * 0.1) - min + max), max) + min;
+		light.position.y = fmod((light.position.y + (-4.5f * 0.1) - min + max), max) + min;
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);

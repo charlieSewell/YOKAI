@@ -64,7 +64,7 @@ class OpenGLRenderer : public RenderAPI
   private:
     ///Boolean to check whether it is in wireframe
     glm::ivec2 SCREEN_SIZE;
-    const int NUM_LIGHTS = 2000;
+    const int NUM_LIGHTS = 1000;
     bool isWireFrame = false;
     void DrawQuad();
     void SetupDepthMap();
