@@ -64,7 +64,7 @@ class OpenGLRenderer : public RenderAPI
   private:
     ///Boolean to check whether it is in wireframe
     glm::ivec2 SCREEN_SIZE;
-    const int NUM_LIGHTS = 500;
+    const int NUM_LIGHTS = 2000;
     bool isWireFrame = false;
     void DrawQuad();
     void SetupDepthMap();
@@ -97,8 +97,8 @@ class OpenGLRenderer : public RenderAPI
     GLuint colorBuffer;
     glm::vec3 RandomPosition(std::uniform_real_distribution<> dis, std::mt19937 gen);
     void UpdateLights();
-    const glm::vec3 LIGHT_MIN_BOUNDS = glm::vec3(-135.0f, -20.0f, -60.0f);
-    const glm::vec3 LIGHT_MAX_BOUNDS = glm::vec3(135.0f, 170.0f, 60.0f);
+    const glm::vec3 LIGHT_MIN_BOUNDS = glm::vec3(-270.0f, 0.0f, -270.0f);
+    const glm::vec3 LIGHT_MAX_BOUNDS = glm::vec3(270.0f, 170.0f, 270.0f);
     const int numClusters = 3456;
     const int gridSizeX = 16;
     const int gridSizeY = 9;

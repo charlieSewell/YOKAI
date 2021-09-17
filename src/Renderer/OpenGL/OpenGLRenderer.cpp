@@ -22,6 +22,8 @@ void OpenGLRenderer::Init()
     SCREEN_SIZE.y = 1080;
 	float zFar = 300.0f;
 	float zNear = 0.3f;
+	size_t numberOfTiles = workGroupsX * workGroupsY;
+	unsigned int totalNumLights =  numClusters * 128; 
 	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
 	lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
 	lightCullingShader = new Shader("content/Shaders/clusterLightCuller.comp");
@@ -50,7 +52,6 @@ void OpenGLRenderer::Init()
     // Define work group sizes in x and y direction based off screen size and tile size (in pixels)
 	workGroupsX = (SCREEN_SIZE.x + (SCREEN_SIZE.x % 16)) / 16;
 	workGroupsY = (SCREEN_SIZE.y + (SCREEN_SIZE.y % 16)) / 16;
-	size_t numberOfTiles = workGroupsX * workGroupsY;
 	// Generate our shader storage buffers
 	glGenBuffers(1, &lightBuffer);
 	glGenBuffers(1, &visibleLightIndicesBuffer);
@@ -73,9 +74,6 @@ void OpenGLRenderer::Init()
 		light.color = glm::vec4(1.0f + dis(gen), 1.0f + dis(gen), 1.0f + dis(gen), 1.0f);
 		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 30.0f);
 	}
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, lightBuffer);
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	
 	// Bind ClusterAABB
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, clusterAABB);
@@ -105,11 +103,11 @@ void OpenGLRenderer::Init()
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, screenToViewSSBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, lightBuffer);
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
-	unsigned int totalNumLights =  numClusters * 50; 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
-
-    //We generate the buffer but don't populate it yet.
     glBufferData(GL_SHADER_STORAGE_BUFFER,  totalNumLights * sizeof(unsigned int), NULL, GL_STATIC_COPY);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, visibleLightIndicesBuffer);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
@@ -240,11 +238,12 @@ void OpenGLRenderer::UpdateLights() {
 		float min = LIGHT_MIN_BOUNDS[1];
 		float max = LIGHT_MAX_BOUNDS[1];
 
-		light.position.y = fmod((light.position.y + (-4.5f * 0.1) - min + max), max) + min;
+		//light.position.y = fmod((light.position.y + (-4.5f * 0.1) - min + max), max) + min;
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
 
