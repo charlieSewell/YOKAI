@@ -107,6 +107,8 @@ void InputManagerGLFW::processGamepadButtons()
 
 void InputManagerGLFW::processGamepadAxis()
 {
+	//TODO: Connor make these states a struct that can handle depth instead of just on/off
+	/*
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
 		GLFWgamepadstate state;
@@ -140,6 +142,7 @@ void InputManagerGLFW::processGamepadAxis()
 
 			//EMS::getInstance().fire(NoReturnEvent::xyLook, lookx * 20, looky * 20);
 		}
+		*/
 	}
 }
 
