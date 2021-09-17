@@ -21,9 +21,8 @@ void OpenGLRenderer::Init()
     SCREEN_SIZE.x = 1920;
     SCREEN_SIZE.y = 1080;
 	float zFar = 300.0f;
-	float zNear = 0.5f;
-	size_t numberOfTiles = workGroupsX * workGroupsY;
-	unsigned int totalNumLights =  numClusters * 50; 
+	float zNear = 0.1f;
+	unsigned int totalNumLights =  numClusters * 128; 
 	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
 	lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
 	lightCullingShader = new Shader("content/Shaders/clusterLightCuller.comp");
@@ -44,14 +43,11 @@ void OpenGLRenderer::Init()
 	SPDLOG_INFO("GLSL version: {}",glGetString(GL_SHADING_LANGUAGE_VERSION));
 	SPDLOG_INFO("Vendor: {}",glGetString(GL_VENDOR));
 	SPDLOG_INFO("Renderer: {}", glGetString(GL_RENDERER));
-    if (!GLEW_VERSION_4_5) 
+    if (!GLEW_VERSION_4_3) 
     {
-		SPDLOG_ERROR("OpenGL version be >= 4.5");
-       // throw std::runtime_error("OpenGL 4.5 API is not available.");
+		SPDLOG_ERROR("OpenGL version be >= 4.3");
+        throw std::runtime_error("OpenGL 4.3 API is not available.");
 	}
-    // Define work group sizes in x and y direction based off screen size and tile size (in pixels)
-	workGroupsX = (SCREEN_SIZE.x + (SCREEN_SIZE.x % 16)) / 16;
-	workGroupsY = (SCREEN_SIZE.y + (SCREEN_SIZE.y % 16)) / 16;
 	// Generate our shader storage buffers
 	glGenBuffers(1, &lightBuffer);
 	glGenBuffers(1, &visibleLightIndicesBuffer);
