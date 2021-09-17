@@ -8,20 +8,37 @@
 #include <vector>
 #include "DrawItem.hpp"
 
-/**
- * @class RenderAPI
- * @brief Interface for a renderAPI
- */
-struct PointLight {
-	glm::vec4 color = {};
-	glm::vec4 position = {};
-	glm::vec4 paddingAndRadius = {};
+struct VolumeTileAABB{
+    glm::vec4 minPoint = {};
+    glm::vec4 maxPoint = {};
+};
+
+struct ScreenToView{
+    glm::mat4 inverseProjectionMat;
+    unsigned int tileSizes[4];
+    unsigned int screenWidth;
+    unsigned int screenHeight;
+    float sliceScalingFactor;
+    float sliceBiasFactor;
 };
 
 struct VisibleIndex {
 	int index = 0;
 };
 
+struct PointLight {
+	glm::vec4 color = {};
+	glm::vec4 position = {};
+	glm::vec4 paddingAndRadius = {};
+};
+struct LightGrid{
+    unsigned int offset;
+    unsigned int count;
+};
+/**
+ * @class RenderAPI
+ * @brief Interface for a renderAPI
+ */
 class RenderAPI 
 {
   public:

@@ -76,6 +76,7 @@ class OpenGLRenderer : public RenderAPI
     Shader* lightAccumulationShader;
     Shader* lightCullingShader;
     Shader* hdr;
+    Shader* gridShader;
     std::vector<DrawItem> drawQueue;
     //For Lighting passes
     GLuint lightBuffer = 0;
@@ -83,7 +84,8 @@ class OpenGLRenderer : public RenderAPI
     GLuint visibleLightIndicesBuffer = 0;
     GLuint workGroupsX = 0;
     GLuint workGroupsY = 0;
-
+    GLuint clusterAABB = 0;
+    GLuint screenToView = 0;
     //Quad For post Processing effects
     GLuint quadVAO = 0;
     GLuint quadVBO = 0;
@@ -99,5 +101,13 @@ class OpenGLRenderer : public RenderAPI
     void UpdateLights();
     const glm::vec3 LIGHT_MIN_BOUNDS = glm::vec3(-135.0f, -20.0f, -60.0f);
     const glm::vec3 LIGHT_MAX_BOUNDS = glm::vec3(135.0f, 170.0f, 60.0f);
-
+    const int numClusters = 3456;
+    const int gridSizeX = 16;
+    const int gridSizeY = 9;
+    const int gridSizeZ = 24;
+    int sizeX;
+    GLuint screenToViewSSBO;
+    GLuint lightGridSSBO;
+    GLuint lightIndexGlobalCountSSBO;
+    ScreenToView screen2View;
 };

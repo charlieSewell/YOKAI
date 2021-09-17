@@ -21,26 +21,17 @@ void OpenGLRenderer::Init()
     SCREEN_SIZE.x = 1920;
     SCREEN_SIZE.y = 1080;
 
-	workGroupsX = (SCREEN_SIZE.x + (SCREEN_SIZE.x % 16)) / 16;
-	workGroupsY = (SCREEN_SIZE.y + (SCREEN_SIZE.y % 16)) / 16;
-
 	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
 	lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
-	lightCullingShader = new Shader("content/Shaders/light_culling.comp");
+	lightCullingShader = new Shader("content/Shaders/clusterLightCuller.comp");
 	hdr = new Shader("content/Shaders/hdr.vert", "content/Shaders/hdr.frag");
+	gridShader = new Shader("content/Shaders/clusterGenerator.comp");
     
 	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, 0.1f, 300.0f);
 	depthShader->useShader();
 	depthShader->setMat4("projection",perspective);
 
-	lightCullingShader->useShader();
-    lightCullingShader->setInt("lightCount",NUM_LIGHTS);
-	lightCullingShader->setMat4("projection",perspective);
-	//lightCullingShader->setIvec2("screenSize",SCREEN_SIZE);
-    glUniform2iv(glGetUniformLocation(lightCullingShader->getShaderID(), "screenSize"), 1, &SCREEN_SIZE[0]);
-
     lightAccumulationShader->useShader();
-    lightAccumulationShader->setInt("numberOfTilesX", workGroupsX);
 	lightAccumulationShader->setMat4("projection",perspective);
 	lightAccumulationShader->setInt("numberOfLights",NUM_LIGHTS);
 
@@ -60,22 +51,17 @@ void OpenGLRenderer::Init()
 	// Generate our shader storage buffers
 	glGenBuffers(1, &lightBuffer);
 	glGenBuffers(1, &visibleLightIndicesBuffer);
+	glGenBuffers(1, &clusterAABB);
+	glGenBuffers(1, &screenToView);
+	glGenBuffers(1, &lightIndexGlobalCountSSBO);
+	glGenBuffers(1, &lightGridSSBO);
+    std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dis(0, 1);
 
 	// Bind light buffer
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_LIGHTS * sizeof(PointLight), NULL, GL_DYNAMIC_DRAW);
-
-	// Bind visible light indices buffer
-    
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, numberOfTiles * sizeof(VisibleIndex) * NUM_LIGHTS, NULL, GL_DYNAMIC_DRAW);
-
-
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
-    
-    std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<> dis(0, 1);
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
 	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
@@ -86,9 +72,67 @@ void OpenGLRenderer::Init()
 		light.color = glm::vec4(1.0f + dis(gen), 1.0f + dis(gen), 1.0f + dis(gen), 1.0f);
 		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 30.0f);
 	}
-
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, lightBuffer);
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	
+	// Bind ClusterAABB
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, clusterAABB);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, numClusters * sizeof(struct VolumeTileAABB), NULL, GL_STATIC_COPY);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, clusterAABB);
+	
+	// Bind visible light indices buffer
+    
+	unsigned int totalNumLights =  numClusters * 50; 
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
+
+    //We generate the buffer but don't populate it yet.
+    glBufferData(GL_SHADER_STORAGE_BUFFER,  totalNumLights * sizeof(unsigned int), NULL, GL_STATIC_COPY);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, visibleLightIndicesBuffer);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	//Setup screen2View SSBO
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, screenToViewSSBO);
+	//Tile Size X/Y
+	sizeX =  (unsigned int)std::ceilf(SCREEN_SIZE.x / (float)gridSizeX);
+    //Setting up contents of buffer
+    screen2View.inverseProjectionMat = glm::inverse(perspective);
+    screen2View.tileSizes[0] = gridSizeX;
+    screen2View.tileSizes[1] = gridSizeY;
+    screen2View.tileSizes[2] = gridSizeZ;
+    screen2View.tileSizes[3] = sizeX;
+    screen2View.screenWidth  = SCREEN_SIZE.x;
+    screen2View.screenHeight = SCREEN_SIZE.y;
+	float zFar = 0.3;
+	float zNear = 0.3;
+    //Basically reduced a log function into a simple multiplication an addition by pre-calculating these
+    screen2View.sliceScalingFactor = (float)gridSizeZ / std::log2f(zFar / zNear) ;
+    screen2View.sliceBiasFactor    = -((float)gridSizeZ * std::log2f(zNear) / std::log2f(zFar / zNear)) ;
+
+    //Generating and copying data to memory in GPU
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(struct ScreenToView), &screen2View, GL_STATIC_COPY);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, screenToViewSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightGridSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, numClusters * 2 * sizeof(unsigned int), NULL, GL_STATIC_COPY);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, lightGridSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+    
+
+	//Every tile takes two unsigned ints one to represent the number of lights in that grid
+    //Another to represent the offset 
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightIndexGlobalCountSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(unsigned int), NULL, GL_STATIC_COPY);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, lightIndexGlobalCountSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	
+	
+ 	gridShader->useShader();
+    gridShader->setFloat("zNear", 0.3f);
+    gridShader->setFloat("zFar", 100.0f);
+    glDispatchCompute(gridSizeX, gridSizeY, gridSizeZ);
 	SetupDepthMap();
     SetupHDRBuffer();
 	glClearColor(0.01f, 0.01f, 0.01f, 1.0f);
@@ -155,6 +199,7 @@ void OpenGLRenderer::SetupDepthMap()
 	glReadBuffer(GL_NONE);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
+
 void OpenGLRenderer::SetupHDRBuffer()
 {
     // Create a floating point HDR frame buffer and a floating point color buffer (as a texture)
@@ -240,25 +285,20 @@ void OpenGLRenderer::DrawScene()
         DrawMesh(depthShader,drawItem.mesh);
     }
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
+	//LIGHT CULL
     lightCullingShader->useShader();
     lightCullingShader->setMat4("view",view);
-	lightCullingShader->setInt("depthMap", 4);
-    // Bind depth map texture to texture location 4 (which will not be used by any model texture)
+	//lightCullingShader->setInt("depthMap", 4);
+    //SCENE LIGHTING
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glDispatchCompute(1, 1, 6);
 
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, lightBuffer);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, visibleLightIndicesBuffer);   
-
-    // Dispatch the compute shader, using the workgroup values calculated earlier
-	glDispatchCompute(workGroupsX, workGroupsY, 1);
-    
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	// Unbind the depth map
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
+	//POST PROCESS
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -281,10 +321,6 @@ void OpenGLRenderer::DrawScene()
 	glBindTexture(GL_TEXTURE_2D, colorBuffer);
     hdr->setFloat("exposure", 1.0f);
 	DrawQuad();
-		
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, 0);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, 0);
-	
     drawQueue.clear();
 }
 void OpenGLRenderer::DrawGui() {
