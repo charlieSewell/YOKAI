@@ -142,8 +142,8 @@ void InputManagerGLFW::processGamepadAxis()
 
 			//EMS::getInstance().fire(NoReturnEvent::xyLook, lookx * 20, looky * 20);
 		}
-		*/
-	}
+		
+	}*/
 }
 
 void InputManagerGLFW::createMap()
