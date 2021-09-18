@@ -3,45 +3,45 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Model/ObjectLoading/ModelLoader.cpp
 		Model/Mesh.cpp
         Model/Model.cpp
-        Model/GameObject.cpp
+		Engine/GameObject.cpp
 		Model/SplashScreen.cpp
         Model/SkeletalAnimation.cpp
-		Model/Components/Transform.cpp
-        Model/Components/DrawableEntity.cpp
-        Model/Components/ConcaveCollider.cpp
-		Model/Components/SphereCollider.cpp
-        Model/Components/BoxCollider.cpp
+		Components/Transform.cpp
+		Components/DrawableEntity.cpp
+		Components/ConcaveCollider.cpp
+		Components/SphereCollider.cpp
+		Components/BoxCollider.cpp
+		Components/Camera.cpp
+
+        Renderer/Shader.cpp
+        Renderer/DataTypes.cpp
+        Renderer/Renderer.cpp
+        Renderer/RenderAPI.cpp
+        Renderer/Window.cpp
+        Renderer/OpenGL/OpenGLRenderer.cpp
+        Renderer/OpenGL/OpenGLDataTypes.cpp
+        Renderer/OpenGL/FileIO.cpp
 
 
-        View/Renderer/Shader.cpp
-        View/Renderer/DataTypes.cpp
-        View/Renderer/Renderer.cpp
-        View/Renderer/RenderAPI.cpp
-        View/Renderer/OpenGL/OpenGLRenderer.cpp
-        View/Renderer/OpenGL/OpenGLDataTypes.cpp
-		Model/Components/Camera.cpp
-        View/Renderer/OpenGL/FileIO.cpp
-		View/Window.cpp
-
-		Controller/Yokai.cpp
-        Controller/ModelManager.cpp
-		Controller/EventManager.cpp
-		Controller/InputManagerGLFW.cpp
-		Controller/InputComponent.cpp
-        Controller/Physics/Shapes/ReactTerrainShape.cpp
-        Controller/Physics/PhysicsSystem.cpp
-		Controller/Physics/ReactMath.cpp
-		Controller/Physics/RigidBody.cpp
-		Controller/Animator.cpp
-        Controller/Physics/Shapes/ReactBoxShape.cpp
-        Controller/Physics/Shapes/ReactShape.cpp
-        Controller/Physics/Shapes/ReactSphereShape.cpp
-        Controller/Physics/Shapes/ReactTerrainShape.cpp
-        Controller/Physics/Shapes/ReactConcaveShape.cpp
-        Controller/GameObjectManager.cpp
-		Controller/TextureManager.cpp
-		Controller/KeyframeAnimation.cpp
-		Controller/UIManager.cpp
+		Engine/Yokai.cpp
+		Engine/ModelManager.cpp
+		Engine/EventManager.cpp
+		Engine/InputManagerGLFW.cpp
+		Components/InputComponent.cpp
+        Physics/Shapes/ReactTerrainShape.cpp
+        Physics/PhysicsSystem.cpp
+        Physics/ReactMath.cpp
+        Physics/RigidBody.cpp
+		Model/Animator.cpp
+        Physics/Shapes/ReactBoxShape.cpp
+        Physics/Shapes/ReactShape.cpp
+        Physics/Shapes/ReactSphereShape.cpp
+        Physics/Shapes/ReactTerrainShape.cpp
+        Physics/Shapes/ReactConcaveShape.cpp
+		Engine/GameObjectManager.cpp
+		Engine/TextureManager.cpp
+		Model/KeyframeAnimation.cpp
+		Engine/UIManager.cpp
         )
 
 # Include project header files.

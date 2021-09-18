@@ -5,7 +5,7 @@
 #include "SkeletalAnimation.hpp"
 
 #include <utility>
-#include "Controller/Yokai.hpp"
+#include "Engine/Yokai.hpp"
 SkeletalAnimation::SkeletalAnimation(std::string name, std::map<std::string,Frame> frames, float duration, float TPS)
 {
     this->frames = std::move(frames);

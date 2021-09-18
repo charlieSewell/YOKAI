@@ -9,10 +9,10 @@
 #include <vector>
 #include <memory>
 
-#include "View/Renderer/DataTypes.hpp"
-#include "View/Renderer/Shader.hpp"
-#include "View/Renderer/Renderer.hpp"
-#include "Controller/TextureManager.hpp"
+#include "Renderer/DataTypes.hpp"
+#include "Renderer/Shader.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Engine/TextureManager.hpp"
 /**
  * @class Mesh
  * @brief Class that defines a mesh
@@ -61,7 +61,12 @@ class Mesh
      * @brief Sets up the mesh
      */
     void SetupMesh();
-
+    /**
+     * @brief Adds bone data to the mesh
+     * @param vertexID 
+     * @param boneID 
+     * @param weight 
+     */
     void addBoneData(unsigned int vertexID,unsigned int boneID, float weight);
 
   private:

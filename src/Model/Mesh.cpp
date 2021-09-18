@@ -2,7 +2,7 @@
 // Created by Charlie Sewell on 12/01/2021.
 //
 #include "Mesh.hpp"
-#include "Controller/Yokai.hpp"
+#include "Engine/Yokai.hpp"
 Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<ModelTexture> &textures, glm::mat4 &transform)
 {
     this->vertices = vertices;
@@ -21,7 +21,7 @@ void Mesh::SetupMesh()
      unsigned int diffuseNr = 1;
      unsigned int specularNr = 1;
 
-     for(unsigned int i = 0; i < textures.size(); i++)
+     for(size_t i = 0; i < textures.size(); i++)
      {
          TextureManager::getInstance().getTexture(textures[i].texture)->Bind(i);
          std::string number;
@@ -35,7 +35,13 @@ void Mesh::SetupMesh()
      }
      // draw mesh
      auto& engine = Yokai::getInstance();
-     engine.renderer.Draw(*VAO,indices.size());
+     engine.renderer.DrawArrays(*VAO,indices.size());
+
+    // Reset to defaults
+	for (size_t i = 0; i < this->textures.size(); i++) {
+		TextureManager::getInstance().getTexture(textures[i].texture)->UnBind(i);
+	}
+     
 }
 void Mesh::addBoneData(unsigned int vertexID,unsigned int boneID, float weight)
 {

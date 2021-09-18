@@ -4,7 +4,7 @@
 #pragma once
 #include <iostream>
 #include <glm/glm.hpp>
-#include "View/Renderer/Shader.hpp"
+#include "Renderer/Shader.hpp"
 #include "Model/Mesh.hpp"
 #include "Model/SkeletalAnimation.hpp"
 
@@ -91,7 +91,10 @@ class Model
      * @return mat4
      */
     std::vector<Bone>* getBones(){return &bones;}
-    
+    /**
+     * @brief Get the Meshes array
+     * @return std::vector<Mesh>* 
+     */
     std::vector<Mesh>* getMeshes(){return &meshes;}
     /**
      * @brief gets the global inverse transform
