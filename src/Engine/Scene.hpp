@@ -31,5 +31,6 @@ class Scene
     virtual void Disable() = 0;
 
   protected:
+    ///Game Object Manager
     GameObjectManager objectManager;
 };

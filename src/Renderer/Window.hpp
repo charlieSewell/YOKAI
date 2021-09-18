@@ -45,6 +45,7 @@ class Window {
      */
     void endFrame();
   private:
+    ///GLFW window
     GLFWwindow* window;
 };
 
