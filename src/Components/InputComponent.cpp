@@ -21,7 +21,7 @@ bool Input::GetKeyState(unsigned int key)
 	return(InputManagerGLFW::getInstance().m_keyStates[key]);
 }
 
-bool Input::GetKeyState(SPECIAL key)
+bool Input::GetKeyState(YOKAI_INPUT key)
 {
 	return(GetKeyState((unsigned int)key));
 }
