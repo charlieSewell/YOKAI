@@ -71,13 +71,29 @@ public:
      * @return unsigned int bodyID
      */
     unsigned int addSphere(unsigned int ID, Transform* transform,float radius);
-
+    /**
+     * @brief Adds a Concave body to the scene
+     * @param ID 
+     * @param transform 
+     * @param modelID 
+     * @return unsigned int 
+     */
     unsigned int addConcaveShape(unsigned int ID, Transform* transform,unsigned int modelID);
-
+    /**
+     * @brief Adds a Terrain body to the scene
+     * @param ID 
+     * @param transform 
+     * @param heightvals 
+     * @return unsigned int 
+     */
     unsigned int addTerrainShape(unsigned int ID, Transform* transform,std::vector<std::vector<float>> heightvals);
-
+    /**
+     * @brief Updates The debug renderer
+     */
     void RendererUpdate();
-
+    /**
+     * @brief Draws the wireframe debug view
+     */
     void Draw();
     /**
      * @brief DeInitialises the physics simulation
@@ -97,10 +113,8 @@ private:
     unsigned int l_vbo_ = 0, l_vao_ = 0;
     unsigned int t_vbo_ = 0, t_vao_ = 0;
     unsigned int line_num_ = 0, triag_num_ = 0;
-
     /// The shared pointer to draw react objects,
     Shader* shader_ = nullptr;
-
     ///count of map
     int m_mapCount;
     ///map of colliders

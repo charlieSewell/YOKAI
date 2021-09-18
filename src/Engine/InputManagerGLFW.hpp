@@ -143,7 +143,7 @@ class InputManagerGLFW
 	  bool mouseInit = false;
       ///Last Mouse X and Y
 	  double lastX, lastY;
-
+	  ///Key map
 	  std::map<unsigned int, unsigned int> m_keyMap;
 	  void createMap();
 };
