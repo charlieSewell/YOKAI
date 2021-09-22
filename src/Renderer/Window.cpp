@@ -87,3 +87,9 @@ void Window::endFrame()
 {
     glfwSwapBuffers(window);
 }
+glm::vec2 Window::getWindowSize()
+{
+    int width,height;
+    glfwGetWindowSize(window, &width, &height);
+    return glm::vec2(width,height);
+}

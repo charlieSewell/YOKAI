@@ -21,25 +21,25 @@ void OpenGLRenderer::Init()
     SCREEN_SIZE.x = 1920;
     SCREEN_SIZE.y = 1080;
 	float zFar = 300.0f;
-	float zNear = 0.3f;
-	size_t numberOfTiles = workGroupsX * workGroupsY;
-	unsigned int totalNumLights =  numClusters * 128; 
+	float zNear = 0.1f;
+	unsigned int totalNumLights =  numClusters * 50; 
 	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
 	lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
 	lightCullingShader = new Shader("content/Shaders/clusterLightCuller.comp");
 	hdr = new Shader("content/Shaders/hdr.vert", "content/Shaders/hdr.frag");
 	gridShader = new Shader("content/Shaders/clusterGenerator.comp");
     
-	glm::mat4 perspective = glm::perspective(glm::radians(45.0f), 1920.0f / 1080.0f, zNear, zFar);
+	glm::mat4 perspective = glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, zNear, zFar);
 	depthShader->useShader();
 	depthShader->setMat4("projection",perspective);
 
     lightAccumulationShader->useShader();
 	lightAccumulationShader->setMat4("projection",perspective);
-	lightAccumulationShader->setInt("numberOfLights",NUM_LIGHTS);
 	lightAccumulationShader->setFloat("zNear",zNear);
 	lightAccumulationShader->setFloat("zFar",zFar);
 	
+	hdr->useShader();
+	hdr->setFloat("exposure", 0.5f);
     SPDLOG_INFO("OpenGL version: {}",glGetString(GL_VERSION));
 	SPDLOG_INFO("GLSL version: {}",glGetString(GL_SHADING_LANGUAGE_VERSION));
 	SPDLOG_INFO("Vendor: {}",glGetString(GL_VENDOR));
@@ -49,9 +49,6 @@ void OpenGLRenderer::Init()
 		SPDLOG_ERROR("OpenGL version be >= 4.5");
        // throw std::runtime_error("OpenGL 4.5 API is not available.");
 	}
-    // Define work group sizes in x and y direction based off screen size and tile size (in pixels)
-	workGroupsX = (SCREEN_SIZE.x + (SCREEN_SIZE.x % 16)) / 16;
-	workGroupsY = (SCREEN_SIZE.y + (SCREEN_SIZE.y % 16)) / 16;
 	// Generate our shader storage buffers
 	glGenBuffers(1, &lightBuffer);
 	glGenBuffers(1, &visibleLightIndicesBuffer);
@@ -63,18 +60,6 @@ void OpenGLRenderer::Init()
 	std::mt19937 gen(rd());
 	std::uniform_real_distribution<> dis(0, 1);
 
-	// Bind light buffer
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_LIGHTS * sizeof(PointLight), NULL, GL_DYNAMIC_DRAW);
-	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
-
-	for (int i = 0; i < NUM_LIGHTS; i++) {
-		PointLight &light = pointLights[i];
-		light.position = glm::vec4(RandomPosition(dis, gen), 1.0f);
-		light.color = glm::vec4(1.0f + dis(gen), 1.0f + dis(gen), 1.0f + dis(gen), 1.0f);
-		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 30.0f);
-	}
-	
 	// Bind ClusterAABB
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, clusterAABB);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, numClusters * sizeof(struct VolumeTileAABB), NULL, GL_STATIC_COPY);
@@ -99,9 +84,20 @@ void OpenGLRenderer::Init()
     screen2View.sliceBiasFactor    = -((float)gridSizeZ * std::log2f(zNear) / std::log2f(zFar / zNear)) ;
 
     //Generating and copying data to memory in GPU
-    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(struct ScreenToView), &screen2View, GL_DYNAMIC_DRAW);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(struct ScreenToView), &screen2View, GL_STATIC_COPY);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, screenToViewSSBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_LIGHTS * sizeof(PointLight), NULL, GL_DYNAMIC_DRAW);
+	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
+
+	for (int i = 0; i < NUM_LIGHTS; i++) {
+		PointLight &light = pointLights[i];
+		light.position = glm::vec4(RandomPosition(dis, gen), 1.0f);
+		light.color = glm::vec4(1.0f + dis(gen), 1.0f + dis(gen), 1.0f + dis(gen), 1.0f);
+		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 40.0f);
+	}
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, lightBuffer);
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
@@ -238,7 +234,7 @@ void OpenGLRenderer::UpdateLights() {
 		float min = LIGHT_MIN_BOUNDS[1];
 		float max = LIGHT_MAX_BOUNDS[1];
 
-		//light.position.y = fmod((light.position.y + (-4.5f * 0.1) - min + max), max) + min;
+		light.position.y = fmod((light.position.y + (-4.5f * 0.1) - min + max), max) + min;
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
@@ -276,7 +272,8 @@ void OpenGLRenderer::DrawScene()
 	depthShader->useShader();
     depthShader->setMat4("view",view);
 
-    //DEPTH PASS
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(true);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	for(auto& drawItem : drawQueue)
@@ -294,12 +291,13 @@ void OpenGLRenderer::DrawScene()
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	glDispatchCompute(1, 1, 6);
-
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	// Unbind the depth map
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	//POST PROCESS
+
+	
+	//DRAW SCENE
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -315,12 +313,11 @@ void OpenGLRenderer::DrawScene()
     }
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);// Weirdly, moving this call drops performance into the floor
+	//POST PROCESS
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	hdr->useShader();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorBuffer);
-    hdr->setFloat("exposure", 1.0f);
 	DrawQuad();
     drawQueue.clear();
 }

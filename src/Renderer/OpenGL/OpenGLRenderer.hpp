@@ -64,7 +64,7 @@ class OpenGLRenderer : public RenderAPI
   private:
     ///Boolean to check whether it is in wireframe
     glm::ivec2 SCREEN_SIZE;
-    const int NUM_LIGHTS = 2000;
+    const int NUM_LIGHTS = 3500;
     bool isWireFrame = false;
     void DrawQuad();
     void SetupDepthMap();
@@ -76,25 +76,23 @@ class OpenGLRenderer : public RenderAPI
     Shader* hdr;
     Shader* gridShader;
     std::vector<DrawItem> drawQueue;
-    //For Lighting passes
+    //Shared SSBO'S
+    GLuint screenToView = 0;
     GLuint lightBuffer = 0;
     //For Light culling
     GLuint visibleLightIndicesBuffer = 0;
-    GLuint workGroupsX = 0;
-    GLuint workGroupsY = 0;
     GLuint clusterAABB = 0;
-    GLuint screenToView = 0;
     //Quad For post Processing effects
     GLuint quadVAO = 0;
     GLuint quadVBO = 0;
-    //Depth map for Z fighting pass
-    GLuint depthMapFBO = 0;
-    GLuint depthMap = 0;
     //Final Scene FrameBuffer
     GLuint hdrFBO;
     //Render Buffer attatch to HDR Frame Buffer
-    GLuint rboDepth;
-    GLuint colorBuffer;
+    GLuint rboDepth = 0;
+    GLuint colorBuffer = 0;
+    //Depth map for Z fighting pass
+    GLuint depthMapFBO = 0;
+    GLuint depthMap = 0;
     glm::vec3 RandomPosition(std::uniform_real_distribution<> dis, std::mt19937 gen);
     void UpdateLights();
     const glm::vec3 LIGHT_MIN_BOUNDS = glm::vec3(-270.0f, 0.0f, -270.0f);
