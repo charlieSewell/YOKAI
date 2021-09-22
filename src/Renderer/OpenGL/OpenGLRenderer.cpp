@@ -44,10 +44,10 @@ void OpenGLRenderer::Init()
 	SPDLOG_INFO("GLSL version: {}",glGetString(GL_SHADING_LANGUAGE_VERSION));
 	SPDLOG_INFO("Vendor: {}",glGetString(GL_VENDOR));
 	SPDLOG_INFO("Renderer: {}", glGetString(GL_RENDERER));
-    if (!GLEW_VERSION_4_5) 
+    if (!GLEW_VERSION_4_3) 
     {
-		SPDLOG_ERROR("OpenGL version be >= 4.5");
-       // throw std::runtime_error("OpenGL 4.5 API is not available.");
+		SPDLOG_ERROR("OpenGL version be >= 4.3");
+        throw std::runtime_error("OpenGL 4.3 API is not available.");
 	}
 	// Generate our shader storage buffers
 	glGenBuffers(1, &lightBuffer);
