@@ -13,6 +13,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Components/BoxCollider.cpp
 		Components/Camera.cpp
 		Components/RayCaster.cpp
+		Components/AutomatedBehaviours.cpp
 
         Renderer/Shader.cpp
         Renderer/DataTypes.cpp

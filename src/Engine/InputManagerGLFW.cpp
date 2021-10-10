@@ -57,49 +57,49 @@ void InputManagerGLFW::processGamepadButtons()
 {
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
-		GLFWgamepadstate state;
+		GLFWgamepadstate State;
 
-		if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state))
+		if (glfwGetGamepadState(GLFW_JOYSTICK_1, &State))
 		{
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_A])
 				EMS::getInstance().fire(NoReturnEvent::jump);		
 	
-			if(state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB])
+			if(State.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB])
 				EMS::getInstance().fire(NoReturnEvent::moveDown);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::togglePhysicsPressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::togglePhysicsReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::toggleWireFramePressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::toggleWireFrameReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_BACK] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_BACK] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::toggleMenuPressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_BACK] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_BACK] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::toggleMenuReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::pausePressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::pauseReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::reloadPressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::reloadReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::meleePressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::meleeReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::sprintPressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::sprintReleased);
 		}
 	}
