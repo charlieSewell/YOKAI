@@ -12,6 +12,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Components/SphereCollider.cpp
 		Components/BoxCollider.cpp
 		Components/Camera.cpp
+		Components/RayCaster.cpp
 
         Renderer/Shader.cpp
         Renderer/DataTypes.cpp
