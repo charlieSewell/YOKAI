@@ -2,7 +2,6 @@
 // Created by charl on 19/05/2021.
 //
 #pragma once
-#include <iostream>
 #include <reactphysics3d/reactphysics3d.h>
 #include "Components/Transform.hpp"
 class ReactShape {

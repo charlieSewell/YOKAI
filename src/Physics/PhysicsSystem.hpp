@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <map>
-#include "RigidBody.hpp"
+#include "CollisionBody.hpp"
 #include "Components/Transform.hpp"
 #include "ReactMath.hpp"
 #include "Physics/Shapes/ReactTerrainShape.hpp"

@@ -4,7 +4,7 @@ SphereCollider::SphereCollider(GameObject* parent) : Component(parent){}
 
 void SphereCollider::SetRadius(double radius)
 {
-
+	m_radius = radius;
 }
 
 void SphereCollider::Start()

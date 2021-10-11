@@ -33,7 +33,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         Physics/Shapes/ReactTerrainShape.cpp
         Physics/PhysicsSystem.cpp
         Physics/ReactMath.cpp
-        Physics/RigidBody.cpp
+        Physics/CollisionBody.cpp
 		Model/Animator.cpp
         Physics/Shapes/ReactBoxShape.cpp
         Physics/Shapes/ReactShape.cpp
