@@ -16,21 +16,28 @@ public:
      * @param parent 
      */
     SphereCollider(GameObject* parent);
+
+	/**
+	 * @brief Sets radius
+	 * @param radius
+	 */
+	void SetRadius(double radius);
+
     /**
      * @brief Starts the Collider Component
      */
     void Start();
-    /**
-     * @brief Updates the Collider Componet
-     * @param deltaTime 
-     */
-    void Update(float deltaTime);
+
     ///New Velocity of sphere
-	glm::vec3 NewVelocity = glm::vec3(0, 0, 0);
+
+	// Sets new position
+	void SetPosition(glm::vec3 newPosition);
+
+
 
 private:
     ///Collider ID
     unsigned int colliderID;
-    ///Colliders Last Velocity
-	glm::vec3 m_lastVelocity = glm::vec3(0, 0, 0);
+	//radius
+	double m_radius = 0.05;
 };

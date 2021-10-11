@@ -57,7 +57,7 @@ public:
      * @param int - colliderID
      * @return RigidBody
      */
-    RigidBody * getRigidBody(int colliderID);
+    CollisionBody * getRigidBody(int colliderID);
     /**
      * @brief Deletes a rigid Body
      * @param int - ID
@@ -118,6 +118,6 @@ private:
     ///count of map
     int m_mapCount;
     ///map of colliders
-    std::map<int, RigidBody> m_colliders;	//TODO: make colliders so can add spheres
+    std::map<int, CollisionBody> m_colliders;	//TODO: make colliders so can add spheres
     ///Collision callback listener
 };

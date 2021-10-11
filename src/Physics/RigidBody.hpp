@@ -10,7 +10,7 @@
  * @class RigidBody
  * @brief Class for a physics Rigid body
  */
-class RigidBody {
+class CollisionBody {
 
 public:
     /**
@@ -47,26 +47,18 @@ public:
      * @return quat
      */
     glm::quat GetOrientation();
-    /**
-     * @brief Applys a force to the body
-     * @param force
-     */
-    void ApplyForceToCentre(glm::vec3 force);
+
     /**
      * @brief Returns the rp3d Rigidbody
      * @return RigidBody*
      */
-    reactphysics3d::RigidBody* getRigidBody(){return body;}
+    reactphysics3d::CollisionBody* getRigidBody(){return m_body;}
     /**
      * @brief Adds a collision Shape
      * @param shape
      */
     void AddCollisionShape(ReactShape* shape);
-    /**
-     * @brief Sets the body Type
-     * @param type
-     */
-    void SetBodyType(rp3d::BodyType type);
+
     /**
      * @brief Sets the friction on the body
      * @param friction
@@ -77,56 +69,12 @@ public:
      * @param resistance
      */
     void SetRollingResistance(float resistance);
-    /**
-     * @brief Sets the linear velocity
-     * @param velocity
-     */
-    void SetLinearVelocity(glm::vec3 velocity);
-    /**
-     * @brief Sets the angular velocity
-     * @param velocity
-     */
-    void SetAngularVelocity(glm::vec3 velocity);
-    /**
-     * @brief Sets the angular damping
-     * @param damping
-     */
-    void SetAngularDamping(double damping);
-    /**
-     * @brief Sets the linear damping
-     * @param damping
-     */
-    void SetLinearDamping(double damping);
-    /**
-     * @brief Gets Linear Velocity
-     * @return vec3
-     */
-    glm::vec3 GetLinearVelocity();
-    /**
-     * @brief Gets Angular Velocity
-     * @return vec3
-     */
-    glm::vec3 GetAngularVelocity();
-    /**
-     * @brief Sets the Bounciness
-     * @param bounciness
-     */
-    void SetBounciness(float bounciness);
-    /**
-     * @brief Sets the Mass
-     * @param mass
-     */
-    void SetMass(float mass);
-    /**
-     * @brief Sets the Sleep State
-     * @param sleepState
-     */
-    void SetIsAllowedToSleep(bool sleepState);
+
     /**
      * @brief Returns the ColliderID
      * @return ID
      */
-    uint32_t getColliderID(){return collider->getEntity().id;}
+    uint32_t getColliderID(){return m_collider->getEntity().id;}
     /**
      * @brief Returns the owning game objects ID
      * @return
@@ -139,9 +87,9 @@ private:
     ///Owning game object ID
     int gameObjectID = -1;
     ///React Rigid Body
-    reactphysics3d::RigidBody* body;
+    reactphysics3d::CollisionBody* m_body;
     ///React Collider
-    reactphysics3d::Collider* collider;
+    reactphysics3d::Collider* m_collider;
 
 
 
