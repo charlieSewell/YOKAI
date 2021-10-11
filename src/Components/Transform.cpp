@@ -44,9 +44,9 @@ void Transform::translatePostMultiply(float x, float y, float z)
 	m_transform = translationMatrix * m_transform;
 }
 
-void Transform::rotate(float angle, glm::vec3 upVector)
+void Transform::rotate(float Angle, glm::vec3 upVector)
 {
-	m_transform = glm::rotate(m_transform, angle, upVector);
+	m_transform = glm::rotate(m_transform, Angle, upVector);
 }
 
 void Transform::scale(glm::vec3 scale)
