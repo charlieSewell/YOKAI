@@ -48,7 +48,7 @@ public:
      * @brief Returns the rp3d Rigidbody
      * @return RigidBody*
      */
-    reactphysics3d::CollisionBody* getRigidBody(){return m_body;}
+    reactphysics3d::CollisionBody* getCollisionBody(){return m_body;}
     /**
      * @brief Adds a collision Shape
      * @param shape
