@@ -269,9 +269,10 @@ void OpenGLRenderer::DrawScene()
     glm::mat4 inverseview = glm::inverse(view);
     glm::vec3 viewpos = glm::vec3(inverseview[3].x,inverseview[3].y,inverseview[3].z);
     UpdateLights();
+	
+	//DEPTH PASS
 	depthShader->useShader();
     depthShader->setMat4("view",view);
-
     glEnable(GL_DEPTH_TEST);
     glDepthMask(true);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -287,7 +288,6 @@ void OpenGLRenderer::DrawScene()
     lightCullingShader->useShader();
     lightCullingShader->setMat4("view",view);
 	//lightCullingShader->setInt("depthMap", 4);
-    //SCENE LIGHTING
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	glDispatchCompute(1, 1, 6);
@@ -295,30 +295,27 @@ void OpenGLRenderer::DrawScene()
 	// Unbind the depth map
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
 	
-	//DRAW SCENE
+	//DRAW & LIGHT SCENE
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
 	lightAccumulationShader->useShader();
     lightAccumulationShader->setMat4("view",view);
 	lightAccumulationShader->setVec3("viewPosition",viewpos);
-
     for(auto& drawItem : drawQueue)
     {
         lightAccumulationShader->setMat4("model",drawItem.transform);
         DrawMesh(lightAccumulationShader,drawItem.mesh);
     }
-	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
 	//POST PROCESS
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	hdr->useShader();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorBuffer);
 	DrawQuad();
+	glBindTexture(GL_TEXTURE_2D, 0);
     drawQueue.clear();
 }
 void OpenGLRenderer::DrawGui() {
