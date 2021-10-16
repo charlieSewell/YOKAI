@@ -43,7 +43,7 @@ public:
 	void SetOrientation(glm::quat orientation);
 private:
     ///Collider ID
-    unsigned int colliderID;
+    unsigned int m_colliderID;
     ///Extents of Bounding Box
     glm::vec3 extents;
 };

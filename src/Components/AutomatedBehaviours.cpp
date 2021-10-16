@@ -41,6 +41,7 @@ void AutomatedBehaviours::decelerate()
 void AutomatedBehaviours::seek(glm::vec3 targetPosition)
 {
 	glm::vec3 targetHeading = (targetPosition - m_transform->getPosition());
+	//updateFeelers();
 
 	if(frontFeelerHit != -1)
 	{
@@ -96,6 +97,7 @@ void AutomatedBehaviours::seek(glm::vec3 targetPosition)
 	}
 
 	updateHeading();
+	updateFeelers();
 }
 
 void AutomatedBehaviours::wander()

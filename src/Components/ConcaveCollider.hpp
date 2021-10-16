@@ -29,7 +29,7 @@ class YOKAI_API ConcaveCollider : public Component {
         void Update(float deltaTime);
     private:
         ///Collider ID
-        unsigned int colliderID;
+        unsigned int m_colliderID;
         ///Model ID
         unsigned int modelID;
 };

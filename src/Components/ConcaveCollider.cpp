@@ -9,7 +9,7 @@ void ConcaveCollider::Start()
         m_parent->AddComponent<Transform>();
     }
     modelID = m_parent->GetComponent<DrawableEntity>()->GetModelID();
-    colliderID = PhysicsSystem::getInstance().addConcaveShape(3,m_parent->GetComponent<Transform>().get(),m_parent->GetComponent<DrawableEntity>()->GetModelID());
+	m_colliderID = PhysicsSystem::getInstance().addConcaveShape(3,m_parent->GetComponent<Transform>().get(),m_parent->GetComponent<DrawableEntity>()->GetModelID());
 }
 
 void ConcaveCollider::Update(float deltaTime)
