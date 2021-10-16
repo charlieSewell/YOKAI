@@ -49,3 +49,45 @@ void CollisionBody::SetRollingResistance(float resistance)
 {
     m_collider->getMaterial().setRollingResistance(resistance);
 }
+
+// PHYSICS
+float CollisionBody::AngularDisplacement(float arc, float radius) 
+{
+    float theta;
+    theta = arc / radius;
+    return theta;
+}
+
+float CollisionBody::AverageAngularVelocity(float arcStart, float arcEnd, float time, float radius) 
+{
+    float initialDisplacement;
+    float endDisplacement;
+    float omega;
+
+    initialDisplacement = arcStart / radius;
+    endDisplacement     = arcEnd / radius;
+
+    omega = (endDisplacement - initialDisplacement) / time;
+    return omega;
+}
+
+float CollisionBody::AverageAngularAcceleration(float angularVelocityStart, float angularVelocityEnd, float time) 
+{
+    float alpha;
+    alpha = (angularVelocityEnd - angularVelocityStart) / time;
+    return alpha;
+}
+
+float CollisionBody::TangentialVelocity(float omega, float radius) 
+{
+    float tangential;
+    tangential = omega * radius;
+    return tangential;
+}
+
+float CollisionBody::TangentialAcceleration(float angularAcceleration, float radius) 
+{
+    float acceleration;
+    acceleration = angularAcceleration * radius;
+    return acceleration;
+}

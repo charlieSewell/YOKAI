@@ -14,7 +14,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Components/Camera.cpp
 		Components/RayCaster.cpp
 		Components/AutomatedBehaviours.cpp
-		Components/PhysicsObject.cpp
 
         Renderer/Shader.cpp
         Renderer/DataTypes.cpp

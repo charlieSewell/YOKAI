@@ -77,6 +77,18 @@ public:
      */
     [[nodiscard]] int getGameObjectID() const{return gameObjectID;}
 
+    //PHYSICS
+
+    float AngularDisplacement(float arc, float radius);
+
+    float AverageAngularVelocity(float arcStart, float arcEnd, float time, float radius);
+
+    float AverageAngularAcceleration(float angularVelocityStart, float angularVelocityEnd, float time);
+
+    float TangentialVelocity(float omega, float radius);
+
+    float TangentialAcceleration(float angularAcceleration, float radius);
+
 private:
     ///Shape of collider
     ReactShape* shape;
@@ -86,4 +98,8 @@ private:
     reactphysics3d::CollisionBody* m_body;
     ///React Collider
     reactphysics3d::Collider* m_collider;
+
+    //PHYSICS
+    float mass;
+    glm::vec3 centreOfMass;
 };
