@@ -26,6 +26,11 @@ void BoxCollider::SetExtents(float x,float y, float z)
    extents = glm::vec3(x,y,z);
 }
 
+void BoxCollider::SetPosition(glm::vec3 newPosition)
+{
+	PhysicsSystem::getInstance().getCollisionBody(m_colliderID)->SetPosition(newPosition);
+}
+
 void BoxCollider::Update(float deltaTime)
 {
 	//std::cout << " " << m_parent->GetComponent<Transform>()->getPosition().x << " " << m_parent->GetComponent<Transform>()->getPosition().y << " " << m_parent->GetComponent<Transform>()->getPosition().z << std::endl;
