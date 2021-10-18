@@ -98,6 +98,7 @@ private:
     int activeLayer;
     ///Log sinks for Engine class
     std::vector<spdlog::sink_ptr> sinks;
+    ///Model Manager
     ModelManager* modelManager;
 
 };

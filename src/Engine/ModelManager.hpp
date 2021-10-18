@@ -18,7 +18,6 @@
 class YOKAI_API ModelManager
 {
   public:
-
     /*!
      * @brief Constructor
      */

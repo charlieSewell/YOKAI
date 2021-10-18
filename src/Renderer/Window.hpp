@@ -51,6 +51,7 @@ class Window {
      */
     glm::vec2 getWindowSize();
   private:
+    ///GLFW window
     GLFWwindow* window;
 };
 

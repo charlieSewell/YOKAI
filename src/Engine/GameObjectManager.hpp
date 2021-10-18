@@ -32,7 +32,10 @@ class YOKAI_API GameObjectManager
      * @brief Calls the draw function for all GameObjects
      */
     void Draw();
-
+    /**
+     * @brief Deletes Game Objects given an ID
+     * @param id 
+     */
     void DeleteGameObject(unsigned int id);
   private:
     /// Map of GameObjects, with the key of the GameObject id, and value of the GameObject smart pointer

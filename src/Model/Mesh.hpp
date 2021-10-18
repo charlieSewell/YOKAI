@@ -54,7 +54,12 @@ class Mesh
      * @brief Sets up the mesh
      */
     void SetupMesh();
-
+    /**
+     * @brief Adds bone data to the mesh
+     * @param vertexID 
+     * @param boneID 
+     * @param weight 
+     */
     void addBoneData(unsigned int vertexID,unsigned int boneID, float weight);
 
     std::shared_ptr<VertexArrayBuffer> GetVAO(){return VAO;}

@@ -38,7 +38,7 @@ public:
 	 * @param angle
 	 * @param upVector
 	 */
-	void rotate(float angle, glm::vec3 upVector);
+	void rotate(float Angle, glm::vec3 upVector);
 	/**
 	 * @brief Scales the transform given a vector
 	 * @param scale

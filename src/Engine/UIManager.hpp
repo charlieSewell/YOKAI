@@ -46,6 +46,9 @@ class UIManager
      */
     void draw();
 
+    /**
+     * @brief Deinitialises The UI Manager
+     */
     void DeInit();
 
   private:

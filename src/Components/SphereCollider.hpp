@@ -5,15 +5,39 @@
 #include "Component.hpp"
 #include "Export.hpp"
 #include "Physics/PhysicsSystem.hpp"
+/**
+ * @class Sphere Collider
+ * @brief Sphere Collider Components
+ */
 class YOKAI_API SphereCollider : public Component {
 public:
+    /**
+     * @brief Construct a new Sphere Collider object
+     * @param parent 
+     */
     SphereCollider(GameObject* parent);
-    void Start();
-    void Update(float deltaTime);
 
-	glm::vec3 NewVelocity = glm::vec3(0, 0, 0);
+	/**
+	 * @brief Sets radius
+	 * @param radius
+	 */
+	void SetRadius(double radius);
+
+    /**
+     * @brief Starts the Collider Component
+     */
+    void Start();
+
+    ///New Velocity of sphere
+
+	// Sets new position
+	void SetPosition(glm::vec3 newPosition);
+
+
 
 private:
+    ///Collider ID
     unsigned int colliderID;
-	glm::vec3 m_lastVelocity = glm::vec3(0, 0, 0);
+	//radius
+	double m_radius = 0.05;
 };

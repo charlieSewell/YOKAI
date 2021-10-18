@@ -14,9 +14,27 @@
 class YOKAI_API Input : public Component
 {
   public:
-	  Input(GameObject* parent);
-	  bool GetKeyState(unsigned int key);
-	  bool GetKeyState(SPECIAL key);
-	  Mouse GetMouseState();
+	/**
+	 * @brief Construct a new Input object
+	 * @param parent 
+	 */
+	Input(GameObject* parent);
+	/**
+	* @brief Get the Key State
+	* @param key 
+	* @return bool
+	*/
+	bool GetKeyState(unsigned int key);
+	/**
+	* @brief Get the Key State
+	* @param key 
+	* @return bool
+	*/
+	bool GetKeyState(YOKAI_INPUT key);
+	/**
+	* @brief Get the Mouse State
+	* @return Mouse
+	*/
+	Mouse GetMouseState();
   private:
 };

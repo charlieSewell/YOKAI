@@ -12,6 +12,8 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Components/SphereCollider.cpp
 		Components/BoxCollider.cpp
 		Components/Camera.cpp
+		Components/RayCaster.cpp
+		Components/AutomatedBehaviours.cpp
 
         Renderer/Shader.cpp
         Renderer/DataTypes.cpp
@@ -31,7 +33,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         Physics/Shapes/ReactTerrainShape.cpp
         Physics/PhysicsSystem.cpp
         Physics/ReactMath.cpp
-        Physics/RigidBody.cpp
+        Physics/CollisionBody.cpp
+		Physics/RigidBody.cpp
 		Model/Animator.cpp
         Physics/Shapes/ReactBoxShape.cpp
         Physics/Shapes/ReactShape.cpp
