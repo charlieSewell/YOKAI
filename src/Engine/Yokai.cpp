@@ -77,16 +77,16 @@ void Yokai::Run()
 			{
 				InputManagerGLFW::getInstance().processMouse(window.getWindow());
 				InputManagerGLFW::getInstance().processGamepadAxis();
-                PhysicsSystem::getInstance().update(timeStep);
                 layers[activeLayer]->Update(static_cast<float>(timeStep));
+                PhysicsSystem::getInstance().update(timeStep);
 				accumulator -= timeStep;
 			}
         }
-
         ImGui::Begin("YOKAI DEBUG");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
         layers[activeLayer]->Draw();
+        PhysicsSystem::getInstance().RendererUpdate();
         Renderer::getInstance().DrawScene();
         Renderer::getInstance().DrawGui();
         window.endFrame();

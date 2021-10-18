@@ -5,6 +5,7 @@
 #include "OpenGLRenderer.hpp"
 #include "Engine/TextureManager.hpp"
 #include <glm/gtx/string_cast.hpp>
+#include <Physics/PhysicsSystem.hpp>
 void OpenGLRenderer::Init() 
 {
     glewExperimental = GL_TRUE;
@@ -307,6 +308,8 @@ void OpenGLRenderer::DrawScene()
         lightAccumulationShader->setMat4("model",drawItem.transform);
         DrawMesh(lightAccumulationShader,drawItem.mesh);
     }
+	//Draw Physics Debug
+	PhysicsSystem::getInstance().Draw();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
 	//POST PROCESS

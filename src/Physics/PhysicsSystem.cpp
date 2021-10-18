@@ -3,6 +3,7 @@
 #include "PhysicsSystem.hpp"
 #include "Engine/GameObjectManager.hpp"
 #include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "Engine/EventManager.hpp"
 void PhysicsSystem::Init()
 {
@@ -137,10 +138,12 @@ void PhysicsSystem::deleteRigidBody(int ID)
 
 void PhysicsSystem::Draw()
  {
+     if(isDebugEnabled)
+     {
         shader_->useShader();
         //TODO Setup the shader, verify data is okay being passed in like this.
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        shader_->setMat4("projection", EMS::getInstance().fire(ReturnMat4Event::getPerspective));
+        shader_->setMat4("projection", glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, 0.3f, 300.0f));
         shader_->setMat4("view", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
         shader_->setMat4("model", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
 
@@ -156,9 +159,7 @@ void PhysicsSystem::Draw()
             glVertexAttribIPointer(1, 3, GL_UNSIGNED_INT, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (void*) sizeof(rp3d::Vector3));
             
             // Draw the lines geometry
-
             glDrawArrays(GL_LINES, 0, line_num_ * 2);
-
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -179,7 +180,6 @@ void PhysicsSystem::Draw()
 
             // Draw the triangles geometry
             glDrawArrays(GL_TRIANGLES, 0, triag_num_ * 3);
-
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -187,6 +187,7 @@ void PhysicsSystem::Draw()
         }
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         //shader->Use();
+     }
 }
 
 void PhysicsSystem::RendererUpdate() {

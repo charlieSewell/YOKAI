@@ -103,7 +103,9 @@ public:
     reactphysics3d::PhysicsCommon physicsCommon;
     ///physics world for simulation
     reactphysics3d::PhysicsWorld* physicsWorld;
+    void IsDebugEnabled(bool isEnabled){isDebugEnabled = isEnabled;}
 private:
+    bool isDebugEnabled = false;
     ///Privatised Constructor
     PhysicsSystem() = default;
     std::string path1;
