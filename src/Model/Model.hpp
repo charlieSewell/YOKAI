@@ -64,6 +64,12 @@ class Model
      */
     void Draw(glm::mat4 transform);
     /**
+     * @brief Draws a mesh model thats animated
+     * @param Shader& - shader
+     * @param mat4 - transform
+     */
+    void Draw(glm::mat4 transform, std::vector<glm::mat4> &finalTransforms);
+    /**
      * @brief Gets animation by Name
      * @param name
      * @return SkeletalAnimation*
@@ -99,7 +105,11 @@ class Model
      * @return mat4
      */
     glm::mat4 getGlobalInverseTransform(){return globalInverseTransform;}
-
+    /**
+     * @brief is the model animated
+     * @return bool
+     */
+    bool isAnimated();
   private:
     ///Global transform
     glm::mat4 globalInverseTransform{};
@@ -113,7 +123,5 @@ class Model
     Node rootNode;
     ///Animations
     std::vector<SkeletalAnimation> animations;
-
-    void AddToDraw(Mesh* mesh, glm::mat4 model);
 };
 

@@ -3,7 +3,13 @@
 #include<glm/glm.hpp>
 
 class Mesh;
-struct DrawItem {
-  glm::mat4 transform = {};
-  Mesh* mesh = nullptr;
-};
+namespace RENDER 
+{
+  struct DrawItem 
+  {
+    glm::mat4 transform = {};
+    std::vector<glm::mat4> finalTransforms;
+    bool isAnimated = false;
+    Mesh* mesh = nullptr;
+  };
+}

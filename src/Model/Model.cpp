@@ -22,7 +22,17 @@ void Model::Draw(glm::mat4 transform)
         glm::mat4 model(1.0);
         //multiply parent by child transform
         model = transform* mesh.getTransform();
-        AddToDraw(&mesh,model);
+        Renderer::getInstance().AddToDraw(&mesh,model);
+    }
+}
+void Model::Draw(glm::mat4 transform, std::vector<glm::mat4> &finalTransforms)
+{
+    for(auto& mesh: meshes)
+    {
+        glm::mat4 model(1.0);
+        //multiply parent by child transform
+        model = transform* mesh.getTransform();
+        Renderer::getInstance().AddToDraw(&mesh,model,finalTransforms);
     }
 }
 SkeletalAnimation* Model::getAnimation(const std::string& name)
@@ -40,12 +50,10 @@ Node Model::getRootNode()
 {
     return rootNode;
 }
-void Model::AddToDraw(Mesh* mesh, glm::mat4 model)
+bool Model::isAnimated()
 {
-    DrawItem drawItem;
-    drawItem.transform = model;
-    drawItem.mesh = mesh;
-    Renderer::getInstance().SubmitDraw(drawItem);
+    //if the array is empty it returns true which means the model isnt animated
+    return !animations.empty();
 }
 
 

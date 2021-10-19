@@ -48,8 +48,8 @@ class Renderer
      */
     void SetDepthTesting(bool isEnabled);
     
-    void SubmitDraw(DrawItem drawItem);
-
+    void AddToDraw(Mesh* mesh, glm::mat4 model, std::vector<glm::mat4> &finalTransforms);
+    void AddToDraw(Mesh* mesh, glm::mat4 model);
     void DrawScene();
   private:
     Renderer() = default;

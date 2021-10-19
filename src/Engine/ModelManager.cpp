@@ -10,7 +10,7 @@ ModelManager::ModelManager()
 }
 
 auto ModelManager::GetModelID(const std::string& filename) -> size_t
-{
+{ 
     auto id = modelIDtoName.find(filename);
     //stops files being loaded more then once
     if(id == modelIDtoName.end()){
@@ -33,9 +33,5 @@ void ModelManager::DrawModel(size_t id, glm::mat4 transform)
 }
 void ModelManager::DrawModel(size_t id, glm::mat4 transform, std::vector<glm::mat4> &finalTransforms)
 {
-    //modelShader->useShader();
-    //modelShader->setBool("isAnimated",true);
-    //modelShader->setVecMat4("boneTrans",finalTransforms);
-    //modelShader->setVec3("viewPos",EMS::getInstance().fire(ReturnVec3Event::getPlayerPosition));
-    //models[id].Draw(transform);
+    models[id].Draw(transform, finalTransforms);
 }

@@ -305,6 +305,8 @@ void OpenGLRenderer::DrawScene()
 	lightAccumulationShader->setVec3("viewPosition",viewpos);
     for(auto& drawItem : drawQueue)
     {
+		lightAccumulationShader->setBool("isAnimated",drawItem.isAnimated);
+		lightAccumulationShader->setVecMat4("boneTrans",drawItem.finalTransforms);
         lightAccumulationShader->setMat4("model",drawItem.transform);
         DrawMesh(lightAccumulationShader,drawItem.mesh);
     }
@@ -367,7 +369,7 @@ void OpenGLRenderer::SetDepthTesting(bool isEnabled)
 	}
      
 }
-void OpenGLRenderer::SubmitDraw(DrawItem drawItem)
+void OpenGLRenderer::SubmitDraw(RENDER::DrawItem drawItem)
 {
     drawQueue.push_back(drawItem);
 }

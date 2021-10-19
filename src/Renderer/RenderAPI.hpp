@@ -79,7 +79,7 @@ class RenderAPI
     virtual void SetDepthTesting(bool isEnabled) = 0;
     virtual void DrawScene() = 0;
     
-    virtual void SubmitDraw(DrawItem drawItem) = 0;
+    virtual void SubmitDraw(RENDER::DrawItem drawItem) = 0;
     /**
      * @brief Creates a specific rendering API
      * @return shared_ptr<RenderAPI> - renderAPI

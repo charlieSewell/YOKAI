@@ -60,7 +60,7 @@ class OpenGLRenderer : public RenderAPI
      */
     void SetDepthTesting(bool isEnabled) override;
     void DrawScene() override;
-    void SubmitDraw(DrawItem drawItem) override; 
+    void SubmitDraw(RENDER::DrawItem drawItem) override; 
   private:
     ///Boolean to check whether it is in wireframe
     glm::ivec2 SCREEN_SIZE;
@@ -75,7 +75,7 @@ class OpenGLRenderer : public RenderAPI
     Shader* lightCullingShader;
     Shader* hdr;
     Shader* gridShader;
-    std::vector<DrawItem> drawQueue;
+    std::vector<RENDER::DrawItem> drawQueue;
     //Shared SSBO'S
     GLuint screenToView = 0;
     GLuint lightBuffer = 0;

@@ -55,11 +55,6 @@ void Renderer::registerToggleWireframe()
 	EMS::getInstance().add(NoReturnEvent::toggleWireFramePressed, toggleWireFramePressed);
 }
 
-void Renderer::SubmitDraw(DrawItem drawItem)
-{
-	renderApi->SubmitDraw(drawItem);
-}
-
 void Renderer::Clear() 
 {
     renderApi->Clear();
@@ -72,4 +67,20 @@ void Renderer::DeInit()
 void Renderer::SetDepthTesting(bool isEnabled)
 {
     renderApi->SetDepthTesting(isEnabled);
+}
+void Renderer::AddToDraw(Mesh* mesh, glm::mat4 model)
+{
+    RENDER::DrawItem drawItem;
+    drawItem.transform = model;
+    drawItem.mesh = mesh;
+    renderApi->SubmitDraw(drawItem);
+}
+void Renderer::AddToDraw(Mesh* mesh, glm::mat4 model, std::vector<glm::mat4> &finalTransforms)
+{
+    RENDER::DrawItem drawItem;
+    drawItem.transform = model;
+    drawItem.mesh = mesh;
+    drawItem.isAnimated = true;
+    drawItem.finalTransforms = finalTransforms;
+    renderApi->SubmitDraw(drawItem);
 }
