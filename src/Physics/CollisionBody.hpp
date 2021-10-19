@@ -2,6 +2,7 @@
 #include <reactphysics3d/reactphysics3d.h>
 #include <glm/glm.hpp>
 #include "Physics/Shapes/ReactTerrainShape.hpp"
+#include "PhysicsUnits.hpp"
 /**
  * @class RigidBody
  * @brief Class for a physics Rigid body
@@ -77,18 +78,6 @@ public:
      */
     [[nodiscard]] int getGameObjectID() const{return gameObjectID;}
 
-    //PHYSICS
-
-    float AngularDisplacement(float arc, float radius);
-
-    float AverageAngularVelocity(float arcStart, float arcEnd, float time, float radius);
-
-    float AverageAngularAcceleration(float angularVelocityStart, float angularVelocityEnd, float time);
-
-    float TangentialVelocity(float omega, float radius);
-
-    float TangentialAcceleration(float angularAcceleration, float radius);
-
 private:
     ///Shape of collider
     ReactShape* shape;
@@ -100,6 +89,17 @@ private:
     reactphysics3d::Collider* m_collider;
 
     //PHYSICS
-    float mass;
-    glm::vec3 centreOfMass;
+    double mass;
+    double inverseMass;
+    glm::dvec3 centreOfMass;
+    glm::dmat3x3 inertiaTensor;
+    glm::dmat3x3 inverseInertiaTensor;
+
+    glm::dvec3 linearVelocity;
+    glm::dvec3 angularVelocity;
+    glm::dvec3 torque;
+    glm::dvec3 force;
+
+    bool staticObject;
+
 };

@@ -16,6 +16,7 @@ void PhysicsSystem::Init()
     physicsWorld = physicsCommon.createPhysicsWorld(settings);
     
     physicsWorld->setIsDebugRenderingEnabled(true);
+    physicsWorld->setEventListener(&listener);
 
     DebugRenderer& debugRenderer = physicsWorld->getDebugRenderer(); 
 

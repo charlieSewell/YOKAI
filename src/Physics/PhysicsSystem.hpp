@@ -10,6 +10,7 @@
 #include "Physics/Shapes/ReactBoxShape.hpp"
 #include "Physics/Shapes/ReactConcaveShape.hpp"
 #include "Export.hpp"
+#include "PhysicsResolution.hpp"
 /**
  * @class PhysicsSystem
  * @brief Singleton that Manages physics
@@ -103,6 +104,9 @@ public:
     reactphysics3d::PhysicsCommon physicsCommon;
     ///physics world for simulation
     reactphysics3d::PhysicsWorld* physicsWorld;
+
+    PhysicsResolution listener;
+
 private:
     ///Privatised Constructor
     PhysicsSystem() = default;
