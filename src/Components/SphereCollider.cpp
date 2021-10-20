@@ -13,11 +13,16 @@ void SphereCollider::Start()
     {
         m_parent->AddComponent<Transform>();
     }
-    colliderID = PhysicsSystem::getInstance().addSphere(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(), m_radius);
-	PhysicsSystem::getInstance().getRigidBody(colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
+    m_colliderID = PhysicsSystem::getInstance().addSphere(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(), m_radius);
+	PhysicsSystem::getInstance().getCollisionBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
 }
 
 void SphereCollider::SetPosition(glm::vec3 newPosition)
 {
-    PhysicsSystem::getInstance().getRigidBody(colliderID)->SetPosition(newPosition);
+    PhysicsSystem::getInstance().getCollisionBody(m_colliderID)->SetPosition(newPosition);
+}
+
+unsigned int SphereCollider::GetColliderID()
+{
+	return m_colliderID;
 }

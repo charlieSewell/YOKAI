@@ -41,9 +41,14 @@ public:
      * @param orientation 
      */
 	void SetOrientation(glm::quat orientation);
+	/**
+	* @brief Set the Positin of the Bounding Box
+	* @param orientation
+	*/
+	void SetPosition(glm::vec3 newPosition);
 private:
     ///Collider ID
-    unsigned int colliderID;
+    unsigned int m_colliderID;
     ///Extents of Bounding Box
     glm::vec3 extents;
 };
