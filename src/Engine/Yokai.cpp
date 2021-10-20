@@ -35,7 +35,9 @@ bool Yokai::Init()
     try
     {
         PhysicsSystem::getInstance().Init();
-        SPDLOG_INFO("Physics System Initialised");
+        randomListener = new PhysicsResolution();
+        PhysicsSystem::getInstance().physicsWorld->setEventListener(randomListener);
+        SPDLOG_INFO("Physics System Initialised");  
     } catch (std::exception &e)
     {
         SPDLOG_ERROR(e.what());

@@ -10,7 +10,8 @@
 #include "Physics/Shapes/ReactBoxShape.hpp"
 #include "Physics/Shapes/ReactConcaveShape.hpp"
 #include "Export.hpp"
-#include "PhysicsResolution.hpp"
+//#include "PhysicsListener.hpp"
+//#include "PhysicsResolution.hpp"
 /**
  * @class PhysicsSystem
  * @brief Singleton that Manages physics
@@ -58,7 +59,7 @@ public:
      * @param int - colliderID
      * @return RigidBody
      */
-    CollisionBody * getRigidBody(int colliderID);
+    CollisionBody * getPhysicsBody(int colliderID);
     /**
      * @brief Deletes a rigid Body
      * @param int - ID
@@ -105,8 +106,6 @@ public:
     ///physics world for simulation
     reactphysics3d::PhysicsWorld* physicsWorld;
 
-    PhysicsResolution listener;
-
 private:
     ///Privatised Constructor
     PhysicsSystem() = default;
@@ -124,4 +123,5 @@ private:
     ///map of colliders
     std::map<int, CollisionBody> m_colliders;	//TODO: make colliders so can add spheres
     ///Collision callback listener
+    //PhysicsListener listener;
 };

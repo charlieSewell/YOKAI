@@ -4,6 +4,7 @@
 #include "Component.hpp"
 #include "Export.hpp"
 #include "Physics/PhysicsSystem.hpp"
+#include "Physics/CollisionBody.hpp"
 /**
  * @class BoxCollider
  * @brief Box collider component
@@ -41,6 +42,17 @@ public:
      * @param orientation 
      */
 	void SetOrientation(glm::quat orientation);
+
+    void SetPosition(glm::vec3 newPosition);
+
+    CollisionBody* getCollisionBody();
+
+    void setLV(glm::dvec3 lv);
+    glm::dvec3 getLV();
+
+    void setS(bool s);
+    bool getS();
+
 private:
     ///Collider ID
     unsigned int colliderID;

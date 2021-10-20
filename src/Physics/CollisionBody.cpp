@@ -49,3 +49,55 @@ void CollisionBody::SetRollingResistance(float resistance)
 {
     m_collider->getMaterial().setRollingResistance(resistance);
 }
+
+void CollisionBody::setMass(double m) {
+    mass = m;
+}
+
+double CollisionBody::getMass() {
+    return mass;
+}
+
+double CollisionBody::getInverseMass() {
+    return 1.0 / mass;
+}
+
+glm::dvec3 CollisionBody::getCentreOfMass() {
+    return centreOfMass;
+}
+
+glm::dmat3x3 CollisionBody::getInertiaTensor() {
+    return inertiaTensor;
+}
+
+glm::dmat3x3 CollisionBody::getInverseInertiaTensor() {
+    return 1.0 / inertiaTensor;
+}
+
+void CollisionBody::setLinearVelocity(glm::dvec3 lv) {
+    linearVelocity = lv;
+}
+
+glm::dvec3 CollisionBody::getLinearVelocity() {
+    return linearVelocity;
+}
+
+glm::dvec3 CollisionBody::getAngularVelocity() {
+    return angularVelocity;
+}
+
+glm::dvec3 CollisionBody::getTorque() {
+    return torque;
+}
+
+glm::dvec3 CollisionBody::getForce() {
+    return force;
+}
+
+bool CollisionBody::getIsStaticObject() {
+    return staticObject;
+}
+
+void CollisionBody::setIsStaticObject(bool s) {
+    staticObject = s;
+}

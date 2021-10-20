@@ -16,7 +16,7 @@ void PhysicsSystem::Init()
     physicsWorld = physicsCommon.createPhysicsWorld(settings);
     
     physicsWorld->setIsDebugRenderingEnabled(true);
-    physicsWorld->setEventListener(&listener);
+    //physicsWorld->setEventListener(listener.getListener());
 
     DebugRenderer& debugRenderer = physicsWorld->getDebugRenderer(); 
 
@@ -61,9 +61,7 @@ PhysicsSystem& PhysicsSystem::getInstance()
 
 void PhysicsSystem::update(float dt) const
 {
-
     physicsWorld->update(static_cast<rp3d::decimal>(dt));
-
 }
 
 unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, float radius)
@@ -119,7 +117,7 @@ unsigned int PhysicsSystem::addAABB(unsigned int ID,Transform* transform, float 
     return temp;
 }
 
-CollisionBody * PhysicsSystem::getRigidBody(int colliderID)
+CollisionBody * PhysicsSystem::getPhysicsBody(int colliderID)
 {
     try{
         return &m_colliders.at(colliderID);

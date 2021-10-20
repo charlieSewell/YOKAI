@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "Physics/Shapes/ReactTerrainShape.hpp"
 #include "PhysicsUnits.hpp"
+//#include "PhysicsResolution.hpp"
 /**
  * @class RigidBody
  * @brief Class for a physics Rigid body
@@ -77,6 +78,32 @@ public:
      * @return
      */
     [[nodiscard]] int getGameObjectID() const{return gameObjectID;}
+
+    //Physics
+
+    void setMass(double m);
+    double getMass();
+
+    double getInverseMass();
+
+    glm::dvec3 getCentreOfMass();
+
+    glm::dmat3x3 getInertiaTensor();
+
+    glm::dmat3x3 getInverseInertiaTensor();
+
+    void setLinearVelocity(glm::dvec3 lv);
+    glm::dvec3 getLinearVelocity();
+
+    glm::dvec3 getAngularVelocity();
+
+    glm::dvec3 getTorque();
+
+    glm::dvec3 getForce();
+
+    void setIsStaticObject(bool s);
+    bool getIsStaticObject();
+
 
 private:
     ///Shape of collider
