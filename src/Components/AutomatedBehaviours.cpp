@@ -19,10 +19,10 @@ AutomatedBehaviours::AutomatedBehaviours(GameObject* parent)
 void AutomatedBehaviours::accelerate(float TopSpeed)
 {
 	if (TopSpeed > 0 && Acceleration < TopSpeed)
-		Acceleration += 0.01;
+		Acceleration += AccelerationRate;
 
 	if (TopSpeed < 0 && Acceleration > TopSpeed)
-		Acceleration -= 0.01;
+		Acceleration -= AccelerationRate;
 
 	m_transform->translatePostMultiply(glm::normalize(Heading) * Acceleration);
 }
@@ -30,10 +30,10 @@ void AutomatedBehaviours::accelerate(float TopSpeed)
 void AutomatedBehaviours::decelerate()
 {
 	if (Acceleration > 0)
-		Acceleration -= 0.01;
+		Acceleration -= AccelerationRate * 2;
 
 	if (Acceleration < 0)
-		Acceleration += 0.01;
+		Acceleration += AccelerationRate * 2;
 
 	m_transform->translatePostMultiply(glm::normalize(Heading) * Acceleration);
 }
@@ -41,11 +41,10 @@ void AutomatedBehaviours::decelerate()
 void AutomatedBehaviours::seek(glm::vec3 targetPosition)
 {
 	glm::vec3 targetHeading = (targetPosition - m_transform->getPosition());
-	//updateFeelers();
 
 	if(frontFeelerHit != -1)
 	{
-		//decelerate();
+		decelerate();
 		Angle += RotationSpeed;
 		m_transform->rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
 	}
