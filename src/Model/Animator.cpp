@@ -1,10 +1,10 @@
 #include <glm/gtx/string_cast.hpp>
 #include <utility>
 #include "Animator.hpp"
-Animator::Animator(std::shared_ptr<Model> model)
+Animator::Animator(Model* model)
 	: currTime(0)
 {
-    this->modelToAnimate = std::move(model);
+    this->modelToAnimate = model;
 }
 void Animator::BoneTransform(float TimeInSeconds)
 {

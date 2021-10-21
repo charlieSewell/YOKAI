@@ -34,7 +34,7 @@ void DrawableEntity::Draw()
 void DrawableEntity::LoadModel(std::string filename)
 {
     m_modelID = Yokai::getInstance().getModelManager()->GetModelID(filename);
-    std::shared_ptr<Model> model = Yokai::getInstance().getModelManager()->GetModel(m_modelID);
+    Model* model = Yokai::getInstance().getModelManager()->GetModel(m_modelID);
     if(model->isAnimated())
     {
         m_animator = new Animator(model);

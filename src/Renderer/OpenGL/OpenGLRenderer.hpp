@@ -12,7 +12,6 @@
 #include "Renderer/DataTypes.hpp"
 #include "GLFW/glfw3.h"
 #include "Engine/EventManager.hpp"
-#include <random>
 /**
  * @class OpenGLRenderer
  * @brief OpenGL rendering api implementation
@@ -61,10 +60,11 @@ class OpenGLRenderer : public RenderAPI
     void SetDepthTesting(bool isEnabled) override;
     void DrawScene() override;
     void SubmitDraw(RENDER::DrawItem drawItem) override; 
+    void UpdateLights(std::vector<PointLight> &lightsArray);
   private:
     ///Boolean to check whether it is in wireframe
     glm::ivec2 SCREEN_SIZE;
-    const int NUM_LIGHTS = 0;
+    size_t NUM_LIGHTS = 4000;
     bool isWireFrame = false;
     void DrawQuad();
     void SetupDepthMap();
@@ -77,7 +77,7 @@ class OpenGLRenderer : public RenderAPI
     Shader* gridShader;
     std::vector<RENDER::DrawItem> drawQueue;
     //Shared SSBO'S
-    GLuint screenToView = 0;
+    GLuint screenToViewSSBO;
     GLuint lightBuffer = 0;
     //For Light culling
     GLuint visibleLightIndicesBuffer = 0;
@@ -93,16 +93,11 @@ class OpenGLRenderer : public RenderAPI
     //Depth map for Z fighting pass
     GLuint depthMapFBO = 0;
     GLuint depthMap = 0;
-    glm::vec3 RandomPosition(std::uniform_real_distribution<> dis, std::mt19937 gen);
-    void UpdateLights();
-    const glm::vec3 LIGHT_MIN_BOUNDS = glm::vec3(-270.0f, 0.0f, -270.0f);
-    const glm::vec3 LIGHT_MAX_BOUNDS = glm::vec3(270.0f, 170.0f, 270.0f);
+
     const int numClusters = 3456;
     const int gridSizeX = 16;
     const int gridSizeY = 9;
     const int gridSizeZ = 24;
-    int sizeX;
-    GLuint screenToViewSSBO;
     GLuint lightGridSSBO;
     GLuint lightIndexGlobalCountSSBO;
     ScreenToView screen2View;

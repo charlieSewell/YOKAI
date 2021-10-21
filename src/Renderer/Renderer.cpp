@@ -68,6 +68,10 @@ void Renderer::SetDepthTesting(bool isEnabled)
 {
     renderApi->SetDepthTesting(isEnabled);
 }
+void Renderer::UpdateLights(std::vector<PointLight> &lightsArray)
+{
+    renderApi->UpdateLights(lightsArray);
+}
 void Renderer::AddToDraw(Mesh* mesh, glm::mat4 model)
 {
     RENDER::DrawItem drawItem;

@@ -50,6 +50,8 @@ class Renderer
     
     void AddToDraw(Mesh* mesh, glm::mat4 model, std::vector<glm::mat4> &finalTransforms);
     void AddToDraw(Mesh* mesh, glm::mat4 model);
+    
+    void UpdateLights(std::vector<PointLight> &m_lights);
     void DrawScene();
   private:
     Renderer() = default;

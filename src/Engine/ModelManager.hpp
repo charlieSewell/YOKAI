@@ -35,7 +35,7 @@ class YOKAI_API ModelManager
      * @param size_t - modelID
      * @return shared_ptr<Model>
      */
-    std::shared_ptr<Model> GetModel(size_t modelID);
+    Model* GetModel(size_t modelID);
 
     /*!
      * @brief Calls the draw function for the specified model

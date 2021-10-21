@@ -25,12 +25,6 @@ struct ScreenToView{
 struct VisibleIndex {
 	int index = 0;
 };
-
-struct PointLight {
-	glm::vec4 color = {};
-	glm::vec4 position = {};
-	glm::vec4 paddingAndRadius = {};
-};
 struct LightGrid{
     unsigned int offset;
     unsigned int count;
@@ -76,6 +70,7 @@ class RenderAPI
      * @brief Sets Depth Testing
      * @param bool - isEnabled
      */
+    virtual void UpdateLights(std::vector<PointLight> &lightsArray) = 0;
     virtual void SetDepthTesting(bool isEnabled) = 0;
     virtual void DrawScene() = 0;
     

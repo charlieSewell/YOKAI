@@ -23,7 +23,7 @@ void OpenGLRenderer::Init()
     SCREEN_SIZE.y = 1080;
 	float zFar = 300.0f;
 	float zNear = 0.1f;
-	unsigned int totalNumLights =  numClusters * 50; 
+	unsigned int totalNumLights =  numClusters * 100; 
 	depthShader = new Shader("content/Shaders/depth.vert", "content/Shaders/depth.frag");
 	lightAccumulationShader = new Shader("content/Shaders/light_accumulation.vert", "content/Shaders/light_accumulation.frag");
 	lightCullingShader = new Shader("content/Shaders/clusterLightCuller.comp");
@@ -57,9 +57,6 @@ void OpenGLRenderer::Init()
 	glGenBuffers(1, &screenToViewSSBO);
 	glGenBuffers(1, &lightIndexGlobalCountSSBO);
 	glGenBuffers(1, &lightGridSSBO);
-    std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_real_distribution<> dis(0, 1);
 
 	// Bind ClusterAABB
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, clusterAABB);
@@ -71,7 +68,7 @@ void OpenGLRenderer::Init()
 	//Setup screen2View SSBO
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, screenToViewSSBO);
 	//Tile Size X/Y
-	sizeX =  (unsigned int)std::ceilf(SCREEN_SIZE.x / (float)gridSizeX);
+	int sizeX =  (unsigned int)std::ceilf(SCREEN_SIZE.x / (float)gridSizeX);
     //Setting up contents of buffer
     screen2View.inverseProjectionMat = glm::inverse(perspective);
     screen2View.tileSizes[0] = gridSizeX;
@@ -91,14 +88,6 @@ void OpenGLRenderer::Init()
 
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
 	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_LIGHTS * sizeof(PointLight), NULL, GL_DYNAMIC_DRAW);
-	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
-
-	for (int i = 0; i < NUM_LIGHTS; i++) {
-		PointLight &light = pointLights[i];
-		light.position = glm::vec4(RandomPosition(dis, gen), 1.0f);
-		light.color = glm::vec4(1.0f + dis(gen), 1.0f + dis(gen), 1.0f + dis(gen), 1.0f);
-		light.paddingAndRadius = glm::vec4(glm::vec3(0.0f), 40.0f);
-	}
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, lightBuffer);
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
@@ -135,16 +124,7 @@ void OpenGLRenderer::Init()
     SPDLOG_INFO("Renderer Initialised: Using OpenGL");
 
 }
-glm::vec3 OpenGLRenderer::RandomPosition(std::uniform_real_distribution<> dis, std::mt19937 gen) {
-	glm::vec3 position = glm::vec3(0.0);
-	for (int i = 0; i < 3; i++) {
-		float min = LIGHT_MIN_BOUNDS[i];
-		float max = LIGHT_MAX_BOUNDS[i];
-		position[i] = (GLfloat)dis(gen) * (max - min) + min;
-	}
 
-	return position;
-}
 void OpenGLRenderer::DeInit() 
 {
     ImGui_ImplOpenGL3_Shutdown();
@@ -202,7 +182,6 @@ void OpenGLRenderer::SetupHDRBuffer()
 	
 	glGenFramebuffers(1, &hdrFBO);
 
-	
 	glGenTextures(1, &colorBuffer);
 	glBindTexture(GL_TEXTURE_2D, colorBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, SCREEN_SIZE.x, SCREEN_SIZE.y, 0, GL_RGB, GL_FLOAT, NULL);
@@ -226,16 +205,18 @@ void OpenGLRenderer::Clear()
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 }
-void OpenGLRenderer::UpdateLights() {
+void OpenGLRenderer::UpdateLights(std::vector<PointLight> &lightsArray) 
+{
+	size_t maxLights = std::min(lightsArray.size(),NUM_LIGHTS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
 	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
 
-	for (int i = 0; i < NUM_LIGHTS; i++) {
+	for (int i = 0; i < maxLights; i++) 
+	{
 		PointLight &light = pointLights[i];
-		float min = LIGHT_MIN_BOUNDS[1];
-		float max = LIGHT_MAX_BOUNDS[1];
-
-		light.position.y = fmod((light.position.y + (-4.5f * 0.1) - min + max), max) + min;
+		light.position = lightsArray[i].position;
+		light.color = lightsArray[i].color;
+		light.paddingAndRadius = lightsArray[i].paddingAndRadius;
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
@@ -264,12 +245,12 @@ void OpenGLRenderer::DrawArrays(VertexArrayBuffer& VAO, size_t indicesSize)
     glDrawElements(GL_TRIANGLES, indicesSize, GL_UNSIGNED_INT, 0);
 
 }
+
 void OpenGLRenderer::DrawScene()
 {
     glm::mat4 view = EMS::getInstance().fire(ReturnMat4Event::getViewMatrix);
     glm::mat4 inverseview = glm::inverse(view);
     glm::vec3 viewpos = glm::vec3(inverseview[3].x,inverseview[3].y,inverseview[3].z);
-    UpdateLights();
 	
 	//DEPTH PASS
 	depthShader->useShader();
@@ -323,7 +304,8 @@ void OpenGLRenderer::DrawScene()
 	glBindTexture(GL_TEXTURE_2D, 0);
     drawQueue.clear();
 }
-void OpenGLRenderer::DrawGui() {
+void OpenGLRenderer::DrawGui() 
+{
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
@@ -364,7 +346,8 @@ void OpenGLRenderer::SetDepthTesting(bool isEnabled)
      DrawArrays(*mesh->GetVAO(),mesh->getIndices()->size());
 
     // Reset to defaults
-	for (size_t i = 0; i < textures.size(); i++) {
+	for (size_t i = 0; i < textures.size(); i++) 
+	{
 		TextureManager::getInstance().getTexture(textures[i].texture)->UnBind(i);
 	}
      
