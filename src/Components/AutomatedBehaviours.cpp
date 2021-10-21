@@ -16,13 +16,13 @@ AutomatedBehaviours::AutomatedBehaviours(GameObject* parent)
 	m_rayCaster = parent->GetComponent<RayCaster>();
 }
 
-void AutomatedBehaviours::accelerate(float TopSpeed)
+void AutomatedBehaviours::accelerate()
 {
 	if (TopSpeed > 0 && Acceleration < TopSpeed)
-		Acceleration += 0.01;
+		Acceleration += AccelerationRate;
 
 	if (TopSpeed < 0 && Acceleration > TopSpeed)
-		Acceleration -= 0.01;
+		Acceleration -= AccelerationRate;
 
 	m_transform->translatePostMultiply(glm::normalize(Heading) * Acceleration);
 }
@@ -30,10 +30,10 @@ void AutomatedBehaviours::accelerate(float TopSpeed)
 void AutomatedBehaviours::decelerate()
 {
 	if (Acceleration > 0)
-		Acceleration -= 0.01;
+		Acceleration -= AccelerationRate * 3;
 
 	if (Acceleration < 0)
-		Acceleration += 0.01;
+		Acceleration += AccelerationRate * 3;
 
 	m_transform->translatePostMultiply(glm::normalize(Heading) * Acceleration);
 }
@@ -41,11 +41,10 @@ void AutomatedBehaviours::decelerate()
 void AutomatedBehaviours::seek(glm::vec3 targetPosition)
 {
 	glm::vec3 targetHeading = (targetPosition - m_transform->getPosition());
-	//updateFeelers();
 
 	if(frontFeelerHit != -1)
 	{
-		//decelerate();
+		decelerate();
 		Angle += RotationSpeed;
 		m_transform->rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
 	}
@@ -89,8 +88,7 @@ void AutomatedBehaviours::seek(glm::vec3 targetPosition)
 				else
 				{
 					Angle -= RotationSpeed;
-					//*m_transformPtr = glm::rotate(*m_transformPtr, m_rotationSpeed, glm::vec3(0, 1, 0));		// turn left
-					m_transform->rotate(RotationSpeed, glm::vec3(0, 1, 0));			// turn right
+					m_transform->rotate(RotationSpeed, glm::vec3(0, 1, 0));			// turn left
 				}
 			}
 		}

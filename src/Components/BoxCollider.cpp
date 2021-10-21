@@ -32,6 +32,11 @@ void BoxCollider::SetPosition(glm::vec3 newPosition)
 	PhysicsSystem::getInstance().getCollisionBody(m_colliderID)->SetPosition(newPosition);
 }
 
+int BoxCollider::GetColliderID()
+{
+	return m_colliderID;
+}
+
 void BoxCollider::Update(float deltaTime)
 {
 	

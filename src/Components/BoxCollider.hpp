@@ -46,6 +46,8 @@ public:
 	* @param orientation
 	*/
 	void SetPosition(glm::vec3 newPosition);
+
+	int GetColliderID();
 private:
     ///Collider ID
     unsigned int m_colliderID;
