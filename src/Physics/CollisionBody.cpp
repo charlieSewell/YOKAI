@@ -54,43 +54,63 @@ void CollisionBody::setMass(double m) {
     mass = m;
 }
 
-double CollisionBody::getMass() {
+float CollisionBody::getMass() {
     return mass;
 }
 
-double CollisionBody::getInverseMass() {
+float CollisionBody::getInverseMass() {
     return 1.0 / mass;
 }
 
-glm::dvec3 CollisionBody::getCentreOfMass() {
+void CollisionBody::setCentreOfMass(glm::vec3 com) {
+    centreOfMass = com;
+}
+
+glm::vec3 CollisionBody::getCentreOfMass() {
     return centreOfMass;
 }
 
-glm::dmat3x3 CollisionBody::getInertiaTensor() {
+void CollisionBody::setInertiaTensor(glm::mat3x3 it) {
+    inertiaTensor = it;
+}
+
+glm::mat3x3 CollisionBody::getInertiaTensor() {
     return inertiaTensor;
 }
 
-glm::dmat3x3 CollisionBody::getInverseInertiaTensor() {
+glm::mat3x3 CollisionBody::getInverseInertiaTensor() {
     return 1.0 / inertiaTensor;
 }
 
-void CollisionBody::setLinearVelocity(glm::dvec3 lv) {
+void CollisionBody::setLinearVelocity(glm::vec3 lv) {
     linearVelocity = lv;
 }
 
-glm::dvec3 CollisionBody::getLinearVelocity() {
+glm::vec3 CollisionBody::getLinearVelocity() {
     return linearVelocity;
 }
 
-glm::dvec3 CollisionBody::getAngularVelocity() {
+void CollisionBody::setAngularVelocity(glm::vec3 av) {
+    angularVelocity = av;
+}
+
+glm::vec3 CollisionBody::getAngularVelocity() {
     return angularVelocity;
 }
 
-glm::dvec3 CollisionBody::getTorque() {
+void CollisionBody::setTorque(glm::vec3 t) {
+    torque = t;
+}
+
+glm::vec3 CollisionBody::getTorque() {
     return torque;
 }
 
-glm::dvec3 CollisionBody::getForce() {
+void CollisionBody::setForce(glm::vec3 f) {
+    force = f;
+}
+
+glm::vec3 CollisionBody::getForce() {
     return force;
 }
 
@@ -100,4 +120,12 @@ bool CollisionBody::getIsStaticObject() {
 
 void CollisionBody::setIsStaticObject(bool s) {
     staticObject = s;
+}
+
+void CollisionBody::setGravityAffected(bool g) {
+    gravityAffected = g;
+}
+
+bool CollisionBody::getGravityAffected() {
+    return gravityAffected;
 }

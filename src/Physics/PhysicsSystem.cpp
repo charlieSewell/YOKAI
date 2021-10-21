@@ -59,9 +59,13 @@ PhysicsSystem& PhysicsSystem::getInstance()
     return instance;
 }
 
-void PhysicsSystem::update(float dt) const
+void PhysicsSystem::update(float dt)
 {
     physicsWorld->update(static_cast<rp3d::decimal>(dt));
+
+    for (auto& n : m_colliders) {
+        n.second.setMass(10);
+    }
 }
 
 unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, float radius)

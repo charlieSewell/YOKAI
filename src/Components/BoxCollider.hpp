@@ -45,13 +45,36 @@ public:
 
     void SetPosition(glm::vec3 newPosition);
 
-    CollisionBody* getCollisionBody();
+    void setMass(double m);
+    double getMass();
 
-    void setLV(glm::dvec3 lv);
-    glm::dvec3 getLV();
+    double getInverseMass();
 
-    void setS(bool s);
-    bool getS();
+    void setCentreOfMass(glm::dvec3 com);
+    glm::dvec3 getCentreOfMass();
+
+    void setInertiaTensor(glm::dmat3x3 it);
+    glm::dmat3x3 getInertiaTensor();
+
+    glm::dmat3x3 getInverseInertiaTensor();
+
+    void setLinearVelocity(glm::dvec3 lv);
+    glm::dvec3 getLinearVelocity();
+
+    void setAngularVelocity(glm::dvec3 av);
+    glm::dvec3 getAngularVelocity();
+
+    void setTorque(glm::dvec3 t);
+    glm::dvec3 getTorque();
+
+    void setForce(glm::dvec3 f);
+    glm::dvec3 getForce();
+
+    void setIsStaticObject(bool s);
+    bool getIsStaticObject();
+
+    void setGravityAffected(bool g);
+    bool getGravityAffected();
 
 private:
     ///Collider ID

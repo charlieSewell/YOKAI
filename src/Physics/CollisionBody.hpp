@@ -82,27 +82,35 @@ public:
     //Physics
 
     void setMass(double m);
-    double getMass();
+    float getMass();
 
-    double getInverseMass();
+    float getInverseMass();
 
-    glm::dvec3 getCentreOfMass();
+    void setCentreOfMass(glm::vec3 com);
+    glm::vec3 getCentreOfMass();
 
-    glm::dmat3x3 getInertiaTensor();
+    void setInertiaTensor(glm::mat3x3 it);
+    glm::mat3x3 getInertiaTensor();
 
-    glm::dmat3x3 getInverseInertiaTensor();
+    glm::mat3x3 getInverseInertiaTensor();
 
-    void setLinearVelocity(glm::dvec3 lv);
-    glm::dvec3 getLinearVelocity();
+    void setLinearVelocity(glm::vec3 lv);
+    glm::vec3 getLinearVelocity();
 
-    glm::dvec3 getAngularVelocity();
+    void setAngularVelocity(glm::vec3 av);
+    glm::vec3 getAngularVelocity();
 
-    glm::dvec3 getTorque();
+    void setTorque(glm::vec3 t);
+    glm::vec3 getTorque();
 
-    glm::dvec3 getForce();
+    void setForce(glm::vec3 f);
+    glm::vec3 getForce();
 
     void setIsStaticObject(bool s);
     bool getIsStaticObject();
+
+    void setGravityAffected(bool g);
+    bool getGravityAffected();
 
 
 private:
@@ -128,5 +136,6 @@ private:
     glm::dvec3 force;
 
     bool staticObject;
+    bool gravityAffected;
 
 };

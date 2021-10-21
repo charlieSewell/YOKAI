@@ -39,7 +39,7 @@ public:
      * @brief Updates the simulation
      * @param float - dt
      */
-    void update(float dt) const;
+    void update(float dt);
 
 
     // easy to implement if needed
