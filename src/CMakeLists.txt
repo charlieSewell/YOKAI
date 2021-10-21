@@ -23,6 +23,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         Renderer/OpenGL/OpenGLRenderer.cpp
         Renderer/OpenGL/OpenGLDataTypes.cpp
         Renderer/OpenGL/FileIO.cpp
+		Renderer/LightManager.cpp
 
 
 		Engine/Yokai.cpp

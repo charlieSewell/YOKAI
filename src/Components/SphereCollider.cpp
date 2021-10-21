@@ -6,7 +6,6 @@ void SphereCollider::SetRadius(double radius)
 {
 	m_radius = radius;
 }
-
 void SphereCollider::Start()
 {
     if(m_parent->GetComponent<Transform>() == nullptr)

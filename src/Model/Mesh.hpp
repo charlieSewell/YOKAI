@@ -8,11 +8,8 @@
 #include <string>
 #include <vector>
 #include <memory>
-
 #include "Renderer/DataTypes.hpp"
-#include "Renderer/Shader.hpp"
-#include "Renderer/Renderer.hpp"
-#include "Engine/TextureManager.hpp"
+
 /**
  * @class Mesh
  * @brief Class that defines a mesh
@@ -52,11 +49,7 @@ class Mesh
      * @return mat4
      */
     glm::mat4 getTransform(){return transform;}
-    /**
-     * @brief Draws the mesh
-     * @param shader
-     */
-    const void Draw(Shader &shader);
+
     /**
      * @brief Sets up the mesh
      */
@@ -69,6 +62,7 @@ class Mesh
      */
     void addBoneData(unsigned int vertexID,unsigned int boneID, float weight);
 
+    std::shared_ptr<VertexArrayBuffer> GetVAO(){return VAO;}
   private:
     ///Pointer to the Mesh vertex array
     std::shared_ptr<VertexArrayBuffer> VAO;

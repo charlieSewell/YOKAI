@@ -4,14 +4,9 @@
 #pragma once
 
 #include "Renderer/RenderAPI.hpp"
-#include "Renderer/DataTypes.hpp"
 #include "Engine/EventManager.hpp"
 #include "Components/Transform.hpp"
 #include <memory>
-
-struct DrawItem {
-  Transform transform;
-};
 
 /**
  * @class Renderer
@@ -20,6 +15,7 @@ struct DrawItem {
 class Renderer 
 {
   public:
+    static Renderer& getInstance();
     /**
      * @brief Initialises the Renderer
      */
@@ -51,7 +47,15 @@ class Renderer
      * @brief bool - isEnabled
      */
     void SetDepthTesting(bool isEnabled);
+    
+    void AddToDraw(Mesh* mesh, glm::mat4 model, std::vector<glm::mat4> &finalTransforms);
+    void AddToDraw(Mesh* mesh, glm::mat4 model);
+    
+    void UpdateLights(std::vector<PointLight> &m_lights);
+    void DrawScene();
   private:
+    Renderer() = default;
+    ~Renderer() = default;
     /**
      * @brief Registers button to wireframe toggle
      */

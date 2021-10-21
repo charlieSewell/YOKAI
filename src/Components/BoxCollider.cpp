@@ -10,6 +10,7 @@ void BoxCollider::Start()
         m_parent->AddComponent<Transform>();
     }
 	m_colliderID = PhysicsSystem::getInstance().addAABB(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),extents.x,extents.y,extents.z);
+    PhysicsSystem::getInstance().getCollisionBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
 }
 void BoxCollider::SetExtents(glm::vec3 extent)
 {
@@ -38,5 +39,5 @@ int BoxCollider::GetColliderID()
 
 void BoxCollider::Update(float deltaTime)
 {
-	//std::cout << " " << m_parent->GetComponent<Transform>()->getPosition().x << " " << m_parent->GetComponent<Transform>()->getPosition().y << " " << m_parent->GetComponent<Transform>()->getPosition().z << std::endl;
+	
 }
