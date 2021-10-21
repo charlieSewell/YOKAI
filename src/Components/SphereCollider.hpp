@@ -28,8 +28,6 @@ public:
      */
     void Start();
 
-    void Awake();
-
     ///New Velocity of sphere
 
 	// Sets new position

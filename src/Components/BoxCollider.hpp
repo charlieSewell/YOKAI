@@ -18,7 +18,7 @@ public:
     /**
      * @brief Runs once when the scene is ready to go
      */
-    void Awake();
+    void Start();
     /**
      * @brief Updates Once a frame
      * @param deltaTime 

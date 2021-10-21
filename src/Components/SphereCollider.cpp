@@ -6,7 +6,7 @@ void SphereCollider::SetRadius(double radius)
 {
 	m_radius = radius;
 }
-void SphereCollider::Awake()
+void SphereCollider::Start()
 {
     if(m_parent->GetComponent<Transform>() == nullptr)
     {
@@ -14,10 +14,6 @@ void SphereCollider::Awake()
     }
     m_colliderID = PhysicsSystem::getInstance().addSphere(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(), m_radius);
 	PhysicsSystem::getInstance().getCollisionBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
-}
-void SphereCollider::Start()
-{
-    
 }
 
 void SphereCollider::SetPosition(glm::vec3 newPosition)

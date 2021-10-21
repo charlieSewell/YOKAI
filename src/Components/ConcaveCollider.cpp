@@ -2,7 +2,7 @@
 
 ConcaveCollider::ConcaveCollider(GameObject* parent) : Component(parent){}
 
-void ConcaveCollider::Awake()
+void ConcaveCollider::Start()
 {
     if(m_parent->GetComponent<Transform>() == nullptr)
     {

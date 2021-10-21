@@ -21,7 +21,7 @@ class YOKAI_API ConcaveCollider : public Component {
         /**
          * @brief Runs once when scene is ready to go
          */
-        void Awake();
+        void Start();
         /**
          * @brief Runs once a frame to update object
          * @param deltaTime 

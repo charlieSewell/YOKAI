@@ -143,7 +143,7 @@ void PhysicsSystem::Draw()
         shader_->useShader();
         //TODO Setup the shader, verify data is okay being passed in like this.
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        shader_->setMat4("projection", glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, 0.3f, 300.0f));
+        shader_->setMat4("projection", EMS::getInstance().fire(ReturnMat4Event::getPerspective));
         shader_->setMat4("view", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
         shader_->setMat4("model", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
 
