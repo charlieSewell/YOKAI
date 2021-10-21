@@ -24,7 +24,7 @@ public:
      * @param topSpeed
      */
 
-	void accelerate(float TopSpeed);
+	void accelerate();
     /**
      * @brief Decelerates the game object
      * @param topSpeed
