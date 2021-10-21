@@ -2,7 +2,7 @@
 
 BoxCollider::BoxCollider(GameObject* parent) : Component(parent){}
 
-void BoxCollider::Start()
+void BoxCollider::Awake()
 {
     //extents = glm::vec3(1,1,1);
     if(m_parent->GetComponent<Transform>() == nullptr)
