@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/GameObjectManager.hpp"
 #include "Engine/InputManagerGLFW.hpp"
+#include "Renderer/LightManager.hpp"
 #include "Yokai.hpp"
 /**
  * @class Layer
@@ -16,7 +17,7 @@ class Scene
     /**
      * @brief Updates a Layer
      */
-    virtual void Update(float frameRate) = 0;
+    virtual void Update(float deltaTime) = 0;
     /**
      * @brief Draw a Layer
      */
@@ -32,5 +33,6 @@ class Scene
 
   protected:
     ///Game Object Manager
-    GameObjectManager objectManager;
+    GameObjectManager m_objectManager;
+    LightManager m_lightManager;
 };

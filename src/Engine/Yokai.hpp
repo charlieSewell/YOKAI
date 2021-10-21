@@ -34,8 +34,6 @@ public:
      * @brief Runs the engine loop
      */
     void Run();
-    ///renderer used by engine
-    Renderer renderer = {};
     ///window used by the engine
     Window window = {};
     /**

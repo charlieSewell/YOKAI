@@ -4,10 +4,8 @@
 #pragma once
 #include <iostream>
 #include <glm/glm.hpp>
-#include "Renderer/Shader.hpp"
-#include "Model/Mesh.hpp"
 #include "Model/SkeletalAnimation.hpp"
-
+#include "Renderer/Renderer.hpp"
 /**
  * @struct Node
  * @brief Struct to hold info about a assimp node
@@ -64,7 +62,13 @@ class Model
      * @param Shader& - shader
      * @param mat4 - transform
      */
-    void Draw(Shader &shader, glm::mat4 transform);
+    void Draw(glm::mat4 transform);
+    /**
+     * @brief Draws a mesh model thats animated
+     * @param Shader& - shader
+     * @param mat4 - transform
+     */
+    void Draw(glm::mat4 transform, std::vector<glm::mat4> &finalTransforms);
     /**
      * @brief Gets animation by Name
      * @param name
@@ -101,7 +105,11 @@ class Model
      * @return mat4
      */
     glm::mat4 getGlobalInverseTransform(){return globalInverseTransform;}
-
+    /**
+     * @brief is the model animated
+     * @return bool
+     */
+    bool isAnimated();
   private:
     ///Global transform
     glm::mat4 globalInverseTransform{};

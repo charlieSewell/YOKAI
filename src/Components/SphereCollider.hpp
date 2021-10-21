@@ -64,10 +64,11 @@ public:
     void setGravityAffected(bool g);
     bool getGravityAffected();
 
+	unsigned int GetColliderID();
 
 private:
     ///Collider ID
-    unsigned int colliderID;
+    unsigned int m_colliderID;
 	//radius
 	double m_radius = 0.05;
 };

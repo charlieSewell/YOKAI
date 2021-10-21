@@ -149,3 +149,10 @@ class VertexArrayBuffer
      */
     static std::shared_ptr<VertexArrayBuffer> Create(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 };
+struct PointLight
+{
+	glm::vec4 color = {};
+	glm::vec4 position = {};
+	glm::vec4 paddingAndRadius = {};
+
+};

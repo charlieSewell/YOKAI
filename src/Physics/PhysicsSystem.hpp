@@ -59,6 +59,7 @@ public:
      * @param int - colliderID
      * @return RigidBody
      */
+
     CollisionBody * getPhysicsBody(int colliderID);
     /**
      * @brief Deletes a rigid Body
@@ -106,7 +107,10 @@ public:
     ///physics world for simulation
     reactphysics3d::PhysicsWorld* physicsWorld;
 
+    void IsDebugEnabled(bool isEnabled){isDebugEnabled = isEnabled;}
+
 private:
+    bool isDebugEnabled = false;
     ///Privatised Constructor
     PhysicsSystem() = default;
     std::string path1;

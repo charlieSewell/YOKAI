@@ -61,7 +61,9 @@ class YOKAI_API ConcaveCollider : public Component {
 
     private:
         ///Collider ID
-        unsigned int colliderID;
+        unsigned int m_colliderID;
         ///Model ID
         unsigned int modelID;
+
+        //unsigned int m_colliderID;
 };

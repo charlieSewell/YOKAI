@@ -34,11 +34,7 @@ rp3d::decimal RayCaster::notifyRaycastHit(const rp3d::RaycastInfo& info)
 {
     if(info.collider != nullptr)
     {
-        if(info.collider->getCollisionShape()->getType() == rp3d::CollisionShapeType::CONCAVE_SHAPE)
-        {
-            return rp3d::decimal(1.0);
-        }
-        else if(info.collider->getEntity().id != ownColliderID && info.collider->getEntity().id != excludedColliderID)
+        if(info.collider->getEntity().id != ownColliderID && info.collider->getEntity().id != excludedColliderID)
 		{
             hits.emplace(info.hitFraction,info.collider->getEntity().id);
             return rp3d::decimal(1.0);

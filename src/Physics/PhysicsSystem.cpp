@@ -3,6 +3,7 @@
 #include "PhysicsSystem.hpp"
 #include "Engine/GameObjectManager.hpp"
 #include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "Engine/EventManager.hpp"
 void PhysicsSystem::Init()
 {
@@ -11,7 +12,7 @@ void PhysicsSystem::Init()
     reactphysics3d::PhysicsWorld::WorldSettings settings;
     //settings.defaultVelocitySolverNbIterations = 20;
     //settings.isSleepingEnabled = false;
-    settings.gravity = reactphysics3d::Vector3(0, -1, 0);
+    settings.gravity = reactphysics3d::Vector3(0, 0, 0);
 
     physicsWorld = physicsCommon.createPhysicsWorld(settings);
     
@@ -140,6 +141,8 @@ void PhysicsSystem::deleteRigidBody(int ID)
 
 void PhysicsSystem::Draw()
  {
+     if(isDebugEnabled)
+     {
         shader_->useShader();
         //TODO Setup the shader, verify data is okay being passed in like this.
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -159,9 +162,7 @@ void PhysicsSystem::Draw()
             glVertexAttribIPointer(1, 3, GL_UNSIGNED_INT, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (void*) sizeof(rp3d::Vector3));
             
             // Draw the lines geometry
-
             glDrawArrays(GL_LINES, 0, line_num_ * 2);
-
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -182,7 +183,6 @@ void PhysicsSystem::Draw()
 
             // Draw the triangles geometry
             glDrawArrays(GL_TRIANGLES, 0, triag_num_ * 3);
-
             glDisableVertexAttribArray(0);
             glDisableVertexAttribArray(1);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -190,6 +190,7 @@ void PhysicsSystem::Draw()
         }
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         //shader->Use();
+     }
 }
 
 void PhysicsSystem::RendererUpdate() {

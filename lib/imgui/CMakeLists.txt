@@ -15,4 +15,4 @@ target_sources(imgui PRIVATE
 target_compile_options(imgui PRIVATE -fPIC)
 
 target_include_directories(imgui PUBLIC . imgui)
-target_link_libraries(imgui PRIVATE glfw glad ${APP_SERVICES_LIBRARY} ${COCOA_LIBRARY})
+target_link_libraries(imgui PRIVATE glfw glew ${APP_SERVICES_LIBRARY} ${COCOA_LIBRARY})

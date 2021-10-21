@@ -5,7 +5,8 @@
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
-#include <glad/glad.h>
+#include <GL/glew.h>
+#include <glm/glm.hpp>
 /**
  * @class Window
  * @brief Creates a window for rendering
@@ -44,6 +45,11 @@ class Window {
      * @brief Ends a frame and processes callbacks
      */
     void endFrame();
+    /**
+     * @brief Returns the Current Window Size
+     * @return vec2 windowSize
+     */
+    glm::vec2 getWindowSize();
   private:
     ///GLFW window
     GLFWwindow* window;

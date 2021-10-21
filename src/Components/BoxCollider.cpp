@@ -9,7 +9,8 @@ void BoxCollider::Start()
     {
         m_parent->AddComponent<Transform>();
     }
-    colliderID = PhysicsSystem::getInstance().addAABB(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),extents.x,extents.y,extents.z);
+	m_colliderID = PhysicsSystem::getInstance().addAABB(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),extents.x,extents.y,extents.z);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
 }
 void BoxCollider::SetExtents(glm::vec3 extent)
 {
@@ -18,7 +19,7 @@ void BoxCollider::SetExtents(glm::vec3 extent)
 
 void BoxCollider::SetOrientation(glm::quat orientation)
 {
-	PhysicsSystem::getInstance().getPhysicsBody(colliderID)->SetOrientation(orientation);
+	PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(orientation);
 }
 
 void BoxCollider::SetExtents(float x,float y, float z)
@@ -26,97 +27,102 @@ void BoxCollider::SetExtents(float x,float y, float z)
    extents = glm::vec3(x,y,z);
 }
 
-void BoxCollider::Update(float deltaTime)
+void BoxCollider::SetPosition(glm::vec3 newPosition)
 {
-	//std::cout << " " << m_parent->GetComponent<Transform>()->getPosition().x << " " << m_parent->GetComponent<Transform>()->getPosition().y << " " << m_parent->GetComponent<Transform>()->getPosition().z << std::endl;
+	PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(newPosition);
 }
 
-void BoxCollider::SetPosition(glm::vec3 newPosition) 
+int BoxCollider::GetColliderID()
 {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->SetPosition(newPosition);
+	return m_colliderID;
+}
+
+void BoxCollider::Update(float deltaTime)
+{
+	
 }
 
 void BoxCollider::setMass(double m) {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setMass(m);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setMass(m);
 }
 
 double BoxCollider::getMass() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getMass();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getMass();
 }
 
 double BoxCollider::getInverseMass() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getInverseMass();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInverseMass();
 }
 
 void BoxCollider::setCentreOfMass(glm::dvec3 com) {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setCentreOfMass(com);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setCentreOfMass(com);
 }
 
 glm::dvec3 BoxCollider::getCentreOfMass() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getCentreOfMass();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getCentreOfMass();
 }
 
 void BoxCollider::setInertiaTensor() {
     
     glm::mat3x3 temp = YokaiPhysics::RectangleInertiaTensor(extents, getMass());
     
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setInertiaTensor(temp);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setInertiaTensor(temp);
 }
 
 glm::dmat3x3 BoxCollider::getInertiaTensor() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getInertiaTensor();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInertiaTensor();
 }
 
 glm::dmat3x3 BoxCollider::getInverseInertiaTensor() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getInverseInertiaTensor();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInverseInertiaTensor();
 }
 
 void BoxCollider::setLinearVelocity(glm::dvec3 lv) {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setLinearVelocity(lv);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setLinearVelocity(lv);
 }
 
 glm::dvec3 BoxCollider::getLinearVelocity() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getLinearVelocity();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getLinearVelocity();
 }
 
 void BoxCollider::setAngularVelocity(glm::dvec3 av) {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setAngularVelocity(av);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setAngularVelocity(av);
 }
 
 glm::dvec3 BoxCollider::getAngularVelocity() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getAngularVelocity();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getAngularVelocity();
 }
 
 void BoxCollider::setTorque(glm::dvec3 t) {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setTorque(t);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setTorque(t);
 }
 
 glm::dvec3 BoxCollider::getTorque() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getTorque();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getTorque();
 }
 
 void BoxCollider::setForce(glm::dvec3 f) {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setForce(f);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setForce(f);
 }
 
 glm::dvec3 BoxCollider::getForce() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getForce();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getForce();
 }
 
 void BoxCollider::setIsStaticObject(bool s) {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setIsStaticObject(s);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setIsStaticObject(s);
 }
 
 bool BoxCollider::getIsStaticObject() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getIsStaticObject();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getIsStaticObject();
 }
 
 void BoxCollider::setGravityAffected(bool g) {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setGravityAffected(g);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setGravityAffected(g);
 }
 
 bool BoxCollider::getGravityAffected() {
-    return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getGravityAffected();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getGravityAffected();
 }
 
 glm::vec3 BoxCollider::getExtents() {

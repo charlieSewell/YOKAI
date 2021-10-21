@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 
 #include <string>
@@ -21,6 +21,8 @@ class Shader
      * @param const char* - fragmentPath
      */
     Shader(const char* vertexPath, const char* fragmentPath);
+    Shader(const char* computePath);
+    
     /**
      * @brief Binds the Shader for use
      */
@@ -43,6 +45,12 @@ class Shader
      * @param float - value
      */
     void setFloat(const std::string &uniformName, float value) const;
+    /**
+     * @brief Sets a 2Iv uniform in the shader
+     * @param string& - uniformName
+     * @param ivec2& - value
+     */
+    void setIvec2(const std::string &name, glm::ivec2 screenSize);
     /**
      * @brief Sets a mat4 uniform in the shader
      * @param string& - uniformName
@@ -68,6 +76,7 @@ class Shader
      */
     unsigned int getShaderID(){return shaderID;}
 
+    void CheckCompileErrors(GLuint shader, std::string type);
   private:
     ///Shaders ID
     unsigned int shaderID;

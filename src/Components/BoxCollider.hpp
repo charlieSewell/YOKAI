@@ -44,8 +44,6 @@ public:
      */
 	void SetOrientation(glm::quat orientation);
 
-    void SetPosition(glm::vec3 newPosition);
-
     void setMass(double m);
     double getMass();
 
@@ -81,9 +79,17 @@ public:
 
     void initInertiaTensor();
 
+	/**
+	* @brief Set the Positin of the Bounding Box
+	* @param orientation
+	*/
+	void SetPosition(glm::vec3 newPosition);
+
+	int GetColliderID();
+
 private:
     ///Collider ID
-    unsigned int colliderID;
+    unsigned int m_colliderID;
     ///Extents of Bounding Box
     glm::vec3 extents;
 };

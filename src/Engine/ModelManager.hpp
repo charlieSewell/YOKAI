@@ -8,6 +8,8 @@
 #include <array>
 #include <glm/glm.hpp>
 #include "Export.hpp"
+#include <memory>
+#include <vector>
 
 /**
  * @class ModelManager
@@ -33,7 +35,7 @@ class YOKAI_API ModelManager
      * @param size_t - modelID
      * @return shared_ptr<Model>
      */
-    std::shared_ptr<Model> GetModel(size_t modelID);
+    Model* GetModel(size_t modelID);
 
     /*!
      * @brief Calls the draw function for the specified model
@@ -55,7 +57,4 @@ class YOKAI_API ModelManager
 
     /// Vector of models
     std::vector<Model> models;
-
-    /// Shader pointer
-    Shader *modelShader;
 };
