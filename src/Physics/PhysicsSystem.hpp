@@ -57,7 +57,7 @@ public:
      * @param int - colliderID
      * @return RigidBody
      */
-    CollisionBody * getRigidBody(int colliderID);
+    CollisionBody * getCollisionBody(int m_colliderID);
     /**
      * @brief Deletes a rigid Body
      * @param int - ID

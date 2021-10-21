@@ -24,7 +24,8 @@ void Camera::registerViewMatrix()
 {
     auto viewMatrix = [&]()
     {
-      return glm::lookAt(m_position, m_position + m_frontDirection, m_upDirection);
+		m_position = m_parent->GetComponent<Transform>()->getPosition();
+		return glm::lookAt(m_position, m_position + m_frontDirection, m_upDirection);
     };
 
     EMS::getInstance().add(ReturnMat4Event::getViewMatrix, viewMatrix);

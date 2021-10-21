@@ -119,7 +119,7 @@ unsigned int PhysicsSystem::addAABB(unsigned int ID,Transform* transform, float 
     return temp;
 }
 
-CollisionBody * PhysicsSystem::getRigidBody(int colliderID)
+CollisionBody * PhysicsSystem::getCollisionBody(int colliderID)
 {
     try{
         return &m_colliders.at(colliderID);
