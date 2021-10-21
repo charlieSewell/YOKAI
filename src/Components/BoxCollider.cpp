@@ -56,8 +56,11 @@ glm::dvec3 BoxCollider::getCentreOfMass() {
     return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getCentreOfMass();
 }
 
-void BoxCollider::setInertiaTensor(glm::dmat3x3 it) {
-    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setInertiaTensor(it);
+void BoxCollider::setInertiaTensor() {
+    
+    glm::mat3x3 temp = YokaiPhysics::RectangleInertiaTensor(extents, getMass());
+    
+    PhysicsSystem::getInstance().getPhysicsBody(colliderID)->setInertiaTensor(temp);
 }
 
 glm::dmat3x3 BoxCollider::getInertiaTensor() {
@@ -114,4 +117,19 @@ void BoxCollider::setGravityAffected(bool g) {
 
 bool BoxCollider::getGravityAffected() {
     return PhysicsSystem::getInstance().getPhysicsBody(colliderID)->getGravityAffected();
+}
+
+glm::vec3 BoxCollider::getExtents() {
+    return extents;
+}
+
+void BoxCollider::initInertiaTensor() {
+    
+    glm::mat3x3 temp;
+    
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            temp[i][j] = 0;
+        }
+    }
 }

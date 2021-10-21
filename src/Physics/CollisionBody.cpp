@@ -79,7 +79,7 @@ glm::mat3x3 CollisionBody::getInertiaTensor() {
 }
 
 glm::mat3x3 CollisionBody::getInverseInertiaTensor() {
-    return 1.0 / inertiaTensor;
+    return glm::inverse(inertiaTensor);
 }
 
 void CollisionBody::setLinearVelocity(glm::vec3 lv) {

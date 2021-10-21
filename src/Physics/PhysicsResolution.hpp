@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include "ReactMath.hpp"
 #include "PhysicsSystem.hpp"
+//#include "ResolutionFunctions.hpp"
 
 class PhysicsResolution : public rp3d::EventListener {
   public:

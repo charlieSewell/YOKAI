@@ -5,6 +5,7 @@
 #include "Export.hpp"
 #include "Physics/PhysicsSystem.hpp"
 #include "Physics/CollisionBody.hpp"
+#include "Physics/ResolutionFunctions.hpp"
 /**
  * @class BoxCollider
  * @brief Box collider component
@@ -53,7 +54,7 @@ public:
     void setCentreOfMass(glm::dvec3 com);
     glm::dvec3 getCentreOfMass();
 
-    void setInertiaTensor(glm::dmat3x3 it);
+    void setInertiaTensor();
     glm::dmat3x3 getInertiaTensor();
 
     glm::dmat3x3 getInverseInertiaTensor();
@@ -75,6 +76,10 @@ public:
 
     void setGravityAffected(bool g);
     bool getGravityAffected();
+
+    glm::vec3 getExtents();
+
+    void initInertiaTensor();
 
 private:
     ///Collider ID
