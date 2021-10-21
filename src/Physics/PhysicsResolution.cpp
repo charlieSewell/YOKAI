@@ -37,7 +37,7 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
                     // Get the contact point
                     CollisionCallback::ContactPoint contactPoint = contactPair.getContactPoint(c);
                     float pen               = contactPoint.getPenetrationDepth();
-                    glm::vec3 contactNormal = ReactMath::rp3dVecToGlm(contactPoint.getWorldNormal());
+                    glm::vec3 contactNormal = ReactMath::rp3dVecToGlm(const_cast<rp3d::Vector3&>(contactPoint.getWorldNormal()));
 
                     // Get the contact point on the first collider and convert it in world-space
                     glm::vec3 body1ContactPoint =
@@ -52,7 +52,7 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
 
                     collisionResolution(test1, test2, pen, contactNormal, body1ContactPoint, body2ContactPoint);
                 }
-
+                
                 glm::dvec3 lv1 =
                     PhysicsSystem::getInstance().getPhysicsBody(test1)->getLinearVelocity();
                 PhysicsSystem::getInstance().getPhysicsBody(test1)->setLinearVelocity(-lv1);
@@ -60,7 +60,7 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
                 glm::dvec3 lv2 =
                     PhysicsSystem::getInstance().getPhysicsBody(test2)->getLinearVelocity();
                 PhysicsSystem::getInstance().getPhysicsBody(test2)->setLinearVelocity(-lv2);
-
+                
             }
         }
 
@@ -110,7 +110,7 @@ void PhysicsResolution::collisionResolution(int body1, int body2, float pen, glm
     std::cout << "impulse - (" << linearImpulse.x << ", " << linearImpulse.y << ", " << linearImpulse.z << ")" << std::endl;
 
     std::cout << "linear - (" << (linearVelocity1 + (linearImpulse * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseMass())).x << ", " << (linearVelocity1 + (linearImpulse * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseMass())).y << ", " << (linearVelocity1 +(linearImpulse * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseMass())).z << std::endl;
-
+    std::cout << "angular - (" << (angularVelocity1 + (lambda * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor()) * r1cross).x << ", " << (angularVelocity1 + (lambda * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor()) * r1cross).y << ", " << (angularVelocity1 + (lambda * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor()) * r1cross).z << std::endl;
     //TESTING
     //std::cout << "R1 - (" << r1.x << ", " << r1.y << ", " << r1.z << ")" << std::endl;
     //std::cout << "R2 - (" << r2.x << ", " << r2.y << ", " << r2.z << ")" << std::endl;
