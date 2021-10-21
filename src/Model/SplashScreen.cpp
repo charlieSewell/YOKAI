@@ -1,6 +1,6 @@
 
 #include "SplashScreen.hpp"
-#include "Engine/Yokai.hpp"
+#include "Renderer/Renderer.hpp"
 #include "Engine/TextureManager.hpp"
 
 SplashScreen::SplashScreen(const std::string& texturePath)
@@ -16,11 +16,11 @@ void SplashScreen::setTexture(const std::string& texturePath)
 
 void SplashScreen::draw()
 {
-    auto& engine = Yokai::getInstance();
-    engine.renderer.SetDepthTesting(false);
+    auto& renderer = Renderer::getInstance();
+    renderer.SetDepthTesting(false);
     TextureManager::getInstance().getTexture(texture)->Bind(1);
-    engine.renderer.DrawArrays(*vao,6);
-    engine.renderer.SetDepthTesting(true);
+    renderer.DrawArrays(*vao,6);
+    renderer.SetDepthTesting(true);
 }
 
 

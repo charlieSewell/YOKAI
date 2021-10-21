@@ -19,7 +19,7 @@ class Animator{
          * @brief Constructor for animator that takes a model pointer
          * @param model
          */
-        Animator(std::shared_ptr<Model> model);
+        Animator(Model* model);
         /**
          * @brief Interpolates the animation based on the time input
          * @param TimeInSeconds
@@ -29,7 +29,7 @@ class Animator{
          * @brief Adds the model to be animated
          * @param model
          */
-        void addModel(std::shared_ptr<Model> model){modelToAnimate = std::move(model);}
+        void addModel(Model* model){modelToAnimate = model;}
         /**
          * @brief Sets the animation string
          * @param animationToSet
@@ -75,6 +75,6 @@ class Animator{
         ///string of animation to play
         std::string animation;
         ///pointer to model
-        std::shared_ptr<Model> modelToAnimate;
+        Model* modelToAnimate;
 
 };

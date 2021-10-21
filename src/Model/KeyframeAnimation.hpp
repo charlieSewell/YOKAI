@@ -2,9 +2,9 @@
 
 #include <iostream>
 #include <vector>
-#include "Model/Model.hpp"
 #include "Model/ObjectLoading/ModelLoader.hpp"
 #include <fstream>
+#include <memory>
 #include "Components/Transform.hpp"
 
 /**

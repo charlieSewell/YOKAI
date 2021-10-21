@@ -7,8 +7,8 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <memory>
 #include "Model/Model.hpp"
-#include "Model/SkeletalAnimation.hpp"
 #include "Engine/TextureManager.hpp"
 /** @class ModelLoader
  *  @brief Class that loads models

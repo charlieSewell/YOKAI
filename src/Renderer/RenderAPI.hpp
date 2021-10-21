@@ -5,6 +5,30 @@
 #pragma once
 #include "Renderer/DataTypes.hpp"
 #include "Renderer/Shader.hpp"
+#include <vector>
+#include "DrawItem.hpp"
+
+struct VolumeTileAABB{
+    glm::vec4 minPoint = {};
+    glm::vec4 maxPoint = {};
+};
+
+struct ScreenToView{
+    glm::mat4 inverseProjectionMat;
+    unsigned int tileSizes[4];
+    unsigned int screenWidth;
+    unsigned int screenHeight;
+    float sliceScalingFactor;
+    float sliceBiasFactor;
+};
+
+struct VisibleIndex {
+	int index = 0;
+};
+struct LightGrid{
+    unsigned int offset;
+    unsigned int count;
+};
 /**
  * @class RenderAPI
  * @brief Interface for a renderAPI
@@ -46,11 +70,16 @@ class RenderAPI
      * @brief Sets Depth Testing
      * @param bool - isEnabled
      */
+    virtual void UpdateLights(std::vector<PointLight> &lightsArray) = 0;
     virtual void SetDepthTesting(bool isEnabled) = 0;
+    virtual void DrawScene() = 0;
+    
+    virtual void SubmitDraw(RENDER::DrawItem drawItem) = 0;
     /**
      * @brief Creates a specific rendering API
      * @return shared_ptr<RenderAPI> - renderAPI
      */
     static std::shared_ptr<RenderAPI> Create();
+    
 };
 

@@ -21,8 +21,13 @@ bool Window::Init()
         SPDLOG_ERROR("GLFW Failed to Initialise");
         return false;
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
+
 
     window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", NULL, NULL);
     //window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", glfwGetPrimaryMonitor(), nullptr);
@@ -81,4 +86,10 @@ void Window::startFrame()
 void Window::endFrame()
 {
     glfwSwapBuffers(window);
+}
+glm::vec2 Window::getWindowSize()
+{
+    int width,height;
+    glfwGetWindowSize(window, &width, &height);
+    return glm::vec2(width,height);
 }

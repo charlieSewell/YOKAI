@@ -5,7 +5,7 @@ void ReactConcaveShape::CreateConcaveShape(reactphysics3d::PhysicsCommon &physic
 {
     
     triangleMesh = physicsCommon.createTriangleMesh(); 
-    std::shared_ptr<Model> model = Yokai::getInstance().getModelManager()->GetModel(modelID);
+    Model* model = Yokai::getInstance().getModelManager()->GetModel(modelID);
     vertices.resize(model->getMeshes()->size());
     indices.resize(model->getMeshes()->size());
     triangleArrays.resize(model->getMeshes()->size());
