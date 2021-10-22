@@ -15,7 +15,7 @@ void CollisionBody::DeleteBody(rp3d::PhysicsWorld* physicsWorld,rp3d::PhysicsCom
 }
 void CollisionBody::SetPosition(glm::dvec3 position){
     m_position = position;
-    std::cout << "changing position" << glm::to_string(m_position) << std::endl;
+    //std::cout << "changing position" << glm::to_string(m_position) << std::endl;
     rp3d::Transform currTransform = m_body->getTransform();
     currTransform.setPosition(ReactMath::glmVecToRP3d(position));
     m_body->setTransform(currTransform);

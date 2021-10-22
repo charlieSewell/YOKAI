@@ -66,7 +66,17 @@ PhysicsSystem& PhysicsSystem::getInstance()
 void PhysicsSystem::update(float dt)
 {
     physicsWorld->update(static_cast<rp3d::decimal>(dt));
-
+	
+	for (auto& m_collider : m_colliders)
+	{
+		if(m_collider.second.hasCollided)
+		{
+			m_collider.second.setLinearVelocity(m_collider.second.m_tempLinearVelocity /  double(m_collider.second.counter));
+			m_collider.second.hasCollided = false;
+			m_collider.second.m_tempLinearVelocity = glm::vec3 {};
+			m_collider.second.counter = 0;
+		}
+	}
 }
 
 unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, float radius)

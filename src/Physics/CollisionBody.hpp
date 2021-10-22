@@ -119,6 +119,11 @@ class CollisionBody {
     void setGravityAffected(bool g);
     bool getGravityAffected();
 
+	// bad
+	glm::dvec3 m_tempLinearVelocity = {};
+	bool hasCollided = false;
+	int counter = 0;
+
   private:
     /// Shape of collider
     ReactShape *shape;

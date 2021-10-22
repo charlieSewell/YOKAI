@@ -46,7 +46,7 @@ int BoxCollider::GetColliderID()
 void BoxCollider::Update(float deltaTime)
 {
     glm::dvec3 lv = getLinearVelocity();
-    std::cout << glm::to_string(GetPosition()) << std::endl;
+    //std::cout << glm::to_string(GetPosition()) << std::endl;
     translate(getLinearVelocity() * static_cast<double>(deltaTime));
     setCentreOfMass(GetPosition());
 }
