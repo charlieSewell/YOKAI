@@ -79,8 +79,8 @@ void Yokai::Run()
 			{
 				InputManagerGLFW::getInstance().processMouse(window.getWindow());
 				InputManagerGLFW::getInstance().processGamepadAxis();
-                layers[activeLayer]->Update(static_cast<float>(timeStep));
                 PhysicsSystem::getInstance().update(timeStep);
+                layers[activeLayer]->Update(timeStep);
 				accumulator -= timeStep;
 			}
         }

@@ -1,4 +1,5 @@
 #include "BoxCollider.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 BoxCollider::BoxCollider(GameObject* parent) : Component(parent){}
 
@@ -11,6 +12,7 @@ void BoxCollider::Start()
     }
 	m_colliderID = PhysicsSystem::getInstance().addAABB(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),extents.x,extents.y,extents.z);
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
+    setCentreOfMass(GetPosition());
 }
 void BoxCollider::SetExtents(glm::vec3 extent)
 {
@@ -24,12 +26,16 @@ void BoxCollider::SetOrientation(glm::quat orientation)
 
 void BoxCollider::SetExtents(float x,float y, float z)
 {
-   extents = glm::vec3(x,y,z);
+   extents = glm::dvec3(x,y,z);
 }
 
-void BoxCollider::SetPosition(glm::vec3 newPosition)
+void BoxCollider::SetPosition(glm::dvec3 newPosition)
 {
 	PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(newPosition);
+}
+
+glm::dvec3 BoxCollider::GetPosition() {
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetPosition();
 }
 
 int BoxCollider::GetColliderID()
@@ -39,7 +45,10 @@ int BoxCollider::GetColliderID()
 
 void BoxCollider::Update(float deltaTime)
 {
-	
+    glm::dvec3 lv = getLinearVelocity();
+    std::cout << glm::to_string(GetPosition()) << std::endl;
+    translate(getLinearVelocity() * static_cast<double>(deltaTime));
+    setCentreOfMass(GetPosition());
 }
 
 void BoxCollider::setMass(double m) {
@@ -64,8 +73,10 @@ glm::dvec3 BoxCollider::getCentreOfMass() {
 
 void BoxCollider::setInertiaTensor() {
     
-    glm::mat3x3 temp = YokaiPhysics::RectangleInertiaTensor(extents, getMass());
+    glm::dmat3x3 temp = YokaiPhysics::RectangleInertiaTensor(extents, getMass());
     
+    //std::cout << "extent x " << extents.x << std::endl;
+
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setInertiaTensor(temp);
 }
 
@@ -125,17 +136,21 @@ bool BoxCollider::getGravityAffected() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getGravityAffected();
 }
 
-glm::vec3 BoxCollider::getExtents() {
+glm::dvec3 BoxCollider::getExtents() {
     return extents;
 }
 
 void BoxCollider::initInertiaTensor() {
     
-    glm::mat3x3 temp;
+    glm::dmat3x3 temp;
     
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
             temp[i][j] = 0;
         }
     }
+}
+
+void BoxCollider::translate(glm::dvec3 position) {
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(position + GetPosition());
 }

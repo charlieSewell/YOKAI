@@ -1,5 +1,6 @@
 ﻿#include "CollisionBody.hpp"
 #include "ReactMath.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 void CollisionBody::CreateBody(int gameObjID,rp3d::PhysicsWorld* physicsWorld,glm::vec3 position,glm::quat orientation)
 {
@@ -12,10 +13,13 @@ void CollisionBody::DeleteBody(rp3d::PhysicsWorld* physicsWorld,rp3d::PhysicsCom
     physicsWorld->destroyCollisionBody(m_body);
     shape->DeleteShape(physicsCommon);
 }
-void CollisionBody::SetPosition(glm::vec3 position){
+void CollisionBody::SetPosition(glm::dvec3 position){
+    m_position = position;
+    std::cout << "changing position" << glm::to_string(m_position) << std::endl;
     rp3d::Transform currTransform = m_body->getTransform();
     currTransform.setPosition(ReactMath::glmVecToRP3d(position));
     m_body->setTransform(currTransform);
+    
 }
 void CollisionBody::SetOrientation(glm::quat orientation)
 {
@@ -28,10 +32,11 @@ glm::quat CollisionBody::GetOrientation()
     rp3d::Quaternion temp = m_body->getTransform().getOrientation();
     return ReactMath::rp3dQuatToGlm(temp);
 }
-glm::vec3 CollisionBody::GetPosition()
+glm::dvec3 CollisionBody::GetPosition()
 {
     rp3d::Vector3 temp = m_body->getTransform().getPosition();
-    return ReactMath::rp3dVecToGlm(temp);
+    //return ReactMath::rp3dVecToGlmD(temp);
+    return m_position;
 }
 
 void CollisionBody::AddCollisionShape(ReactShape* shapeToInsert) {
@@ -54,63 +59,63 @@ void CollisionBody::setMass(double m) {
     mass = m;
 }
 
-float CollisionBody::getMass() {
+double CollisionBody::getMass() {
     return mass;
 }
 
-float CollisionBody::getInverseMass() {
+double CollisionBody::getInverseMass() {
     return 1.0 / mass;
 }
 
-void CollisionBody::setCentreOfMass(glm::vec3 com) {
+void CollisionBody::setCentreOfMass(glm::dvec3 com) {
     centreOfMass = com;
 }
 
-glm::vec3 CollisionBody::getCentreOfMass() {
+glm::dvec3 CollisionBody::getCentreOfMass() {
     return centreOfMass;
 }
 
-void CollisionBody::setInertiaTensor(glm::mat3x3 it) {
+void CollisionBody::setInertiaTensor(glm::dmat3x3 it) {
     inertiaTensor = it;
 }
 
-glm::mat3x3 CollisionBody::getInertiaTensor() {
+glm::dmat3x3 CollisionBody::getInertiaTensor() {
     return inertiaTensor;
 }
 
-glm::mat3x3 CollisionBody::getInverseInertiaTensor() {
+glm::dmat3x3 CollisionBody::getInverseInertiaTensor() {
     return glm::inverse(inertiaTensor);
 }
 
-void CollisionBody::setLinearVelocity(glm::vec3 lv) {
+void CollisionBody::setLinearVelocity(glm::dvec3 lv) {
     linearVelocity = lv;
 }
 
-glm::vec3 CollisionBody::getLinearVelocity() {
+glm::dvec3 CollisionBody::getLinearVelocity() {
     return linearVelocity;
 }
 
-void CollisionBody::setAngularVelocity(glm::vec3 av) {
+void CollisionBody::setAngularVelocity(glm::dvec3 av) {
     angularVelocity = av;
 }
 
-glm::vec3 CollisionBody::getAngularVelocity() {
+glm::dvec3 CollisionBody::getAngularVelocity() {
     return angularVelocity;
 }
 
-void CollisionBody::setTorque(glm::vec3 t) {
+void CollisionBody::setTorque(glm::dvec3 t) {
     torque = t;
 }
 
-glm::vec3 CollisionBody::getTorque() {
+glm::dvec3 CollisionBody::getTorque() {
     return torque;
 }
 
-void CollisionBody::setForce(glm::vec3 f) {
+void CollisionBody::setForce(glm::dvec3 f) {
     force = f;
 }
 
-glm::vec3 CollisionBody::getForce() {
+glm::dvec3 CollisionBody::getForce() {
     return force;
 }
 

@@ -26,11 +26,12 @@ class ReactMath{
          * @return rp3d::Vector3 - vec3
          */
         static reactphysics3d::Vector3 glmVecToRP3d(glm::vec3& vec);
+        static reactphysics3d::Vector3 glmVecToRP3d(glm::dvec3 &vec);
         /**
          * @brief Converts rp3d Vector3 to glm
          * @param rp3d::Vector3 - vec3
          * @return glm::vec3 - vec3
          */
         static glm::vec3 rp3dVecToGlm(reactphysics3d::Vector3& vec);
-        //static glm::vec3 rp3dVecToGlm(reactphysics3d::Vector3 vec);
+        static glm::dvec3 rp3dVecToGlmD(reactphysics3d::Vector3& vec);
 };

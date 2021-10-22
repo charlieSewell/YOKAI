@@ -75,7 +75,7 @@ public:
     void setGravityAffected(bool g);
     bool getGravityAffected();
 
-    glm::vec3 getExtents();
+    glm::dvec3 getExtents();
 
     void initInertiaTensor();
 
@@ -83,13 +83,17 @@ public:
 	* @brief Set the Positin of the Bounding Box
 	* @param orientation
 	*/
-	void SetPosition(glm::vec3 newPosition);
+	void SetPosition(glm::dvec3 newPosition);
+
+    glm::dvec3 GetPosition();
 
 	int GetColliderID();
+
+    void translate(glm::dvec3 position);
 
 private:
     ///Collider ID
     unsigned int m_colliderID;
     ///Extents of Bounding Box
-    glm::vec3 extents;
+    glm::dvec3 extents = {};
 };

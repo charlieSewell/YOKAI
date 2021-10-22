@@ -12,5 +12,5 @@ class PhysicsResolution : public rp3d::EventListener {
       //virtual void onTrigger(const rp3d::OverlapCallback::CallbackData &callbackData) override;
 
   private:
-      void collisionResolution(int body1, int body2, float pen, glm::vec3 contactNormal, glm::vec3 body1ContactPoint, glm::vec3 body2ContactPoint);
+      void collisionResolution(int body1, int body2, double pen, glm::dvec3 contactNormal, glm::dvec3 body1ContactPoint, glm::dvec3 body2ContactPoint);
 };

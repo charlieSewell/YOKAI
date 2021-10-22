@@ -17,7 +17,7 @@ class Scene
     /**
      * @brief Updates a Layer
      */
-    virtual void Update(float deltaTime) = 0;
+    virtual void Update(double deltaTime) = 0;
     /**
      * @brief Draw a Layer
      */

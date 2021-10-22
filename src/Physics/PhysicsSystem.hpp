@@ -109,6 +109,9 @@ public:
 
     void IsDebugEnabled(bool isEnabled){isDebugEnabled = isEnabled;}
 
+    //Physics
+    void IntegrateVelocities();
+
 private:
     bool isDebugEnabled = false;
     ///Privatised Constructor
