@@ -67,16 +67,13 @@ void PhysicsSystem::update(float dt)
 {
     physicsWorld->update(static_cast<rp3d::decimal>(dt));
 	
-	for (auto& m_collider : m_colliders)
+	for (auto& m_linearVelocity : m_linearVelocities)
 	{
-		if(m_collider.second.hasCollided)
-		{
-			m_collider.second.setLinearVelocity(m_collider.second.m_tempLinearVelocity /  double(m_collider.second.counter));
-			m_collider.second.hasCollided = false;
-			m_collider.second.m_tempLinearVelocity = glm::vec3 {};
-			m_collider.second.counter = 0;
-		}
+		//m_colliders[colliderID] [total linear velocity, collision counter]
+		m_colliders[m_linearVelocity.first].setLinearVelocity(m_linearVelocity.second.first / double(m_linearVelocity.second.second));
 	}
+
+	m_linearVelocities.clear();
 }
 
 unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, float radius)
@@ -219,4 +216,17 @@ void PhysicsSystem::RendererUpdate() {
         glBufferData(GL_ARRAY_BUFFER, sizeVertices, debug_renderer.getTrianglesArray(), GL_STREAM_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+}
+
+void PhysicsSystem::SubmitLinearVelocity(int colliderID, glm::dvec3 linearVelocity)
+{
+	if(m_linearVelocities.find(colliderID) == m_linearVelocities.end())
+	{
+		m_linearVelocities[colliderID] = std::pair<glm::dvec3, int>(linearVelocity, 1);
+	}
+	else
+	{
+		m_linearVelocities[colliderID].first += linearVelocity;
+		m_linearVelocities[colliderID].second++;
+	}
 }

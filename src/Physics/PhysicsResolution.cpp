@@ -129,13 +129,13 @@ void PhysicsResolution::collisionResolution(int body1, int body2, double pen, gl
     // CHECK THIS!
     double combinedInverseMass = PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseMass() + PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseMass();
 
-    glm::vec3 numerator = (restitution * (glm::dot(contactNormal, relativeVelocity) + glm::dot(angularVelocity1, r1cross) - glm::dot(angularVelocity2, r2cross))) * contactNormal;
+    glm::dvec3 numerator = (restitution * (glm::dot(contactNormal, relativeVelocity) + glm::dot(angularVelocity1, r1cross) - glm::dot(angularVelocity2, r2cross))) * contactNormal;
 
-    glm::vec3 denominator = combinedInverseMass + (r1cross * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor() * r1cross + r2cross * PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor() * r2cross) * contactNormal;
+    glm::dvec3 denominator = combinedInverseMass + (r1cross * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor() * r1cross + r2cross * PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor() * r2cross) * contactNormal;
 
 
     // lambda
-	glm::vec3 linearImpulse = (numerator / denominator);
+	glm::dvec3 linearImpulse = (numerator / denominator);
     //std::cout << lambda << std::endl;
 
     // linear impulse
@@ -165,32 +165,12 @@ void PhysicsResolution::collisionResolution(int body1, int body2, double pen, gl
     //(glm::dot(r1cross, PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor() * r1cross) + glm::dot(r2cross, PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor() * r2cross))
     //std::cout << (glm::dot(r1cross, PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor() * r1cross) + glm::dot(r2cross, PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor() * r2cross)) << std::endl;
 
-    //INERTIA TENSOR
-    //std::cout << PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor()[0][0] << std::endl;
+    linearVelocity1 += linearImpulse * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseMass();
+    linearVelocity2 -= linearImpulse * PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseMass();
 
-    //std::cout << "centreOfMass 1 - (" << PhysicsSystem::getInstance().getPhysicsBody(body1)->getCentreOfMass().x << ", " << PhysicsSystem::getInstance().getPhysicsBody(body1)->getCentreOfMass().y << ", " << PhysicsSystem::getInstance().getPhysicsBody(body1)->getCentreOfMass().z << ")" << std::endl;
-    //std::cout << "centreOfMass 2 - (" << PhysicsSystem::getInstance().getPhysicsBody(body2)->getCentreOfMass().x << ", " << PhysicsSystem::getInstance().getPhysicsBody(body2)->getCentreOfMass().y << ", " << PhysicsSystem::getInstance().getPhysicsBody(body2)->getCentreOfMass().z << ")" << std::endl;
-    
-    
-    //if (lambda < 0) {
+    //angularVelocity1 = angularVelocity1 + (lambda * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor()) * r1cross;
+    //angularVelocity2 = angularVelocity2 - (lambda * PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor()) * r2cross;
 
-		std::cout << "Velocity 1: " << linearVelocity1.x << ", " << linearVelocity1.y << ", " << linearVelocity1.z <<  ", Velocicty 2: " << linearVelocity2.x << ", " << linearVelocity2.y << ", " << linearVelocity2.z << "\n";
-
-        linearVelocity1 += linearImpulse * float(PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseMass());
-        linearVelocity2 -= linearImpulse * float(PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseMass());
-
-        //angularVelocity1 = angularVelocity1 + (lambda * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor()) * r1cross;
-        //angularVelocity2 = angularVelocity2 - (lambda * PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor()) * r2cross;
-    //}
-
-    //PhysicsSystem::getInstance().getPhysicsBody(body1)->setLinearVelocity(linearVelocity1);
-    //PhysicsSystem::getInstance().getPhysicsBody(body2)->setLinearVelocity(linearVelocity2);
-
-	PhysicsSystem::getInstance().getPhysicsBody(body1)->m_tempLinearVelocity += linearVelocity1;
-	PhysicsSystem::getInstance().getPhysicsBody(body1)->hasCollided = true;
-	PhysicsSystem::getInstance().getPhysicsBody(body1)->counter++;
-
-	PhysicsSystem::getInstance().getPhysicsBody(body2)->m_tempLinearVelocity += linearVelocity2;
-	PhysicsSystem::getInstance().getPhysicsBody(body2)->hasCollided = true;
-	PhysicsSystem::getInstance().getPhysicsBody(body2)->counter++;
+	PhysicsSystem::getInstance().SubmitLinearVelocity(body1, linearVelocity1);
+	PhysicsSystem::getInstance().SubmitLinearVelocity(body2, linearVelocity2);
 }
