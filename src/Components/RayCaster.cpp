@@ -20,7 +20,7 @@ int RayCaster::CastRay(glm::vec3 startPosition,glm::vec3 direction,float distanc
             if(a.first < furthestHit)
             {
                 furthestHit = a.first;
-                gameObjID = PhysicsSystem::getInstance().getCollisionBody(a.second)->getGameObjectID();
+                gameObjID = PhysicsSystem::getInstance().getPhysicsBody(a.second)->getGameObjectID();
             }
         }
         hits.clear();

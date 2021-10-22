@@ -2,18 +2,20 @@
 #include <reactphysics3d/reactphysics3d.h>
 #include <glm/glm.hpp>
 #include "Physics/Shapes/ReactTerrainShape.hpp"
+#include "PhysicsUnits.hpp"
+//#include "PhysicsResolution.hpp"
 /**
  * @class RigidBody
  * @brief Class for a physics Rigid body
  */
 class CollisionBody {
 
-public:
+  public:
     /**
      * @brief Sets Position
      * @param vec3 -position
      */
-    void SetPosition(glm::vec3 position);
+    void SetPosition(glm::dvec3 position);
     /**
      * @brief Sets Orientation
      * @param quat - orientation
@@ -26,18 +28,19 @@ public:
      * @param position
      * @param orientation
      */
-    void CreateBody(int gameObjID,rp3d::PhysicsWorld* physicsWorld,glm::vec3 position,glm::quat orientation);
+    void CreateBody(int gameObjID, rp3d::PhysicsWorld *physicsWorld, glm::vec3 position,
+                    glm::quat orientation);
     /**
      * @brief Deletes the physics body
      * @param physicsWorld
      * @param physicsCommon
      */
-    void DeleteBody(rp3d::PhysicsWorld* physicsWorld,rp3d::PhysicsCommon &physicsCommon);
+    void DeleteBody(rp3d::PhysicsWorld *physicsWorld, rp3d::PhysicsCommon &physicsCommon);
     /**
      * @brief Gets position
      * @return vec3
      */
-    glm::vec3 GetPosition();
+    glm::dvec3 GetPosition();
     /**
      * @brief Gets Orientation
      * @return quat
@@ -48,12 +51,14 @@ public:
      * @brief Returns the rp3d Rigidbody
      * @return RigidBody*
      */
-    reactphysics3d::CollisionBody* getCollisionBody(){return m_body;}
+    reactphysics3d::CollisionBody *getCollisionBody() {
+        return m_body;
+    }
     /**
      * @brief Adds a collision Shape
      * @param shape
      */
-    void AddCollisionShape(ReactShape* shape);
+    void AddCollisionShape(ReactShape *shape);
 
     /**
      * @brief Sets the friction on the body
@@ -70,20 +75,79 @@ public:
      * @brief Returns the ColliderID
      * @return ID
      */
-    uint32_t getColliderID(){return m_collider->getEntity().id;}
+    uint32_t getColliderID() {
+        return m_collider->getEntity().id;
+    }
     /**
      * @brief Returns the owning game objects ID
      * @return
      */
-    [[nodiscard]] int getGameObjectID() const{return gameObjectID;}
+    [[nodiscard]] int getGameObjectID() const {
+        return gameObjectID;
+    }
 
-private:
-    ///Shape of collider
-    ReactShape* shape;
-    ///Owning game object ID
+    // Physics
+
+    void setMass(double m);
+    double getMass();
+
+    double getInverseMass();
+
+    void setCentreOfMass(glm::dvec3 com);
+    glm::dvec3 getCentreOfMass();
+
+    void setInertiaTensor(glm::dmat3x3 it);
+    glm::dmat3x3 getInertiaTensor();
+
+    glm::dmat3x3 getInverseInertiaTensor();
+
+    void setLinearVelocity(glm::dvec3 lv);
+    glm::dvec3 getLinearVelocity();
+
+    void setAngularVelocity(glm::dvec3 av);
+    glm::dvec3 getAngularVelocity();
+
+    void setTorque(glm::dvec3 t);
+    glm::dvec3 getTorque();
+
+    void setForce(glm::dvec3 f);
+    glm::dvec3 getForce();
+
+    void setIsStaticObject(bool s);
+    bool getIsStaticObject();
+
+    void setGravityAffected(bool g);
+    bool getGravityAffected();
+
+	// bad
+	glm::dvec3 m_tempLinearVelocity = {};
+	bool hasCollided = false;
+	int counter = 0;
+
+  private:
+    /// Shape of collider
+    ReactShape *shape;
+    /// Owning game object ID
     int gameObjectID = -1;
-    ///React Rigid Body
-    reactphysics3d::CollisionBody* m_body;
-    ///React Collider
-    reactphysics3d::Collider* m_collider;
+    /// React Rigid Body
+    reactphysics3d::CollisionBody *m_body;
+    /// React Collider
+    reactphysics3d::Collider *m_collider;
+
+    // PHYSICS
+    double mass;
+    double inverseMass;
+    glm::dvec3 centreOfMass           = {};
+    glm::dmat3x3 inertiaTensor        = {};
+    glm::dmat3x3 inverseInertiaTensor = {};
+
+    glm::dvec3 linearVelocity  = {};
+    glm::dvec3 angularVelocity = {};
+    glm::dvec3 torque          = {};
+    glm::dvec3 force           = {};
+
+    bool staticObject;
+    bool gravityAffected;
+
+    glm::dvec3 m_position = {};
 };

@@ -17,6 +17,7 @@ void PhysicsSystem::Init()
     physicsWorld = physicsCommon.createPhysicsWorld(settings);
     
     physicsWorld->setIsDebugRenderingEnabled(true);
+    //physicsWorld->setEventListener(listener.getListener());
 
     DebugRenderer& debugRenderer = physicsWorld->getDebugRenderer(); 
 
@@ -42,6 +43,9 @@ void PhysicsSystem::Init()
 
 
     //physicsWorld->setEventListener(&listener);
+    for (auto &n : m_colliders) {
+        n.second.setMass(10);
+    }
 }
 void PhysicsSystem::DeInit()
 {
@@ -59,11 +63,17 @@ PhysicsSystem& PhysicsSystem::getInstance()
     return instance;
 }
 
-void PhysicsSystem::update(float dt) const
+void PhysicsSystem::update(float dt)
 {
-
     physicsWorld->update(static_cast<rp3d::decimal>(dt));
+	
+	for (auto& m_linearVelocity : m_linearVelocities)
+	{
+		//m_colliders[colliderID] [total linear velocity, collision counter]
+		m_colliders[m_linearVelocity.first].setLinearVelocity(m_linearVelocity.second.first / double(m_linearVelocity.second.second));
+	}
 
+	m_linearVelocities.clear();
 }
 
 unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, float radius)
@@ -119,7 +129,7 @@ unsigned int PhysicsSystem::addAABB(unsigned int ID,Transform* transform, float 
     return temp;
 }
 
-CollisionBody * PhysicsSystem::getCollisionBody(int colliderID)
+CollisionBody * PhysicsSystem::getPhysicsBody(int colliderID)
 {
     try{
         return &m_colliders.at(colliderID);
@@ -206,4 +216,17 @@ void PhysicsSystem::RendererUpdate() {
         glBufferData(GL_ARRAY_BUFFER, sizeVertices, debug_renderer.getTrianglesArray(), GL_STREAM_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+}
+
+void PhysicsSystem::SubmitLinearVelocity(int colliderID, glm::dvec3 linearVelocity)
+{
+	if(m_linearVelocities.find(colliderID) == m_linearVelocities.end())
+	{
+		m_linearVelocities[colliderID] = std::pair<glm::dvec3, int>(linearVelocity, 1);
+	}
+	else
+	{
+		m_linearVelocities[colliderID].first += linearVelocity;
+		m_linearVelocities[colliderID].second++;
+	}
 }

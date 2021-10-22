@@ -9,9 +9,11 @@
 #include "Export.hpp"
 #include "ModelManager.hpp"
 #include "Components/InputComponent.hpp"
+#include "Physics/PhysicsResolution.hpp"
 
 //workaround to allow vector of layer pointers
 class Scene;
+class PhysicsResolution;
 /**
  * @class Yokai
  * @brief A class which ties together all game engine components
@@ -101,4 +103,5 @@ private:
     ///Model Manager
     ModelManager* modelManager;
 
+    PhysicsResolution *randomListener;
 };

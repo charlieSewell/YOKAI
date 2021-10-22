@@ -10,6 +10,8 @@
 #include "Physics/Shapes/ReactBoxShape.hpp"
 #include "Physics/Shapes/ReactConcaveShape.hpp"
 #include "Export.hpp"
+//#include "PhysicsListener.hpp"
+//#include "PhysicsResolution.hpp"
 /**
  * @class PhysicsSystem
  * @brief Singleton that Manages physics
@@ -37,7 +39,7 @@ public:
      * @brief Updates the simulation
      * @param float - dt
      */
-    void update(float dt) const;
+    void update(float dt);
 
 
     // easy to implement if needed
@@ -57,7 +59,8 @@ public:
      * @param int - colliderID
      * @return RigidBody
      */
-    CollisionBody * getCollisionBody(int m_colliderID);
+
+    CollisionBody * getPhysicsBody(int colliderID);
     /**
      * @brief Deletes a rigid Body
      * @param int - ID
@@ -103,7 +106,14 @@ public:
     reactphysics3d::PhysicsCommon physicsCommon;
     ///physics world for simulation
     reactphysics3d::PhysicsWorld* physicsWorld;
+
     void IsDebugEnabled(bool isEnabled){isDebugEnabled = isEnabled;}
+
+    //Physics
+    void IntegrateVelocities();
+
+	void SubmitLinearVelocity(int colliderID, glm::dvec3 linearVelocity);
+
 private:
     bool isDebugEnabled = false;
     ///Privatised Constructor
@@ -121,5 +131,9 @@ private:
     int m_mapCount;
     ///map of colliders
     std::map<int, CollisionBody> m_colliders;	//TODO: make colliders so can add spheres
+
+	std::map<int, std::pair<glm::dvec3, int>> m_linearVelocities;
+
     ///Collision callback listener
+    //PhysicsListener listener;
 };

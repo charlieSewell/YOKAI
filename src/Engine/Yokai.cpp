@@ -35,7 +35,9 @@ bool Yokai::Init()
     try
     {
         PhysicsSystem::getInstance().Init();
-        SPDLOG_INFO("Physics System Initialised");
+        randomListener = new PhysicsResolution();
+        PhysicsSystem::getInstance().physicsWorld->setEventListener(randomListener);
+        SPDLOG_INFO("Physics System Initialised");  
     } catch (std::exception &e)
     {
         SPDLOG_ERROR(e.what());
@@ -77,8 +79,8 @@ void Yokai::Run()
 			{
 				InputManagerGLFW::getInstance().processMouse(window.getWindow());
 				InputManagerGLFW::getInstance().processGamepadAxis();
-                layers[activeLayer]->Update(static_cast<float>(timeStep));
                 PhysicsSystem::getInstance().update(timeStep);
+                layers[activeLayer]->Update(timeStep);
 				accumulator -= timeStep;
 			}
         }

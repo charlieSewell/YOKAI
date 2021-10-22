@@ -14,6 +14,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Components/Camera.cpp
 		Components/RayCaster.cpp
 		Components/AutomatedBehaviours.cpp
+		
 
         Renderer/Shader.cpp
         Renderer/DataTypes.cpp
@@ -42,6 +43,8 @@ target_sources(${PROJECT_NAME} PRIVATE
         Physics/Shapes/ReactSphereShape.cpp
         Physics/Shapes/ReactTerrainShape.cpp
         Physics/Shapes/ReactConcaveShape.cpp
+		Physics/ResolutionFunctions.cpp
+		Physics/PhysicsResolution.cpp
 		Engine/GameObjectManager.cpp
 		Engine/TextureManager.cpp
 		Model/KeyframeAnimation.cpp
