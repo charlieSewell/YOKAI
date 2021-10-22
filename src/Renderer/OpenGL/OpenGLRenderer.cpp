@@ -16,9 +16,7 @@ void OpenGLRenderer::Init()
     }
     glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
-	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
-
     SCREEN_SIZE.x = 1920;
     SCREEN_SIZE.y = 1080;
 	float zFar = 300.0f;
