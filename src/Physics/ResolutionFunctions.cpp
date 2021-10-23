@@ -60,14 +60,24 @@ glm::dmat3x3 YokaiPhysics::RectangleInertiaTensor(glm::dvec3 ext, double mass)
     return inertia;
 }
 
-glm::mat3x3 SphereInertiaTensor(float radius, float mass) 
+glm::dmat3x3 YokaiPhysics::SphereInertiaTensor(double radius, double mass) 
 {
     // Sphere: Ixx = Iyy = Izz = (2/5) mr2
-    glm::mat3x3 inertia{};
+    glm::dmat3x3 inertia{};
 
     inertia[0][0] = (2.0 / 5.0) * mass * (radius * radius);
     inertia[1][1] = (2.0 / 5.0) * mass * (radius * radius);
     inertia[2][2] = (2.0 / 5.0) * mass * (radius * radius);
 
     return inertia;
+}
+
+double YokaiPhysics::DegreesToRadians(double degrees) 
+{
+    return (degrees * (PI / 180));
+}
+
+double YokaiPhysics::RadiansToDegrees(double radians) 
+{
+    return (radians * (180 / PI));
 }

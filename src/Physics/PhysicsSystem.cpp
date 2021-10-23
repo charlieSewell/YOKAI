@@ -73,7 +73,14 @@ void PhysicsSystem::update(float dt)
 		m_colliders[m_linearVelocity.first].setLinearVelocity(m_linearVelocity.second.first / double(m_linearVelocity.second.second));
 	}
 
+    for (auto &m_angularVelocity : m_angularVelocities) 
+    {
+        // m_colliders[colliderID] [total angular velocity, collision counter]
+        m_colliders[m_angularVelocity.first].setAngularVelocity(m_angularVelocity.second.first / double(m_angularVelocity.second.second));
+    }
+
 	m_linearVelocities.clear();
+    m_angularVelocities.clear();
 }
 
 unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, float radius)
@@ -229,4 +236,17 @@ void PhysicsSystem::SubmitLinearVelocity(int colliderID, glm::dvec3 linearVeloci
 		m_linearVelocities[colliderID].first += linearVelocity;
 		m_linearVelocities[colliderID].second++;
 	}
+}
+
+void PhysicsSystem::SubmitAngularVelocity(int colliderID, glm::dvec3 angularVelocity) 
+{
+    if (m_angularVelocities.find(colliderID) == m_angularVelocities.end()) 
+    {
+        m_angularVelocities[colliderID] = std::pair<glm::dvec3, int>(angularVelocity, 1);
+    } 
+    else 
+    {
+        m_angularVelocities[colliderID].first += angularVelocity;
+        m_angularVelocities[colliderID].second++;
+    }
 }

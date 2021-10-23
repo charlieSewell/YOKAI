@@ -12,7 +12,7 @@ void BoxCollider::Start()
     }
 	m_colliderID = PhysicsSystem::getInstance().addAABB(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),extents.x,extents.y,extents.z);
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
-    setCentreOfMass(GetPosition());
+    SetCentreOfMass(GetPosition());
 }
 void BoxCollider::SetExtents(glm::vec3 extent)
 {
@@ -38,6 +38,10 @@ glm::dvec3 BoxCollider::GetPosition() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetPosition();
 }
 
+glm::quat BoxCollider::GetOrientation() {
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetOrientation();
+}
+
 int BoxCollider::GetColliderID()
 {
 	return m_colliderID;
@@ -45,112 +49,107 @@ int BoxCollider::GetColliderID()
 
 void BoxCollider::Update(float deltaTime)
 {
-    glm::dvec3 lv = getLinearVelocity();
+    //glm::dvec3 lv = getLinearVelocity();
     //std::cout << glm::to_string(GetPosition()) << std::endl;
-    translate(getLinearVelocity() * static_cast<double>(deltaTime));
-    setCentreOfMass(GetPosition());
+    Translate(GetLinearVelocity() * static_cast<double>(deltaTime));
+    Rotate(GetAngularVelocity(), deltaTime);
+    SetCentreOfMass(GetPosition());
 }
 
-void BoxCollider::setMass(double m) {
+void BoxCollider::SetMass(double m) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setMass(m);
 }
 
-double BoxCollider::getMass() {
+double BoxCollider::GetMass() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getMass();
 }
 
-double BoxCollider::getInverseMass() {
+double BoxCollider::GetInverseMass() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInverseMass();
 }
 
-void BoxCollider::setCentreOfMass(glm::dvec3 com) {
+void BoxCollider::SetCentreOfMass(glm::dvec3 com) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setCentreOfMass(com);
 }
 
-glm::dvec3 BoxCollider::getCentreOfMass() {
+glm::dvec3 BoxCollider::GetCentreOfMass() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getCentreOfMass();
 }
 
-void BoxCollider::setInertiaTensor() {
+void BoxCollider::SetInertiaTensor() {
     
-    glm::dmat3x3 temp = YokaiPhysics::RectangleInertiaTensor(extents, getMass());
+    glm::dmat3x3 temp = YokaiPhysics::RectangleInertiaTensor(extents, GetMass());
     
     //std::cout << "extent x " << extents.x << std::endl;
 
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setInertiaTensor(temp);
 }
 
-glm::dmat3x3 BoxCollider::getInertiaTensor() {
+glm::dmat3x3 BoxCollider::GetInertiaTensor() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInertiaTensor();
 }
 
-glm::dmat3x3 BoxCollider::getInverseInertiaTensor() {
+glm::dmat3x3 BoxCollider::GetInverseInertiaTensor() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInverseInertiaTensor();
 }
 
-void BoxCollider::setLinearVelocity(glm::dvec3 lv) {
+void BoxCollider::SetLinearVelocity(glm::dvec3 lv) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setLinearVelocity(lv);
 }
 
-glm::dvec3 BoxCollider::getLinearVelocity() {
+glm::dvec3 BoxCollider::GetLinearVelocity() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getLinearVelocity();
 }
 
-void BoxCollider::setAngularVelocity(glm::dvec3 av) {
+void BoxCollider::SetAngularVelocity(glm::dvec3 av) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setAngularVelocity(av);
 }
 
-glm::dvec3 BoxCollider::getAngularVelocity() {
+glm::dvec3 BoxCollider::GetAngularVelocity() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getAngularVelocity();
 }
 
-void BoxCollider::setTorque(glm::dvec3 t) {
+void BoxCollider::SetTorque(glm::dvec3 t) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setTorque(t);
 }
 
-glm::dvec3 BoxCollider::getTorque() {
+glm::dvec3 BoxCollider::GetTorque() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getTorque();
 }
 
-void BoxCollider::setForce(glm::dvec3 f) {
+void BoxCollider::SetForce(glm::dvec3 f) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setForce(f);
 }
 
-glm::dvec3 BoxCollider::getForce() {
+glm::dvec3 BoxCollider::GetForce() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getForce();
 }
 
-void BoxCollider::setIsStaticObject(bool s) {
+void BoxCollider::SetIsStaticObject(bool s) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setIsStaticObject(s);
 }
 
-bool BoxCollider::getIsStaticObject() {
+bool BoxCollider::GetIsStaticObject() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getIsStaticObject();
 }
 
-void BoxCollider::setGravityAffected(bool g) {
+void BoxCollider::SetGravityAffected(bool g) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setGravityAffected(g);
 }
 
-bool BoxCollider::getGravityAffected() {
+bool BoxCollider::GetGravityAffected() {
     return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getGravityAffected();
 }
 
-glm::dvec3 BoxCollider::getExtents() {
+glm::dvec3 BoxCollider::GetExtents() {
     return extents;
 }
 
-void BoxCollider::initInertiaTensor() {
-    
-    glm::dmat3x3 temp;
-    
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            temp[i][j] = 0;
-        }
-    }
-}
-
-void BoxCollider::translate(glm::dvec3 position) {
+void BoxCollider::Translate(glm::dvec3 position) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(position + GetPosition());
 }
+
+void BoxCollider::Rotate(glm::dvec3 angVelocity, float deltaTime) {
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(GetOrientation() + glm::quat(0.0, angVelocity) * GetOrientation() * deltaTime);
+}
+

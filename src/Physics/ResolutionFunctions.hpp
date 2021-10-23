@@ -1,6 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
 
+#define PI 3.14159265358979323846
+
 namespace YokaiPhysics {
 
     double AverageAngularVelocity(double arcStart, double arcEnd, double time, double radius);
@@ -15,5 +17,9 @@ namespace YokaiPhysics {
 
     glm::dmat3x3 RectangleInertiaTensor(glm::dvec3 ext, double mass);
 
-    glm::dmat3x3 SphereInertiaTensor(float radius, float mass);
+    glm::dmat3x3 SphereInertiaTensor(double radius, double mass);
+
+    double DegreesToRadians(double degrees);
+
+    double RadiansToDegrees(double radians);
 }
