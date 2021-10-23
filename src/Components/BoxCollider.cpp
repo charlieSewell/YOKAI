@@ -13,6 +13,7 @@ void BoxCollider::Start()
 	m_colliderID = PhysicsSystem::getInstance().addAABB(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),extents.x,extents.y,extents.z);
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
     SetCentreOfMass(GetPosition());
+    SetGravityAffected(false);
 }
 void BoxCollider::SetExtents(glm::vec3 extent)
 {

@@ -12,6 +12,7 @@ void SphereCollider::Start()
     m_colliderID = PhysicsSystem::getInstance().addSphere(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(), m_radius);
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
     SetCentreOfMass(GetPosition());
+    SetGravityAffected(false);
 }
 
 void SphereCollider::SetOrientation(glm::quat orientation) {

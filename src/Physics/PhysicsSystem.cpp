@@ -73,6 +73,14 @@ void PhysicsSystem::update(float dt)
 		m_colliders[m_linearVelocity.first].setLinearVelocity(m_linearVelocity.second.first / double(m_linearVelocity.second.second));
 	}
 
+    for (auto &m_collider : m_colliders) 
+    {
+        if (m_collider.second.getGravityAffected()) 
+        {
+            m_collider.second.setLinearVelocity(m_collider.second.getLinearVelocity() + (glm::dvec3(0, -1, 0) * double(dt)));
+        }
+    }
+
     for (auto &m_angularVelocity : m_angularVelocities) 
     {
         // m_colliders[colliderID] [total angular velocity, collision counter]
