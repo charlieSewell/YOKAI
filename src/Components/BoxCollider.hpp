@@ -93,6 +93,8 @@ public:
 
     void Rotate(glm::dvec3 angVelocity, float deltaTime);
 
+    void StaticSet();
+
 private:
     ///Collider ID
     unsigned int m_colliderID;

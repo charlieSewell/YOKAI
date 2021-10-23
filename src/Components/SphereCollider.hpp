@@ -5,6 +5,7 @@
 #include "Component.hpp"
 #include "Export.hpp"
 #include "Physics/PhysicsSystem.hpp"
+#include "Physics/ResolutionFunctions.hpp"
 /**
  * @class Sphere Collider
  * @brief Sphere Collider Components
@@ -27,44 +28,62 @@ public:
      * @brief Starts the Collider Component
      */
     void Start();
+    /**
+     * @brief Updates Once a frame
+     * @param deltaTime
+     */
+    void Update(float deltaTime);
 
-    ///New Velocity of sphere
+    void SetOrientation(glm::quat orientation);
 
-	// Sets new position
-	void SetPosition(glm::vec3 newPosition);
+    glm::quat GetOrientation();
 
-    void setMass(double m);
-    double getMass();
+    void SetMass(double m);
+    double GetMass();
 
-    double getInverseMass();
+    double GetInverseMass();
 
-    void setCentreOfMass(glm::dvec3 com);
-    glm::dvec3 getCentreOfMass();
+    void SetCentreOfMass(glm::dvec3 com);
+    glm::dvec3 GetCentreOfMass();
 
-    void setInertiaTensor(glm::dmat3x3 it);
-    glm::dmat3x3 getInertiaTensor();
+    void SetInertiaTensor();
+    glm::dmat3x3 GetInertiaTensor();
 
-    glm::dmat3x3 getInverseInertiaTensor();
+    glm::dmat3x3 GetInverseInertiaTensor();
 
-    void setLinearVelocity(glm::dvec3 lv);
-    glm::dvec3 getLinearVelocity();
+    void SetLinearVelocity(glm::dvec3 lv);
+    glm::dvec3 GetLinearVelocity();
 
-    void setAngularVelocity(glm::dvec3 av);
-    glm::dvec3 getAngularVelocity();
+    void SetAngularVelocity(glm::dvec3 av);
+    glm::dvec3 GetAngularVelocity();
 
-    void setTorque(glm::dvec3 t);
-    glm::dvec3 getTorque();
+    void SetTorque(glm::dvec3 t);
+    glm::dvec3 GetTorque();
 
-    void setForce(glm::dvec3 f);
-    glm::dvec3 getForce();
+    void SetForce(glm::dvec3 f);
+    glm::dvec3 GetForce();
 
-    void setIsStaticObject(bool s);
-    bool getIsStaticObject();
+    void SetIsStaticObject(bool s);
+    bool GetIsStaticObject();
 
-    void setGravityAffected(bool g);
-    bool getGravityAffected();
+    void SetGravityAffected(bool g);
+    bool GetGravityAffected();
 
-	unsigned int GetColliderID();
+    double GetRadius();
+
+    /**
+     * @brief Set the Position of the Sphere
+     * @param orientation
+     */
+    void SetPosition(glm::dvec3 newPosition);
+
+    glm::dvec3 GetPosition();
+
+    int GetColliderID();
+
+    void Translate(glm::dvec3 position);
+
+    void Rotate(glm::dvec3 angVelocity, float deltaTime);
 
 private:
     ///Collider ID

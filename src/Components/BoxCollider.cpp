@@ -79,8 +79,6 @@ glm::dvec3 BoxCollider::GetCentreOfMass() {
 void BoxCollider::SetInertiaTensor() {
     
     glm::dmat3x3 temp = YokaiPhysics::RectangleInertiaTensor(extents, GetMass());
-    
-    //std::cout << "extent x " << extents.x << std::endl;
 
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setInertiaTensor(temp);
 }
@@ -150,7 +148,13 @@ void BoxCollider::Translate(glm::dvec3 position) {
 }
 
 void BoxCollider::Rotate(glm::dvec3 angVelocity, float deltaTime) {
-    //PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(GetOrientation() * glm::quat(1.0, angVelocity) * deltaTime);
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(GetOrientation() + glm::quat(0.0, angVelocity) * GetOrientation() * deltaTime);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(GetOrientation() + (0.5f * GetOrientation() * glm::quat(0.0, angVelocity) * deltaTime)));
 }
 
+void BoxCollider::StaticSet() {
+    SetLinearVelocity(glm::dvec3(0, 0, 0));
+	SetAngularVelocity(glm::dvec3(0, 0, 0));
+	SetMass(10000.0);
+	SetIsStaticObject(true);
+	SetInertiaTensor();
+}
