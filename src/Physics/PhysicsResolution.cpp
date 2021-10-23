@@ -130,24 +130,23 @@ void PhysicsResolution::collisionResolution(int body1, int body2, double pen, gl
 
     double combinedInverseMass = PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseMass() + PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseMass();
 
-    glm::dvec3 numerator = (restitution * (glm::dot(contactNormal, relativeVelocity) + glm::dot(angularVelocity1, r1cross) - glm::dot(angularVelocity2, r2cross))) * contactNormal;
-
-    //glm::dvec3 denominator = combinedInverseMass + (r1cross * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor() * r1cross + r2cross * PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor() * r2cross) * contactNormal;
+    double numerator = restitution * (glm::dot(contactNormal, relativeVelocity) + glm::dot(angularVelocity1, r1cross) - glm::dot(angularVelocity2, r2cross));
+    //glm::dvec3 numerator = (restitution * (glm::dot(contactNormal, relativeVelocity) + glm::dot(angularVelocity1, r1cross) - glm::dot(angularVelocity2, r2cross))) * contactNormal;
     glm::dvec3 denominator = combinedInverseMass + ((r1cross * PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor() * r1cross) + (r2cross * PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor() * r2cross));
 
-    double testNumer = restitution * (glm::dot(contactNormal, relativeVelocity) + glm::dot(angularVelocity1, r1cross) - glm::dot(angularVelocity2, r2cross));
-    double testDenom = combinedInverseMass + (glm::dot(r1cross, PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor() * r1cross) + (glm::dot(r2cross, PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor() * r2cross)));
+    //double testNumerator = restitution * (glm::dot(contactNormal, relativeVelocity) + glm::dot(angularVelocity1, r1cross) - glm::dot(angularVelocity2, r2cross));
+    //double testDenominator = combinedInverseMass + (glm::dot(r1cross, PhysicsSystem::getInstance().getPhysicsBody(body1)->getInverseInertiaTensor() * r1cross) + (glm::dot(r2cross, PhysicsSystem::getInstance().getPhysicsBody(body2)->getInverseInertiaTensor() * r2cross)));
     
-    double lambda = testNumer / testDenom;
+    glm::dvec3 lambda = numerator / denominator;
 
     // linear impulse
-	glm::dvec3 linearImpulse = (numerator / denominator);
+	glm::dvec3 linearImpulse = ((numerator * contactNormal) / denominator);
 
     //glm::dvec3 lambda = linearImpulse / contactNormal;
     //std::cout << lambda.x << ", " << lambda.y << ", " << lambda.z<< std::endl;
 
     // linear impulse
-    glm::dvec3 testLinearImpulse = lambda * contactNormal;
+    //glm::dvec3 testLinearImpulse = lambda * contactNormal;
     //std::cout << "impulse - (" << linearImpulse.x << ", " << linearImpulse.y << ", " << linearImpulse.z << ")" << std::endl;
     
     //TESTING
