@@ -4,6 +4,7 @@
 #include "Physics/Shapes/ReactTerrainShape.hpp"
 #include "PhysicsUnits.hpp"
 //#include "PhysicsResolution.hpp"
+#include "ReactMath.hpp"
 /**
  * @class RigidBody
  * @brief Class for a physics Rigid body
@@ -86,43 +87,33 @@ class CollisionBody {
         return gameObjectID;
     }
 
-    // Physics
+    void SetMass(double m);
+    double GetMass();
 
-    void setMass(double m);
-    double getMass();
+    double GetInverseMass();
 
-    double getInverseMass();
+    void SetCentreOfMass(glm::dvec3 com);
+    glm::dvec3 GetCentreOfMass();
 
-    void setCentreOfMass(glm::dvec3 com);
-    glm::dvec3 getCentreOfMass();
+    void SetInertiaTensor(glm::dmat3x3 it);
+    glm::dmat3x3 GetInertiaTensor();
 
-    void setInertiaTensor(glm::dmat3x3 it);
-    glm::dmat3x3 getInertiaTensor();
+    glm::dmat3x3 GetInverseInertiaTensor();
 
-    glm::dmat3x3 getInverseInertiaTensor();
+    void SetLinearVelocity(glm::dvec3 lv);
+    glm::dvec3 GetLinearVelocity();
 
-    void setLinearVelocity(glm::dvec3 lv);
-    glm::dvec3 getLinearVelocity();
+    void SetAngularVelocity(glm::dvec3 av);
+    glm::dvec3 GetAngularVelocity();
 
-    void setAngularVelocity(glm::dvec3 av);
-    glm::dvec3 getAngularVelocity();
+    void SetIsStaticObject(bool s);
+    bool GetIsStaticObject();
 
-    void setTorque(glm::dvec3 t);
-    glm::dvec3 getTorque();
+    void SetGravityAffected(bool g);
+    bool GetGravityAffected();
 
-    void setForce(glm::dvec3 f);
-    glm::dvec3 getForce();
-
-    void setIsStaticObject(bool s);
-    bool getIsStaticObject();
-
-    void setGravityAffected(bool g);
-    bool getGravityAffected();
-
-	// bad
-	glm::dvec3 m_tempLinearVelocity = {};
-	bool hasCollided = false;
-	int counter = 0;
+    glm::mat4 GetTransform();
+    void SetTransform(glm::mat4 transform);
 
   private:
     /// Shape of collider
@@ -135,19 +126,18 @@ class CollisionBody {
     reactphysics3d::Collider *m_collider;
 
     // PHYSICS
-    double mass;
-    double inverseMass;
-    glm::dvec3 centreOfMass           = {};
-    glm::dmat3x3 inertiaTensor        = {};
-    glm::dmat3x3 inverseInertiaTensor = {};
+    double m_mass;
+    double m_inverseMass;
+    glm::dvec3 m_centreOfMass           = {};
+    glm::dmat3x3 m_inertiaTensor        = {};
+    glm::dmat3x3 m_inverseInertiaTensor = {};
 
-    glm::dvec3 linearVelocity  = {};
-    glm::dvec3 angularVelocity = {};
-    glm::dvec3 torque          = {};
-    glm::dvec3 force           = {};
+    glm::dvec3 m_linearVelocity  = {};
+    glm::dvec3 m_angularVelocity = {};
 
-    bool staticObject;
-    bool gravityAffected;
+    bool m_staticObject;
+    bool m_gravityAffected;
 
     glm::dvec3 m_position = {};
+    glm::dvec3 m_tempLinearVelocity = {};
 };

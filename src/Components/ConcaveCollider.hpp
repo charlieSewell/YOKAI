@@ -47,12 +47,6 @@ class YOKAI_API ConcaveCollider : public Component {
         void setAngularVelocity(glm::dvec3 av);
         glm::dvec3 getAngularVelocity();
 
-        void setTorque(glm::dvec3 t);
-        glm::dvec3 getTorque();
-
-        void setForce(glm::dvec3 f);
-        glm::dvec3 getForce();
-
         void setIsStaticObject(bool s);
         bool getIsStaticObject();
 

@@ -43,9 +43,9 @@ void PhysicsSystem::Init()
 
 
     //physicsWorld->setEventListener(&listener);
-    for (auto &n : m_colliders) {
-        n.second.setMass(10);
-    }
+    //for (auto &n : m_colliders) {
+    //    n.second.SetMass(10);
+    //}
 }
 void PhysicsSystem::DeInit()
 {
@@ -70,21 +70,21 @@ void PhysicsSystem::update(float dt)
 	for (auto& m_linearVelocity : m_linearVelocities)
 	{
 		//m_colliders[colliderID] [total linear velocity, collision counter]
-		m_colliders[m_linearVelocity.first].setLinearVelocity(m_linearVelocity.second.first / double(m_linearVelocity.second.second));
+		m_colliders[m_linearVelocity.first].SetLinearVelocity(m_linearVelocity.second.first / double(m_linearVelocity.second.second));
 	}
 
     for (auto &m_collider : m_colliders) 
     {
-        if (m_collider.second.getGravityAffected()) 
+        if (m_collider.second.GetGravityAffected()) 
         {
-            m_collider.second.setLinearVelocity(m_collider.second.getLinearVelocity() + (glm::dvec3(0, -1, 0) * double(dt)));
+            m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() + (glm::dvec3(0, -0.5, 0) * double(dt)));
         }
     }
 
     for (auto &m_angularVelocity : m_angularVelocities) 
     {
         // m_colliders[colliderID] [total angular velocity, collision counter]
-        m_colliders[m_angularVelocity.first].setAngularVelocity(m_angularVelocity.second.first / double(m_angularVelocity.second.second));
+        m_colliders[m_angularVelocity.first].SetAngularVelocity(m_angularVelocity.second.first / double(m_angularVelocity.second.second));
     }
 
 	m_linearVelocities.clear();

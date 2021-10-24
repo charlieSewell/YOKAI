@@ -65,12 +65,6 @@ public:
     void SetAngularVelocity(glm::dvec3 av);
     glm::dvec3 GetAngularVelocity();
 
-    void SetTorque(glm::dvec3 t);
-    glm::dvec3 GetTorque();
-
-    void SetForce(glm::dvec3 f);
-    glm::dvec3 GetForce();
-
     void SetIsStaticObject(bool s);
     bool GetIsStaticObject();
 
@@ -89,7 +83,7 @@ public:
 
 	int GetColliderID();
 
-    void Translate(glm::dvec3 position);
+    void Translate(glm::dvec3 velocity);
 
     void Rotate(glm::dvec3 angVelocity, float deltaTime);
 
@@ -100,4 +94,6 @@ private:
     unsigned int m_colliderID;
     ///Extents of Bounding Box
     glm::dvec3 extents = {};
+
+    glm::dvec3 m_offset = {};
 };

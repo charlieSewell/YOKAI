@@ -6,32 +6,33 @@
  * @class ReactMath
  * @brief Helper class for glm to rp3d
  */
-class ReactMath{
-    public:
+namespace ReactMath{
         /**
          * @brief Converts glm quat to rp3d
          * @param glm::quat - quat
          * @return rp3d::Quaternion - quat
          */
-        static reactphysics3d::Quaternion glmQuatToRP3d(glm::quat& quat);
+        reactphysics3d::Quaternion glmQuatToRP3d(glm::quat& quat);
         /**
          * @brief Converts rp3d quat to glm
          * @param rp3d::Quaternion - quat
          * @return glm::quat - quat
          */
-        static glm::quat rp3dQuatToGlm(reactphysics3d::Quaternion& quat);
+        glm::quat rp3dQuatToGlm(reactphysics3d::Quaternion& quat);
         /**
          * @brief Converts glm vec3 to rp3d
          * @param glm::vec3 - vec3
          * @return rp3d::Vector3 - vec3
          */
-        static reactphysics3d::Vector3 glmVecToRP3d(glm::vec3& vec);
-        static reactphysics3d::Vector3 glmVecToRP3d(glm::dvec3 &vec);
+        reactphysics3d::Vector3 glmVecToRP3d(glm::vec3& vec);
+        reactphysics3d::Vector3 glmVecToRP3d(glm::dvec3 &vec);
         /**
          * @brief Converts rp3d Vector3 to glm
          * @param rp3d::Vector3 - vec3
          * @return glm::vec3 - vec3
          */
-        static glm::vec3 rp3dVecToGlm(reactphysics3d::Vector3& vec);
-        static glm::dvec3 rp3dVecToGlmD(reactphysics3d::Vector3& vec);
+        glm::vec3 rp3dVecToGlm(reactphysics3d::Vector3& vec);
+        glm::dvec3 rp3dVecToGlmD(reactphysics3d::Vector3& vec);
+
+        glm::mat4 rp3dMat4ToGlm(reactphysics3d::Transform &transform);
 };

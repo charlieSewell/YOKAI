@@ -57,12 +57,6 @@ public:
     void SetAngularVelocity(glm::dvec3 av);
     glm::dvec3 GetAngularVelocity();
 
-    void SetTorque(glm::dvec3 t);
-    glm::dvec3 GetTorque();
-
-    void SetForce(glm::dvec3 f);
-    glm::dvec3 GetForce();
-
     void SetIsStaticObject(bool s);
     bool GetIsStaticObject();
 

@@ -50,3 +50,29 @@ glm::dvec3 ReactMath::rp3dVecToGlmD(reactphysics3d::Vector3 &vec) {
     newVec.z         = vec.z;
     return newVec;
 }
+
+/*
+glm::mat4 rp3dMat4ToGlm(reactphysics3d::Transform& transform) {
+    
+    glm::mat4 newMat = {};
+    newMat[0][0]     = transform[0][0];
+    newMat[0][1];
+    newMat[0][2];
+    newMat[0][3];
+
+    newMat[1][0] = transform[0][0];
+    newMat[1][1];
+    newMat[1][2];
+    newMat[1][3];
+
+    newMat[2][0] = transform[0][0];
+    newMat[2][1];
+    newMat[2][2];
+    newMat[2][3];
+
+    newMat[3][0] = transform[0][0];
+    newMat[3][1];
+    newMat[3][2];
+    newMat[3][3];
+}
+*/
