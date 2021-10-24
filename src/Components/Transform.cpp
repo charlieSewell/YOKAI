@@ -1,5 +1,5 @@
 #include "Transform.hpp"
-
+#include "imgui/imgui.h"
 Transform::Transform(GameObject* parent)
 	: Component(parent), m_transform(glm::mat4(1.0))
 {
@@ -46,22 +46,25 @@ void Transform::translatePostMultiply(float x, float y, float z)
 
 void Transform::rotate(float Angle, glm::vec3 upVector)
 {
-	m_transform = glm::rotate(m_transform, Angle, upVector);
+	m_transform = glm::rotate(getMatrix(), Angle, upVector);
 }
 
 void Transform::scale(glm::vec3 scale)
 {
-	m_transform = glm::scale(m_transform, scale);
+	m_transform = glm::scale(getMatrix(), scale);
+	decompose();
 }
 
 void Transform::scale(float x, float y, float z)
 {
-	m_transform = glm::scale(m_transform, glm::vec3(x, y, z));
+	m_transform = glm::scale(getMatrix(), glm::vec3(x, y, z));
+	decompose();
 }
 
 void Transform::scale(float scale)
 {
-	m_transform = glm::scale(m_transform, glm::vec3(scale, scale, scale));
+	m_transform = glm::scale(getMatrix(), glm::vec3(scale, scale, scale));
+	decompose();
 }
 
 glm::vec3 Transform::getScale()
@@ -83,6 +86,7 @@ glm::vec3 Transform::getPosition()
 
 glm::mat4 Transform::getMatrix()
 {
+	recompose();
 	return m_transform;
 }
 
@@ -132,4 +136,16 @@ Transform& Transform::operator=(const Transform& other)
 {
 	m_transform = other.m_transform;
 	return *this;
+}
+void Transform::RenderGUI()
+{
+	if(ImGui::TreeNode("Transform"))
+	{
+		ImGui::DragFloat3("Position: ",&m_position[0],0.1f);
+		ImGui::DragFloat3("Scale: ",&m_scale[0],0.1f);
+		ImGui::DragFloat3("Scale: ",&m_scale[0],0.1f);
+		ImGui::TreePop();
+        ImGui::Separator();
+		
+	}
 }

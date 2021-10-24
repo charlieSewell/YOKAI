@@ -46,6 +46,8 @@ class YOKAI_API DrawableEntity : public Component {
          * @return unsigned int 
          */
         unsigned int GetModelID(){return m_modelID;}
+
+        void RenderGUI();
     private:
         ///Model ID
         unsigned int m_modelID;

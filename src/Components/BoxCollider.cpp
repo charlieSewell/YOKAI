@@ -154,3 +154,11 @@ void BoxCollider::initInertiaTensor() {
 void BoxCollider::translate(glm::dvec3 position) {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(position + GetPosition());
 }
+void BoxCollider::SetCollisionCategory(unsigned short category)
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetCollisionCategory(category);
+}
+void BoxCollider::SetCollisionMaskBits(unsigned short maskBits)
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetCollisionMaskBits(maskBits);  
+}

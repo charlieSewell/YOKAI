@@ -134,3 +134,11 @@ void CollisionBody::setGravityAffected(bool g) {
 bool CollisionBody::getGravityAffected() {
     return gravityAffected;
 }
+void CollisionBody::SetCollisionCategory(unsigned short category)
+ {
+     m_collider->setCollisionCategoryBits(category);
+}
+void CollisionBody::SetCollisionMaskBits(unsigned short maskBits)
+{
+     m_collider->setCollideWithMaskBits(maskBits);
+}

@@ -30,6 +30,10 @@ class Component
          * @brief Draws once a frame after update
          */
         virtual void Draw() {}
+        /**
+         * @brief Renders Component GUI
+         */
+        virtual void RenderGUI() {}
     protected:
         ///parent game object
         GameObject* m_parent;

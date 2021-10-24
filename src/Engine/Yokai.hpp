@@ -37,10 +37,9 @@ public:
     ///window used by the engine
     Window window = {};
     /**
-     * @brief Set is Running
-     * @param s
+     * @brief Shuts the engine down :(
      */
-    void setIsRunning(bool s);
+    void Shutdown();
     /**
      * @brief Gets a layer Pointer
      * @return Scene*
@@ -55,7 +54,7 @@ public:
      * Sets the paused state
      * @param p
      */
-    void setIsPaused(bool p);
+    void TogglePause();
     /**
      * Return true if engine paused
      * @return bool
@@ -71,7 +70,10 @@ private:
      * @brief Registers Engine close event with EMS
      */
     void registerClose();
-
+    /**
+     * @brief Registers Engine Pause event with EMS
+     */
+    void registerPause();
     /**
      * @brief Privatised Default Constructor
      */

@@ -43,9 +43,16 @@ class YOKAI_API Input : public Component
 	* @brief Get the Mouse State
 	* @return Mouse
 	*/
-
 	Mouse GetMouseState();
+	/**
+	 * @brief Shows Mouse
+	 */
+	void ShowMouse();
+	/**
+	 * @brief Hides Mouse
+	 */
+	void HideMouse();
   private:
-
+	
 	  std::map<YOKAI_INPUT, bool> m_toggleStates;
 };

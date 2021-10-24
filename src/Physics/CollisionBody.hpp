@@ -2,14 +2,15 @@
 #include <reactphysics3d/reactphysics3d.h>
 #include <glm/glm.hpp>
 #include "Physics/Shapes/ReactTerrainShape.hpp"
-#include "PhysicsUnits.hpp"
+#include "Physics.hpp"
 //#include "PhysicsResolution.hpp"
+
 /**
  * @class RigidBody
  * @brief Class for a physics Rigid body
  */
-class CollisionBody {
-
+class CollisionBody 
+{
   public:
     /**
      * @brief Sets Position
@@ -118,6 +119,8 @@ class CollisionBody {
 
     void setGravityAffected(bool g);
     bool getGravityAffected();
+    void SetCollisionCategory(unsigned short category);
+    void SetCollisionMaskBits(unsigned short maskBits);
 
 	// bad
 	glm::dvec3 m_tempLinearVelocity = {};

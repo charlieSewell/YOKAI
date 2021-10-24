@@ -30,7 +30,12 @@ class Scene
      * @brief Disable a Layer
      */
     virtual void Disable() = 0;
-
+    /**
+     * @brief Gets the Game Object Manager
+     * @return GameObjectManager* 
+     */
+    GameObjectManager* GetGameObjectManager() {return &m_objectManager;}
+    LightManager* GetLightManager() {return &m_lightManager;}
   protected:
     ///Game Object Manager
     GameObjectManager m_objectManager;

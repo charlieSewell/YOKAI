@@ -49,3 +49,7 @@ void DrawableEntity::SetAnimation(std::string animation)
 {
     m_animator->setAnimation(animation);
 }
+void DrawableEntity::RenderGUI()
+{
+
+}

@@ -2,6 +2,7 @@
 #include <map>
 #include "GameObject.hpp"
 #include "Export.hpp"
+#include "imgui/imgui.h"
 /**
  * @class GameObjectManager
  * @brief Responsible for the management of all game objects created
@@ -9,13 +10,25 @@
 class YOKAI_API GameObjectManager
 {
   public:
+      /**
+     * @brief Constructs the Game Object Manager object
+     */
     GameObjectManager();
+    /**
+     * @brief Destroy the Game Object Manager object
+     */
     ~GameObjectManager();
     /*!
      * @brief Creates a GameObject and stores it within a map of GameObjects
-     * @return objectCount-1
+     * @return unsigned int 
      */
     unsigned int CreateObject();
+    /**
+     * @brief Create a GameObject and stores it within a map of GameObjects
+     * @param objectName 
+     * @return unsigned int 
+     */
+    unsigned int CreateObject(std::string objectName);
     /*!
      * @brief Getter for a GameObject with the specified id
      * @param int - id
@@ -37,10 +50,14 @@ class YOKAI_API GameObjectManager
      * @param id 
      */
     void DeleteGameObject(unsigned int id);
+    /**
+     * @brief Renders GUI
+     */
+    void RenderGUI();
   private:
     /// Map of GameObjects, with the key of the GameObject id, and value of the GameObject smart pointer
-    std::map<unsigned int,std::shared_ptr<GameObject>> gameObjects;
+    std::map<unsigned int,std::shared_ptr<GameObject>> m_gameObjects;
 
     /// Stores the number of GameObjects within the map
-    unsigned int objectCount;
+    unsigned int m_objectCount;
 };

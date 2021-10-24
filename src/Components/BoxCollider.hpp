@@ -91,6 +91,9 @@ public:
 
     void translate(glm::dvec3 position);
 
+    void SetCollisionCategory(unsigned short category);
+    void SetCollisionMaskBits(unsigned short maskBits);
+
 private:
     ///Collider ID
     unsigned int m_colliderID;

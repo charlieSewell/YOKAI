@@ -35,7 +35,8 @@ enum class NoReturnEvent
 	meleePressed,
 	meleeReleased,
     pausePressed,
-    pauseReleased
+    pauseReleased,
+    ExitPressed
 };
 
 enum class ReturnMat4Event

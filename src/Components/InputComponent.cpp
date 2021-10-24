@@ -53,4 +53,12 @@ Mouse Input::GetMouseState()
 {
 	return(InputManagerGLFW::getInstance().m_mouse);
 }
+void Input::HideMouse()
+{
+	InputManagerGLFW::getInstance().HideMouse();
+}
+void Input::ShowMouse()
+{
+	InputManagerGLFW::getInstance().ShowMouse();
+}
 
