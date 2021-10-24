@@ -77,15 +77,44 @@ void PhysicsResolution::CollisionResolution(int body1, int body2, glm::dvec3 con
     linearVelocity2 -= linearImpulse / PhysicsSystem::getInstance().getPhysicsBody(body2)->GetMass();
     angularVelocity2 -= (lambda * PhysicsSystem::getInstance().getPhysicsBody(body2)->GetInverseInertiaTensor()) * r2CrossNormal;
 
+    //linearVelocity1  = Damping(linearVelocity1);
+    //linearVelocity2  = Damping(linearVelocity2);
+    //angularVelocity1 = Damping(angularVelocity1);
+    //angularVelocity2 = Damping(angularVelocity2);
+
+    /*
+    if (!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject() && PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
+    {
+        PhysicsSystem::getInstance().SubmitLinearVelocity(body1, PhysicsSystem::getInstance().getPhysicsBody(body1)->GetLinearVelocity());
+        PhysicsSystem::getInstance().SubmitAngularVelocity(body1, PhysicsSystem::getInstance().getPhysicsBody(body1)->GetAngularVelocity());
+    } 
+
+    if (PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject() && !PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
+    {
+        PhysicsSystem::getInstance().SubmitLinearVelocity(body2, PhysicsSystem::getInstance().getPhysicsBody(body2)->GetLinearVelocity());
+        PhysicsSystem::getInstance().SubmitAngularVelocity(body2, PhysicsSystem::getInstance().getPhysicsBody(body2)->GetAngularVelocity());
+    } 
+    */
+
     if (!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject()) 
     {
         PhysicsSystem::getInstance().SubmitLinearVelocity(body1, linearVelocity1);
         PhysicsSystem::getInstance().SubmitAngularVelocity(body1, angularVelocity1);
     }
 
-     if (!PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
-     {
+    if (!PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
+    {
         PhysicsSystem::getInstance().SubmitLinearVelocity(body2, linearVelocity2);
         PhysicsSystem::getInstance().SubmitAngularVelocity(body2, angularVelocity2);
     }
+}
+
+glm::dvec3 PhysicsResolution::Damping(glm::dvec3 velocity) 
+{
+    double linearDamping = 0.9;
+    double angularDamping = 0.75;
+
+    velocity = velocity * angularDamping; 
+
+    return velocity;
 }

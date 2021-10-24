@@ -77,7 +77,7 @@ void PhysicsSystem::update(float dt)
     {
         if (m_collider.second.GetGravityAffected()) 
         {
-            m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() + (glm::dvec3(0, -0.5, 0) * double(dt)));
+            m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() + (glm::dvec3(0, -1, 0) * double(dt)));
         }
     }
 

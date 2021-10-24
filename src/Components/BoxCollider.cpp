@@ -56,6 +56,9 @@ void BoxCollider::Update(float deltaTime)
     Rotate(GetAngularVelocity(), deltaTime);
     //Translate(GetLinearVelocity() * static_cast<double>(deltaTime));
     SetCentreOfMass(GetPosition());
+
+    m_parent->GetComponent<Transform>()->setPosition(GetPosition());
+    m_parent->GetComponent<Transform>()->setRotation(GetOrientation());
 }
 
 void BoxCollider::SetMass(double m) 
@@ -148,21 +151,19 @@ glm::dvec3 BoxCollider::GetExtents()
 
 void BoxCollider::Translate(glm::dvec3 velocity) 
 {
-   //PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(velocity + GetPosition());
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(velocity + GetPosition());
     
-    m_offset = glm::dvec3(0, 0.3, 0.01);
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(velocity + glm::dvec3(m_parent->GetComponent<Transform>()->getPosition()) + m_offset);
-    m_parent->GetComponent<Transform>()->setPosition(GetPosition() - m_offset);
-    
+    //m_offset = glm::dvec3(0, 0.3, 0.01);
+    //PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(velocity + glm::dvec3(m_parent->GetComponent<Transform>()->getPosition()) + m_offset);
+    //m_parent->GetComponent<Transform>()->setPosition(GetPosition() - m_offset);
 }
 
 void BoxCollider::Rotate(glm::dvec3 angVelocity, float deltaTime) 
 {
-    //PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(GetOrientation() + (0.5f * GetOrientation() * glm::quat(0.0, angVelocity) * deltaTime)));
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(GetOrientation() + (0.5f * GetOrientation() * glm::quat(0.0, angVelocity) * deltaTime)));
     
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(m_parent->GetComponent<Transform>()->getRotation() + (0.5f * m_parent->GetComponent<Transform>()->getRotation() * glm::quat(0.0, angVelocity) * deltaTime)));
-    m_parent->GetComponent<Transform>()->setRotation(GetOrientation());
-    
+    //PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(m_parent->GetComponent<Transform>()->getRotation() + (0.5f * m_parent->GetComponent<Transform>()->getRotation() * glm::quat(0.0, angVelocity) * deltaTime)));
+    //m_parent->GetComponent<Transform>()->setRotation(GetOrientation());
 }
 
 void BoxCollider::StaticSet() 

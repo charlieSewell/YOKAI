@@ -134,14 +134,14 @@ bool CollisionBody::GetGravityAffected()
 {
     return m_gravityAffected;
 }
-/*
+
 glm::mat4 CollisionBody::GetTransform() 
 {
-    //return ReactMath::m_body->getTransform();
+    rp3d::Transform temp = m_body->getTransform();
+    return ReactMath::rp3dMat4ToGlm(temp);
 }
 
 void CollisionBody::SetTransform(glm::mat4 transform) 
 {
 
 }
-*/
