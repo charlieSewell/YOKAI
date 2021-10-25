@@ -68,7 +68,7 @@ void PhysicsSystem::update(float dt)
     physicsWorld->update(static_cast<rp3d::decimal>(dt));
 	
 	for (auto& m_linearVelocity : m_linearVelocities)
-	{
+	{ 
 		//m_colliders[colliderID] [total linear velocity, collision counter]
 		m_colliders[m_linearVelocity.first].setLinearVelocity(m_linearVelocity.second.first / double(m_linearVelocity.second.second));
 	}
