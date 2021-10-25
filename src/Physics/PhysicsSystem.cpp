@@ -71,13 +71,14 @@ void PhysicsSystem::update(float dt)
 	{
 		//m_colliders[colliderID] [total linear velocity, collision counter]
 		m_colliders[m_linearVelocity.first].SetLinearVelocity((m_linearVelocity.second.first / double(m_linearVelocity.second.second)));
+        //std::cout << "Count - " << m_linearVelocity.second.second << std::endl;
 	}
 
     for (auto &m_collider : m_colliders) 
     {
         if (m_collider.second.GetGravityAffected()) 
         {
-            m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() + (glm::dvec3(0, -0.5, 0) * double(dt)));
+            m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() + (glm::dvec3(0, -1, 0) * double(dt)));
         }
     }
 
