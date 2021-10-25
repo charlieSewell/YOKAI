@@ -1,6 +1,6 @@
 #include "GameObject.hpp"
 #include <iostream>
-GameObject::GameObject(unsigned int id): m_gameObjectID(id),m_objectName("Default Object") {}
+GameObject::GameObject(unsigned int id): m_gameObjectID(id){}
 GameObject::GameObject(unsigned int id, std::string objectName): m_gameObjectID(id),m_objectName(objectName) {}
 void GameObject::Awake()
 {

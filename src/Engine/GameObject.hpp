@@ -63,7 +63,7 @@ class YOKAI_API GameObject
     private:
         ///Game object ID
         unsigned int m_gameObjectID;
-        std::string m_objectName;
+        std::string m_objectName = "Default Object";
         ///Vector of game object Components
         std::vector<std::shared_ptr<Component>> m_components;
     public:

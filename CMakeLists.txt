@@ -119,7 +119,7 @@ target_link_options(${PROJECT_NAME} PUBLIC
         )
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Include and link against dependencies.
-target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glew assimp glm reactphysics3d spdlog::spdlog imgui ${CMAKE_DL_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glew assimp glm reactphysics3d spdlog::spdlog imgui imguizmo${CMAKE_DL_LIBS})
 
 target_link_libraries(run_tests PUBLIC YOKAI CppUTest CppUTestExt ${CMAKE_DL_LIBS})
 

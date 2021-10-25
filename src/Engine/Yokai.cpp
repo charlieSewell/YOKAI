@@ -105,33 +105,6 @@ void Yokai::Run()
     window.DeInit();
 }
 
-void Yokai::registerClose()
-{
-    auto exitPress = [&]()
-    {
-        Shutdown(); //Bye Bye
-    };
-    EMS::getInstance().add(NoReturnEvent::ExitPressed, exitPress);
-}
-void Yokai::registerPause()
-{
-    static bool isPressed = false;
-    auto pauseRelease = [&](){isPressed = false;};
-    EMS::getInstance().add(NoReturnEvent::pauseReleased, pauseRelease);
-    
-    auto pausePress = [&]()
-    {
-        if(!isPressed)
-        {
-            TogglePause();
-            isPressed = true;
-        }
-        
-        
-    };
-    EMS::getInstance().add(NoReturnEvent::pausePressed, pausePress);
-}
-
 void Yokai::Shutdown()
 {
     isRunning = false;

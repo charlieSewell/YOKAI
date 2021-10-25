@@ -1,5 +1,6 @@
 #include "Transform.hpp"
 #include "imgui/imgui.h"
+#include "ImGuizmo.h"
 Transform::Transform(GameObject* parent)
 	: Component(parent), m_transform(glm::mat4(1.0))
 {
@@ -44,27 +45,24 @@ void Transform::translatePostMultiply(float x, float y, float z)
 	m_transform = translationMatrix * m_transform;
 }
 
-void Transform::rotate(float Angle, glm::vec3 upVector)
+void Transform::rotate(float angle, glm::vec3 upVector)
 {
-	m_transform = glm::rotate(getMatrix(), Angle, upVector);
+	m_transform = glm::rotate(m_transform, angle, upVector);
 }
 
 void Transform::scale(glm::vec3 scale)
 {
-	m_transform = glm::scale(getMatrix(), scale);
-	decompose();
+	m_transform = glm::scale(m_transform, scale);
 }
 
 void Transform::scale(float x, float y, float z)
 {
-	m_transform = glm::scale(getMatrix(), glm::vec3(x, y, z));
-	decompose();
+	m_transform = glm::scale(m_transform, glm::vec3(x, y, z));
 }
 
 void Transform::scale(float scale)
 {
-	m_transform = glm::scale(getMatrix(), glm::vec3(scale, scale, scale));
-	decompose();
+	m_transform = glm::scale(m_transform, glm::vec3(scale, scale, scale));
 }
 
 glm::vec3 Transform::getScale()
@@ -76,6 +74,7 @@ glm::vec3 Transform::getScale()
 glm::quat Transform::getRotation()
 {
 	decompose();
+	m_rotation = glm::conjugate(m_rotation);
 	return(m_rotation);
 }
 
@@ -86,7 +85,6 @@ glm::vec3 Transform::getPosition()
 
 glm::mat4 Transform::getMatrix()
 {
-	recompose();
 	return m_transform;
 }
 
@@ -139,13 +137,17 @@ Transform& Transform::operator=(const Transform& other)
 }
 void Transform::RenderGUI()
 {
+	float position[3];
+	float rotation[3];
+	float scale[3];
 	if(ImGui::TreeNode("Transform"))
 	{
-		ImGui::DragFloat3("Position: ",&m_position[0],0.1f);
-		ImGui::DragFloat3("Scale: ",&m_scale[0],0.1f);
-		ImGui::DragFloat3("Scale: ",&m_scale[0],0.1f);
+		ImGuizmo::DecomposeMatrixToComponents(&m_transform[0][0],&position[0],&rotation[0],&scale[0]);
+		ImGui::DragFloat3("Position: ",&position[0],0.1f);
+		ImGui::DragFloat3("Rotation: ",&rotation[0],0.1f);
+		ImGui::DragFloat3("Scale: ",&scale[0],0.1f);
 		ImGui::TreePop();
         ImGui::Separator();
-		
+		ImGuizmo::RecomposeMatrixFromComponents(&position[0],&rotation[0],&scale[0],&m_transform[0][0]);
 	}
 }

@@ -20,6 +20,7 @@ add_subdirectory(assimp)
 add_subdirectory(glew)
 add_subdirectory(imgui)
 add_subdirectory(reactphysics3d)
+add_subdirectory(ImGuizmo)
 option(GLFW_BUILD_DOCS OFF)
 option(GLFW_BUILD_TESTS OFF)
 option(GLFW_BUILD_EXAMPLES OFF)
@@ -45,6 +46,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
         reactphysics3d/include
         imgui/imgui
         imgui/imgui/backends
+	ImGuizmo/include
         spdlog/include
         glm
 )
