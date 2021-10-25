@@ -161,6 +161,8 @@ void BoxCollider::Translate(glm::dvec3 velocity)
 void BoxCollider::Rotate(glm::dvec3 angVelocity, float deltaTime) 
 {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(GetOrientation() + (0.5f * GetOrientation() * glm::quat(0.0, angVelocity) * deltaTime)));
+
+    //PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(GetOrientation() + (0.5f * GetOrientation() * glm::quat(0.0, angVelocity) * deltaTime)));
     
     //PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(m_parent->GetComponent<Transform>()->getRotation() + (0.5f * m_parent->GetComponent<Transform>()->getRotation() * glm::quat(0.0, angVelocity) * deltaTime)));
     //m_parent->GetComponent<Transform>()->setRotation(GetOrientation());

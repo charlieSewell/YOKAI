@@ -10,6 +10,6 @@ class PhysicsResolution : public rp3d::EventListener {
 
   private:
       void ResolvePenetration(int body1, int body2, double penetration, glm::dvec3 contactNormal);
-      void CollisionResolution(int body1, int body2, glm::dvec3 contactNormal, glm::dvec3 body1ContactPoint, glm::dvec3 body2ContactPoint);
+      void CollisionResolution(int body1, int body2, glm::dvec3 contactNormal, glm::dvec3 body1ContactPoint, glm::dvec3 body2ContactPoint, CollisionCallback::ContactPair::EventType eventType);
       glm::dvec3 Damping(glm::dvec3 vel);
 };

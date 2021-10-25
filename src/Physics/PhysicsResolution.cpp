@@ -10,6 +10,8 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
         int body1 = contactPair.getCollider1()->getEntity().id;
         int body2 = contactPair.getCollider2()->getEntity().id;
 
+        CollisionCallback::ContactPair::EventType eventType = contactPair.getEventType();
+
         if ((!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject() || !PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject())) 
         {
             for (int c = 0; c < contactPair.getNbContactPoints(); c++) 
@@ -26,7 +28,7 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
                 //std::cout << "b2 col - (" << body2ContactPoint.x << ", " << body2ContactPoint.y << ", " << body2ContactPoint.z << ")" << std::endl;
 
                 ResolvePenetration(body1, body2, penetration, contactNormal);
-                CollisionResolution(body1, body2, contactNormal, body1ContactPoint, body2ContactPoint);
+                CollisionResolution(body1, body2, contactNormal, body1ContactPoint, body2ContactPoint, eventType);
             }
         }
     }
@@ -45,7 +47,7 @@ void PhysicsResolution::ResolvePenetration(int body1, int body2, double penetrat
     }
 }
 
-void PhysicsResolution::CollisionResolution(int body1, int body2, glm::dvec3 contactNormal, glm::dvec3 body1ContactPoint, glm::dvec3 body2ContactPoint) 
+void PhysicsResolution::CollisionResolution(int body1, int body2, glm::dvec3 contactNormal, glm::dvec3 body1ContactPoint, glm::dvec3 body2ContactPoint, CollisionCallback::ContactPair::EventType eventType) 
 {
     double coefficientOfRestitution = 0.5;
 
@@ -77,18 +79,28 @@ void PhysicsResolution::CollisionResolution(int body1, int body2, glm::dvec3 con
     linearVelocity2 -= linearImpulse / PhysicsSystem::getInstance().getPhysicsBody(body2)->GetMass();
     angularVelocity2 -= (lambda * PhysicsSystem::getInstance().getPhysicsBody(body2)->GetInverseInertiaTensor()) * r2CrossNormal;
 
-    //linearVelocity1  = Damping(linearVelocity1);
-    //linearVelocity2  = Damping(linearVelocity2);
-    //angularVelocity1 = Damping(angularVelocity1);
-    //angularVelocity2 = Damping(angularVelocity2);
+    if (eventType == CollisionCallback::ContactPair::EventType::ContactStart) {
+        linearVelocity1  = Damping(linearVelocity1);
+        linearVelocity2  = Damping(linearVelocity2);
+        angularVelocity1 = Damping(angularVelocity1);
+        angularVelocity2 = Damping(angularVelocity2);
+    }
+    
+    std::cout << "\n";
+    std::cout << "L1 - (" << linearVelocity1.x << ", " << linearVelocity1.y << ", " << linearVelocity1.z << ")" << std::endl;
+    std::cout << "A1 - (" << angularVelocity1.x << ", " << angularVelocity1.y << ", " << angularVelocity1.z << ")" << std::endl;
+    //std::cout << "\n";
+    //std::cout << "L2 - (" << linearVelocity2.x << ", " << linearVelocity2.y << ", " << linearVelocity2.z << ")" << std::endl;
+    //std::cout << "A2 - (" << angularVelocity2.x << ", " << angularVelocity2.y << ", " << angularVelocity2.z << ")" << std::endl;
+    
 
     /*
     if (!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject() && PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
     {
-        PhysicsSystem::getInstance().SubmitLinearVelocity(body1, PhysicsSystem::getInstance().getPhysicsBody(body1)->GetLinearVelocity());
-        PhysicsSystem::getInstance().SubmitAngularVelocity(body1, PhysicsSystem::getInstance().getPhysicsBody(body1)->GetAngularVelocity());
+        PhysicsSystem::getInstance().SubmitLinearVelocity(body1, PhysicsSystem::getInstance().getPhysicsBody(body1)->GetLinearVelocity() * PhysicsSystem::getInstance().getPhysicsBody(body1)->GetInverseMass());
+        PhysicsSystem::getInstance().SubmitAngularVelocity(body1, PhysicsSystem::getInstance().getPhysicsBody(body1)->GetAngularVelocity() * PhysicsSystem::getInstance().getPhysicsBody(body1)->GetInertiaTensor());
     } 
-
+    
     if (PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject() && !PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
     {
         PhysicsSystem::getInstance().SubmitLinearVelocity(body2, PhysicsSystem::getInstance().getPhysicsBody(body2)->GetLinearVelocity());
@@ -112,7 +124,7 @@ void PhysicsResolution::CollisionResolution(int body1, int body2, glm::dvec3 con
 glm::dvec3 PhysicsResolution::Damping(glm::dvec3 velocity) 
 {
     double linearDamping = 0.9;
-    double angularDamping = 0.75;
+    double angularDamping = 0.6;
 
     velocity = velocity * angularDamping; 
 
