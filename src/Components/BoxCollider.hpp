@@ -44,40 +44,34 @@ public:
      */
 	void SetOrientation(glm::quat orientation);
 
-    void setMass(double m);
-    double getMass();
+    glm::quat GetOrientation();
 
-    double getInverseMass();
+    void SetMass(double m);
+    double GetMass();
 
-    void setCentreOfMass(glm::dvec3 com);
-    glm::dvec3 getCentreOfMass();
+    double GetInverseMass();
 
-    void setInertiaTensor();
-    glm::dmat3x3 getInertiaTensor();
+    void SetCentreOfMass(glm::dvec3 com);
+    glm::dvec3 GetCentreOfMass();
 
-    glm::dmat3x3 getInverseInertiaTensor();
+    void SetInertiaTensor();
+    glm::dmat3x3 GetInertiaTensor();
 
-    void setLinearVelocity(glm::dvec3 lv);
-    glm::dvec3 getLinearVelocity();
+    glm::dmat3x3 GetInverseInertiaTensor();
 
-    void setAngularVelocity(glm::dvec3 av);
-    glm::dvec3 getAngularVelocity();
+    void SetLinearVelocity(glm::dvec3 lv);
+    glm::dvec3 GetLinearVelocity();
 
-    void setTorque(glm::dvec3 t);
-    glm::dvec3 getTorque();
+    void SetAngularVelocity(glm::dvec3 av);
+    glm::dvec3 GetAngularVelocity();
 
-    void setForce(glm::dvec3 f);
-    glm::dvec3 getForce();
+    void SetIsStaticObject(bool s);
+    bool GetIsStaticObject();
 
-    void setIsStaticObject(bool s);
-    bool getIsStaticObject();
+    void SetGravityAffected(bool g);
+    bool GetGravityAffected();
 
-    void setGravityAffected(bool g);
-    bool getGravityAffected();
-
-    glm::dvec3 getExtents();
-
-    void initInertiaTensor();
+    glm::dvec3 GetExtents();
 
 	/**
 	* @brief Set the Positin of the Bounding Box
@@ -89,11 +83,17 @@ public:
 
 	int GetColliderID();
 
-    void translate(glm::dvec3 position);
+    void Translate(glm::dvec3 velocity);
+
+    void Rotate(glm::dvec3 angVelocity, float deltaTime);
+
+    void StaticSet();
 
 private:
     ///Collider ID
     unsigned int m_colliderID;
     ///Extents of Bounding Box
     glm::dvec3 extents = {};
+
+    glm::dvec3 m_offset = {};
 };

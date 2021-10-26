@@ -2,10 +2,6 @@
 
 SphereCollider::SphereCollider(GameObject* parent) : Component(parent){}
 
-void SphereCollider::SetRadius(double radius)
-{
-	m_radius = radius;
-}
 void SphereCollider::Start()
 {
     if(m_parent->GetComponent<Transform>() == nullptr)
@@ -14,94 +10,141 @@ void SphereCollider::Start()
 	}
     m_colliderID = PhysicsSystem::getInstance().addSphere(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(), m_radius);
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
+    SetCentreOfMass(GetPosition());
+    SetGravityAffected(false);
 }
 
-void SphereCollider::SetPosition(glm::vec3 newPosition)
+void SphereCollider::SetOrientation(glm::quat orientation) 
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(orientation);
+}
+
+void SphereCollider::SetPosition(glm::dvec3 newPosition) 
 {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(newPosition);
 }
 
-unsigned int SphereCollider::GetColliderID()
+glm::dvec3 SphereCollider::GetPosition() 
 {
-	return m_colliderID;
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetPosition();
 }
 
-void SphereCollider::setMass(double m) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setMass(m);
+glm::quat SphereCollider::GetOrientation() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetOrientation();
 }
 
-double SphereCollider::getMass() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getMass();
+int SphereCollider::GetColliderID() 
+{
+    return m_colliderID;
 }
 
-double SphereCollider::getInverseMass() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInverseMass();
+void SphereCollider::Update(float deltaTime) 
+{
+    Translate(GetLinearVelocity() * static_cast<double>(deltaTime));
+    Rotate(GetAngularVelocity(), deltaTime);
+    SetCentreOfMass(GetPosition());
 }
 
-void SphereCollider::setCentreOfMass(glm::dvec3 com) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setCentreOfMass(com);
+void SphereCollider::SetMass(double m) 
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetMass(m);
 }
 
-glm::dvec3 SphereCollider::getCentreOfMass() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getCentreOfMass();
+double SphereCollider::GetMass() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetMass();
 }
 
-void SphereCollider::setInertiaTensor(glm::dmat3x3 it) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setInertiaTensor(it);
+double SphereCollider::GetInverseMass() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetInverseMass();
 }
 
-glm::dmat3x3 SphereCollider::getInertiaTensor() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInertiaTensor();
+void SphereCollider::SetCentreOfMass(glm::dvec3 com) 
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetCentreOfMass(com);
 }
 
-glm::dmat3x3 SphereCollider::getInverseInertiaTensor() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInverseInertiaTensor();
+glm::dvec3 SphereCollider::GetCentreOfMass() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetCentreOfMass();
 }
 
-void SphereCollider::setLinearVelocity(glm::dvec3 lv) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setLinearVelocity(lv);
+void SphereCollider::SetInertiaTensor() 
+{
+
+    glm::dmat3x3 temp = YokaiPhysics::SphereInertiaTensor(m_radius, GetMass());
+
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetInertiaTensor(temp);
 }
 
-glm::dvec3 SphereCollider::getLinearVelocity() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getLinearVelocity();
+glm::dmat3x3 SphereCollider::GetInertiaTensor() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetInertiaTensor();
 }
 
-void SphereCollider::setAngularVelocity(glm::dvec3 av) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setAngularVelocity(av);
+glm::dmat3x3 SphereCollider::GetInverseInertiaTensor() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetInverseInertiaTensor();
 }
 
-glm::dvec3 SphereCollider::getAngularVelocity() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getAngularVelocity();
+void SphereCollider::SetLinearVelocity(glm::dvec3 lv) 
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetLinearVelocity(lv);
 }
 
-void SphereCollider::setTorque(glm::dvec3 t) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setTorque(t);
+glm::dvec3 SphereCollider::GetLinearVelocity() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetLinearVelocity();
 }
 
-glm::dvec3 SphereCollider::getTorque() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getTorque();
+void SphereCollider::SetAngularVelocity(glm::dvec3 av) 
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetAngularVelocity(av);
 }
 
-void SphereCollider::setForce(glm::dvec3 f) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setForce(f);
+glm::dvec3 SphereCollider::GetAngularVelocity() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetAngularVelocity();
 }
 
-glm::dvec3 SphereCollider::getForce() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getForce();
+void SphereCollider::SetIsStaticObject(bool s) 
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetIsStaticObject(s);
 }
 
-void SphereCollider::setIsStaticObject(bool s) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setIsStaticObject(s);
+bool SphereCollider::GetIsStaticObject() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetIsStaticObject();
 }
 
-bool SphereCollider::getIsStaticObject() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getIsStaticObject();
+void SphereCollider::SetGravityAffected(bool g) 
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetGravityAffected(g);
 }
 
-void SphereCollider::setGravityAffected(bool g) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setGravityAffected(g);
+bool SphereCollider::GetGravityAffected() 
+{
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetGravityAffected();
 }
 
-bool SphereCollider::getGravityAffected() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getGravityAffected();
+void SphereCollider::SetRadius(double radius) 
+{
+    m_radius = radius;
+}
+
+double SphereCollider::GetRadius() 
+{
+    return m_radius;
+}
+
+void SphereCollider::Translate(glm::dvec3 position) 
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(position + GetPosition());
+}
+
+void SphereCollider::Rotate(glm::dvec3 angVelocity, float deltaTime) 
+{
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(GetOrientation() + (0.5f * GetOrientation() * glm::quat(0.0, angVelocity) * deltaTime)));
 }

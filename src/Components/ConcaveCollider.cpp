@@ -18,81 +18,65 @@ void ConcaveCollider::Update(float deltaTime)
 }
 
 void ConcaveCollider::setMass(double m) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setMass(m);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetMass(m);
 }
 
 double ConcaveCollider::getMass() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getMass();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetMass();
 }
 
 double ConcaveCollider::getInverseMass() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInverseMass();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetInverseMass();
 }
 
 void ConcaveCollider::setCentreOfMass(glm::dvec3 com) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setCentreOfMass(com);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetCentreOfMass(com);
 }
 
 glm::dvec3 ConcaveCollider::getCentreOfMass() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getCentreOfMass();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetCentreOfMass();
 }
 
 void ConcaveCollider::setInertiaTensor(glm::dmat3x3 it) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setInertiaTensor(it);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetInertiaTensor(it);
 }
 
 glm::dmat3x3 ConcaveCollider::getInertiaTensor() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInertiaTensor();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetInertiaTensor();
 }
 
 glm::dmat3x3 ConcaveCollider::getInverseInertiaTensor() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getInverseInertiaTensor();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetInverseInertiaTensor();
 }
 
 void ConcaveCollider::setLinearVelocity(glm::dvec3 lv) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setLinearVelocity(lv);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetLinearVelocity(lv);
 }
 
 glm::dvec3 ConcaveCollider::getLinearVelocity() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getLinearVelocity();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetLinearVelocity();
 }
 
 void ConcaveCollider::setAngularVelocity(glm::dvec3 av) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setAngularVelocity(av);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetAngularVelocity(av);
 }
 
 glm::dvec3 ConcaveCollider::getAngularVelocity() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getAngularVelocity();
-}
-
-void ConcaveCollider::setTorque(glm::dvec3 t) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setTorque(t);
-}
-
-glm::dvec3 ConcaveCollider::getTorque() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getTorque();
-}
-
-void ConcaveCollider::setForce(glm::dvec3 f) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setForce(f);
-}
-
-glm::dvec3 ConcaveCollider::getForce() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getForce();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetAngularVelocity();
 }
 
 void ConcaveCollider::setIsStaticObject(bool s) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setIsStaticObject(s);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetIsStaticObject(s);
 }
 
 bool ConcaveCollider::getIsStaticObject() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getIsStaticObject();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetIsStaticObject();
 }
 
 void ConcaveCollider::setGravityAffected(bool g) {
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->setGravityAffected(g);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetGravityAffected(g);
 }
 
 bool ConcaveCollider::getGravityAffected() {
-    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->getGravityAffected();
+    return PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->GetGravityAffected();
 }
