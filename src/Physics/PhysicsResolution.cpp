@@ -7,6 +7,7 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
     for (int p = 0; p < callbackData.getNbContactPairs(); p++) 
     {
         CollisionCallback::ContactPair contactPair = callbackData.getContactPair(p);
+<<<<<<< HEAD
         int body1 = contactPair.getCollider1()->getEntity().id;
         int body2 = contactPair.getCollider2()->getEntity().id;
 
@@ -29,6 +30,73 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
 
                 ResolvePenetration(body1, body2, penetration, contactNormal);
                 CollisionResolution(body1, body2, penetration, contactNormal, body1ContactPoint, body2ContactPoint, eventType);
+=======
+        int test1                                  = contactPair.getCollider1()->getEntity().id;
+        int test2                                  = contactPair.getCollider2()->getEntity().id;
+
+        if (contactPair.getEventType() == CollisionCallback::ContactPair::EventType::ContactStart) {
+
+            if (!PhysicsSystem::getInstance().getPhysicsBody(test1)->getIsStaticObject() &&
+                !PhysicsSystem::getInstance().getPhysicsBody(test2)->getIsStaticObject()) {
+
+                //std::cout << "com " << glm::to_string(PhysicsSystem::getInstance().getPhysicsBody(test1)->getCentreOfMass());
+
+                /*
+                std::cout << "getPosition 1 - ("
+                          << PhysicsSystem::getInstance().getPhysicsBody(test1)->GetPosition().x << ", "
+                          << PhysicsSystem::getInstance().getPhysicsBody(test1)->GetPosition().y << ", "
+                          << PhysicsSystem::getInstance().getPhysicsBody(test1)->GetPosition().z
+                          << ")" << std::endl;
+                */
+
+                for (int c = 0; c < contactPair.getNbContactPoints(); c++) {
+                    // Get the contact point
+                    CollisionCallback::ContactPoint contactPoint = contactPair.getContactPoint(c);
+                    double pen               = contactPoint.getPenetrationDepth();
+                    glm::dvec3 contactNormal = ReactMath::rp3dVecToGlm(const_cast<rp3d::Vector3&>(contactPoint.getWorldNormal()));
+
+                    // Get the contact point on the first collider and convert it in world-space
+                    glm::dvec3 body1ContactPoint =
+                        ReactMath::rp3dVecToGlm(contactPair.getCollider1()->getLocalToWorldTransform() *
+                                                contactPoint.getLocalPointOnCollider1());
+                    glm::dvec3 body2ContactPoint =
+                        ReactMath::rp3dVecToGlm(contactPair.getCollider1()->getLocalToWorldTransform() *
+                                                contactPoint.getLocalPointOnCollider2());
+
+                    //std::cout << "b1 col - (" << body1ContactPoint.x << ", " << body1ContactPoint.y << ", " << body1ContactPoint.z << ")" << std::endl;
+                    //std::cout << "b2 col - (" << body2ContactPoint.x << ", " << body2ContactPoint.y << ", " << body2ContactPoint.z << ")" << std::endl;
+
+                    //std::cout << "CN (" << contactNormal.x << ", " << contactNormal.y << ", " << contactNormal.z << ")" << std::endl;
+                    /*
+                    std::cout
+                        << "centreOfMass 1 - ("
+                        << PhysicsSystem::getInstance().getPhysicsBody(test1)->getCentreOfMass().x
+                        << ", "
+                        << PhysicsSystem::getInstance().getPhysicsBody(test1)->getCentreOfMass().y
+                        << ", "
+                        << PhysicsSystem::getInstance().getPhysicsBody(test1)->getCentreOfMass().z
+                        << ")" << std::endl;
+                    
+                    std::cout << "getPosition 1 - ("
+                              << PhysicsSystem::getInstance().getPhysicsBody(test1)->GetPosition().x
+                              << ", "
+                              << PhysicsSystem::getInstance().getPhysicsBody(test1)->GetPosition().y
+                              << ", "
+                              << PhysicsSystem::getInstance().getPhysicsBody(test1)->GetPosition().z
+                              << ")" << std::endl;
+                              */
+                    //collisionResolution(test1, test2, pen, contactNormal, body1ContactPoint, body2ContactPoint);
+                }
+                /*
+                glm::dvec3 lv1 =
+                    PhysicsSystem::getInstance().getPhysicsBody(test1)->getLinearVelocity();
+                PhysicsSystem::getInstance().getPhysicsBody(test1)->setLinearVelocity(-lv1);
+
+                glm::dvec3 lv2 =
+                    PhysicsSystem::getInstance().getPhysicsBody(test2)->getLinearVelocity();
+                PhysicsSystem::getInstance().getPhysicsBody(test2)->setLinearVelocity(-lv2);
+                */
+>>>>>>> d95b1ead4e3fd31f1c1f14da1c84e4960e1309b2
             }
         }
     }
