@@ -41,7 +41,17 @@ void AutomatedBehaviours::decelerate()
 void AutomatedBehaviours::seek(glm::vec3 targetPosition)
 {
 	glm::vec3 targetHeading = (targetPosition - m_transform->getPosition());
+	calculateRotation(targetHeading);
+}
 
+void AutomatedBehaviours::evade(glm::vec3 targetPosition)
+{
+	glm::vec3 targetHeading = -(targetPosition - m_transform->getPosition());
+	calculateRotation(targetHeading);
+}
+
+void AutomatedBehaviours::calculateRotation(glm::vec3 targetHeading)
+{
 	if(frontFeelerHit != -1)
 	{
 		decelerate();

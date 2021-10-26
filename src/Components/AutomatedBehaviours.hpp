@@ -35,6 +35,8 @@ public:
 	 * @param tartgetPosition
 	 */
 	void seek(glm::vec3 tartgetPosition);
+
+	void evade(glm::vec3 tartgetPosition);
 	/**
 	 * @brief Randomly wanders around
 	 */
@@ -91,6 +93,8 @@ private:
 	 * @brief Updates AI Heading
 	 */
 	void updateHeading();
+
+	void calculateRotation(glm::vec3 tartgetPosition);
 	/**
 	 * @brief converts vector into an angle
 	 * @param vector
