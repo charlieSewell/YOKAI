@@ -1,7 +1,6 @@
 #include "Camera.hpp"
-#include <glm/gtx/string_cast.hpp>
 #include "Engine/EventManager.hpp"
-#include <iostream>
+
 Camera::Camera(GameObject* parent)
 	: Component(parent)
 {
