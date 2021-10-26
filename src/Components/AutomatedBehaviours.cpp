@@ -148,12 +148,15 @@ void AutomatedBehaviours::updateFeelers()
 
 	feelerLeft = temp2;
 
-	glm::vec3 test = m_transform->getPosition();
-	test.y++;
+	glm::vec3 sourcePosition = m_transform->getPosition();
+	if(m_isCastHeightSet)
+	{
+		sourcePosition.y = m_castHeight;
+	}
 
-	frontFeelerHit = m_rayCaster->CastRay(test, glm::normalize(Heading), 10);
-	feelerLeftHit = m_rayCaster->CastRay(test, glm::normalize(feelerLeft), 5);
-	feelerRightHit = m_rayCaster->CastRay(test, glm::normalize(feelerRight), 5);
+	frontFeelerHit = m_rayCaster->CastRay(sourcePosition, glm::normalize(Heading), m_castDistance);
+	feelerLeftHit = m_rayCaster->CastRay(sourcePosition, glm::normalize(feelerLeft), m_castDistance / 2);
+	feelerRightHit = m_rayCaster->CastRay(sourcePosition, glm::normalize(feelerRight), m_castDistance / 2);
 }
 
 void AutomatedBehaviours::updateHeading()
@@ -164,6 +167,16 @@ void AutomatedBehaviours::updateHeading()
 		Angle = glm::pi<float>();
 
 	Heading = glm::vec3(cos(Angle), 0, sin(Angle));
+}
+
+void AutomatedBehaviours::SetCastHeight(float castHeight)
+{
+	m_castHeight = castHeight;
+	m_isCastHeightSet = true;
+}
+void AutomatedBehaviours::SetCastDistance(float castDistance)
+{
+	m_castDistance = castDistance;
 }
 
 

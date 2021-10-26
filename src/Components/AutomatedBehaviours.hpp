@@ -72,6 +72,9 @@ public:
      */
 	void updateFeelers();
 
+	void SetCastHeight(float castHeight);
+	void SetCastDistance(float castDistance);
+
 private:
     ///Pointer to gameobjects transform
 	std::shared_ptr<Transform> m_transform = nullptr;
@@ -79,6 +82,11 @@ private:
 	std::shared_ptr <RayCaster> m_rayCaster = nullptr;
     ///AI wander angle
 	float m_wanderAngle = 0;
+
+	float m_castHeight = 0;
+	bool m_isCastHeightSet = false;
+	float m_castDistance = 10;
+
 	/**
 	 * @brief Updates AI Heading
 	 */
