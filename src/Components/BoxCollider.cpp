@@ -162,7 +162,7 @@ void BoxCollider::StaticSet()
 {
     SetLinearVelocity(glm::dvec3(0, 0, 0));
 	SetAngularVelocity(glm::dvec3(0, 0, 0));
-	SetMass(10000.0);
+	SetMass(999999999999999.0);
 	SetIsStaticObject(true);
     SetGravityAffected(false);
 	SetInertiaTensor();

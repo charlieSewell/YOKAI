@@ -136,6 +136,4 @@ private:
 	std::map<int, std::pair<glm::dvec3, int>> m_linearVelocities;
     std::map<int, std::pair<glm::dvec3, int>> m_angularVelocities;
 
-    ///Collision callback listener
-    //PhysicsListener listener;
 };

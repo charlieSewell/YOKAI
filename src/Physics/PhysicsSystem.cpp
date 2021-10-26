@@ -79,6 +79,7 @@ void PhysicsSystem::update(float dt)
         if (m_collider.second.GetGravityAffected()) 
         {
             m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() + (glm::dvec3(0, -1, 0) * double(dt)));
+            //std::cout << (glm::dvec3(0, -1, 0) * double(dt)).x << ", " << (glm::dvec3(0, -1, 0) * double(dt)).y << ", " << (glm::dvec3(0, -1, 0) * double(dt)).z << std::endl;
         }
     }
 
@@ -86,6 +87,7 @@ void PhysicsSystem::update(float dt)
     {
         // m_colliders[colliderID] [total angular velocity, collision counter]
         m_colliders[m_angularVelocity.first].SetAngularVelocity((m_angularVelocity.second.first / double(m_angularVelocity.second.second)));
+        //std::cout << "Count - " << m_angularVelocity.second.second << std::endl;
     }
 
 	m_linearVelocities.clear();
