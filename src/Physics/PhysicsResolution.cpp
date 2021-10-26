@@ -81,7 +81,7 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
                               << PhysicsSystem::getInstance().getPhysicsBody(test1)->GetPosition().z
                               << ")" << std::endl;
                               */
-                    collisionResolution(test1, test2, pen, contactNormal, body1ContactPoint, body2ContactPoint);
+                    //collisionResolution(test1, test2, pen, contactNormal, body1ContactPoint, body2ContactPoint);
                 }
                 /*
                 glm::dvec3 lv1 =
