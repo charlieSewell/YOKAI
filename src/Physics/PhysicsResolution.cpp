@@ -28,8 +28,8 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
                 //std::cout << "b1 col - (" << body1ContactPoint.x << ", " << body1ContactPoint.y << ", " << body1ContactPoint.z << ")" << std::endl;
                 //std::cout << "b2 col - (" << body2ContactPoint.x << ", " << body2ContactPoint.y << ", " << body2ContactPoint.z << ")" << std::endl;
 
-                //ResolvePenetration(body1, body2, penetration, contactNormal);
-                //CollisionResolution(body1, body2, penetration, contactNormal, body1ContactPoint, body2ContactPoint, eventType);
+                ResolvePenetration(body1, body2, penetration, contactNormal);
+                CollisionResolution(body1, body2, penetration, contactNormal, body1ContactPoint, body2ContactPoint, eventType);
             }
         }
     }
