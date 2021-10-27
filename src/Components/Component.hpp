@@ -1,5 +1,5 @@
 #pragma once
-
+#include <nlohmann/json.hpp>
 class GameObject;
 /**
  * @class Component
@@ -39,8 +39,13 @@ class Component
          * @brief Renders Component GUI
          */
         virtual void RenderGUI() {}
+        
+        virtual void Serialise(nlohmann::json &j) {}
+
+        virtual void Deserialize(const nlohmann::json &j) {}
     protected:
         ///parent game object
+        std::string m_type;
         GameObject* m_parent;
 		bool m_hasStarted = false;
 };

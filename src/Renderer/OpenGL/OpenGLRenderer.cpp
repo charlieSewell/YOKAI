@@ -89,7 +89,6 @@ void OpenGLRenderer::Init()
 	glBufferData(GL_SHADER_STORAGE_BUFFER, NUM_LIGHTS * sizeof(PointLight), NULL, GL_DYNAMIC_DRAW);
 
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, lightBuffer);
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, visibleLightIndicesBuffer);
@@ -258,6 +257,7 @@ void OpenGLRenderer::DrawScene()
     glDepthMask(true);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
+	
 	for(auto& drawItem : drawQueue)
     {
         depthShader->setMat4("model",drawItem.transform);
@@ -326,7 +326,7 @@ void OpenGLRenderer::SetDepthTesting(bool isEnabled)
      unsigned int normalNumber = 1;
 	 unsigned int heightNumber = 1;
      auto& textures = mesh->getTextures();
-     for(int i = 0; i < textures.size(); i++)
+     for(unsigned int i = 0; i < textures.size(); i++)
      {
          TextureManager::getInstance().getTexture(textures[i].texture)->Bind(i);
          std::string number;

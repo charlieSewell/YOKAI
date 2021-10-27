@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <imgui/imgui.h>
+#include <nlohmann/json.hpp>
 /**
  * @Class GameObject
  * @brief Generic game object type that holds components
@@ -42,8 +43,10 @@ class YOKAI_API GameObject
          * @param timeDelta 
          */
         void LateUpdate(float timeDelta);
-
-
+        
+        void Serialise(nlohmann::json &data);
+        
+        void Deserialise(const nlohmann::json &data);
         /**
          * @brief Draws the game Object
          */

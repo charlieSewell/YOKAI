@@ -43,6 +43,8 @@ class YOKAI_API GameObjectManager
 
     void LateUpdate(float dt);
 
+    void Serialise(nlohmann::json &j);
+
     /*!
      * @brief Calls the draw function for all GameObjects
      */
@@ -56,7 +58,10 @@ class YOKAI_API GameObjectManager
      * @brief Renders GUI
      */
     void RenderGUI();
-
+    /**
+     * @brief Clears the Game Object Manager
+     */
+    void Clear();
   private:
     /// Map of GameObjects, with the key of the GameObject id, and value of the GameObject smart pointer
     std::map<unsigned int,std::shared_ptr<GameObject>> m_gameObjects;

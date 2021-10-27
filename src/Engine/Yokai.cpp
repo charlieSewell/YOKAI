@@ -3,7 +3,7 @@
 //
 
 #include "Yokai.hpp"
-
+#include "JSONHelper.hpp"
 #include "spdlog/async.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
@@ -53,6 +53,7 @@ bool Yokai::Init()
 }
 void Yokai::Run()
 {
+    layers[0]->Init();
     const float timeStep = 1.0f / 60;
     double lastTime = 0;
     double accumulator = 0;
@@ -78,6 +79,7 @@ void Yokai::Run()
             {
                 isPausePressed = true;
                 TogglePause();
+                //SwitchScene(1);
             }
         }
         else
@@ -116,17 +118,42 @@ void Yokai::Run()
 				accumulator -= timeStep;
 			}
             layers[activeLayer]->LateUpdate(deltaTime);
-            
         }
         else 
         {
             
             layers[activeLayer]->GetGameObjectManager()->RenderGUI();
             layers[activeLayer]->GetLightManager()->RenderGUI();
+            ImGui::Begin("YOKAI Menu",NULL, ImGuiWindowFlags_MenuBar);
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::Text("Select Scene");
+            if (ImGui::BeginMenuBar())
+            {
+                if (ImGui::BeginMenu("File"))
+                {
+                    if (ImGui::MenuItem("Open..", "Ctrl+O")) { layers[activeLayer]->LoadScene();}
+                    if (ImGui::MenuItem("Save", "Ctrl+S"))   { layers[activeLayer]->SaveScene();}
+                    if (ImGui::MenuItem("Shutdown", "Ctrl+Q"))  { Shutdown();}
+                    ImGui::EndMenu();
+                }
+                if(ImGui::BeginMenu("Switch Scene"))
+                {
+                    for(int i = 0; i < layers.size();i++)
+                    {
+                        if (ImGui::MenuItem(layers[i]->GetSceneName().c_str()))
+                        {
+                            SwitchScene(i);
+                        }
+                    }
+                    ImGui::EndMenu();
+                }
+                ImGui::EndMenuBar();
+            }        
+            ImGui::End();
         }
-        ImGui::Begin("YOKAI DEBUG");
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
+        
+
+
         layers[activeLayer]->GetLightManager()->UpdateLights();
         PhysicsSystem::getInstance().RendererUpdate();
         layers[activeLayer]->Draw();
@@ -135,7 +162,6 @@ void Yokai::Run()
         window.endFrame();
 	}
     PhysicsSystem::getInstance().DeInit();
-    //UIManager::getInstance().DeInit();
     Renderer::getInstance().DeInit();
     window.DeInit();
 }
@@ -200,6 +226,15 @@ void Yokai::InitialiseLogger()
 
 void Yokai::addScene(std::shared_ptr<Scene> scene)
 {
-    scene->Init();
 	layers.push_back(std::shared_ptr<Scene>(scene));
+}
+void Yokai::SwitchScene(unsigned int scene)
+{
+    if(scene < layers.size() && scene != activeLayer)
+    {
+        PhysicsSystem::getInstance().ClearColliders();
+        layers[activeLayer]->Reset();
+        activeLayer = scene;
+        layers[activeLayer]->Init();
+    }
 }

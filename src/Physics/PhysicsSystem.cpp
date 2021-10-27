@@ -50,7 +50,14 @@ void PhysicsSystem::DeInit()
     m_colliders.clear();
     physicsCommon.destroyPhysicsWorld(physicsWorld);
 }
-
+void PhysicsSystem::ClearColliders()
+{
+    for(auto& m_collider : m_colliders)
+    {
+        m_collider.second.DeleteBody(physicsWorld,physicsCommon);
+    }
+    m_colliders.clear();
+}
 PhysicsSystem& PhysicsSystem::getInstance()
 {
     static PhysicsSystem instance;
