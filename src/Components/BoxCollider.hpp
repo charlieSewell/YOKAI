@@ -22,14 +22,20 @@ public:
      */
     void Start();
     /**
-     * @brief Updates Once a frame
+     * @brief Updates Before the Physics Simulation
      * @param deltaTime 
      */
     void Update(float deltaTime);
     /**
+     * @brief Updates After the Physics Simulation
+     * @param deltaTime 
+     */
+    void LateUpdate(float deltaTime);
+    /**
      * @brief Set the Extents of the Bounding Box
      * @param extent 
      */
+    void RenderGUI();
     void SetExtents(glm::vec3 extent);
     /**
      * @brief Set the Extents of the Bounding Box
@@ -44,52 +50,50 @@ public:
      */
 	void SetOrientation(glm::quat orientation);
 
-    void setMass(double m);
-    double getMass();
+    glm::quat GetOrientation();
 
-    double getInverseMass();
+    void SetMass(double m);
+    double GetMass();
 
-    void setCentreOfMass(glm::dvec3 com);
-    glm::dvec3 getCentreOfMass();
+    double GetInverseMass();
 
-    void setInertiaTensor();
-    glm::dmat3x3 getInertiaTensor();
+    void SetCentreOfMass(glm::vec3 com);
+    glm::vec3 GetCentreOfMass();
 
-    glm::dmat3x3 getInverseInertiaTensor();
+    void SetInertiaTensor();
+    glm::mat3x3 GetInertiaTensor();
 
-    void setLinearVelocity(glm::dvec3 lv);
-    glm::dvec3 getLinearVelocity();
+    glm::mat3x3 GetInverseInertiaTensor();
 
-    void setAngularVelocity(glm::dvec3 av);
-    glm::dvec3 getAngularVelocity();
+    void SetLinearVelocity(glm::vec3 lv);
+    glm::vec3 GetLinearVelocity();
 
-    void setTorque(glm::dvec3 t);
-    glm::dvec3 getTorque();
+    void SetAngularVelocity(glm::vec3 av);
+    glm::vec3 GetAngularVelocity();
 
-    void setForce(glm::dvec3 f);
-    glm::dvec3 getForce();
+    void SetIsStaticObject(bool s);
+    bool GetIsStaticObject();
 
-    void setIsStaticObject(bool s);
-    bool getIsStaticObject();
+    void SetGravityAffected(bool g);
+    bool GetGravityAffected();
 
-    void setGravityAffected(bool g);
-    bool getGravityAffected();
-
-    glm::dvec3 getExtents();
-
-    void initInertiaTensor();
+    glm::dvec3 GetExtents();
 
 	/**
 	* @brief Set the Positin of the Bounding Box
 	* @param orientation
 	*/
-	void SetPosition(glm::dvec3 newPosition);
+	void SetPosition(glm::vec3 newPosition);
 
-    glm::dvec3 GetPosition();
+    glm::vec3 GetPosition();
 
 	int GetColliderID();
 
-    void translate(glm::dvec3 position);
+    void Translate(glm::vec3 velocity);
+
+    void Rotate(glm::vec3 angVelocity, float deltaTime);
+
+    void StaticSet();
 
     void SetCollisionCategory(unsigned short category);
     void SetCollisionMaskBits(unsigned short maskBits);
@@ -98,5 +102,7 @@ private:
     ///Collider ID
     unsigned int m_colliderID;
     ///Extents of Bounding Box
-    glm::dvec3 extents = {};
+    glm::vec3 extents = {};
+
+    glm::vec3 m_offset = {};
 };

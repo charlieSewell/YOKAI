@@ -1,6 +1,11 @@
 //InputManagerGLFW.cpp
 
 #include "InputComponent.hpp"
+Input::Input()
+	: Component(nullptr)
+{
+
+}
 
 Input::Input(GameObject* parent)
 	: Component(parent)

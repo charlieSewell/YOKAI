@@ -35,6 +35,13 @@ void GameObjectManager::Update(float dt)
         object.second->Update(dt);
     }
 }
+void GameObjectManager::LateUpdate(float dt)
+{
+    for(auto& object : m_gameObjects)
+    {
+        object.second->LateUpdate(dt);
+    }
+}
 
 void GameObjectManager::Draw()
 {

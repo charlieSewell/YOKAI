@@ -41,6 +41,8 @@ class YOKAI_API GameObjectManager
      */
     void Update(float dt);
 
+    void LateUpdate(float dt);
+
     /*!
      * @brief Calls the draw function for all GameObjects
      */

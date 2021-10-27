@@ -15,9 +15,13 @@ class Scene
      */
     virtual void Init() = 0;
     /**
-     * @brief Updates a Layer
+     * @brief Updates a Layer Before Physics
      */
     virtual void Update(double deltaTime) = 0;
+    /**
+     * @brief Updates a Layer After Physics
+     */
+    virtual void LateUpdate(double deltaTime) = 0;
     /**
      * @brief Draw a Layer
      */

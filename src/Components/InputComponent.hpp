@@ -16,6 +16,7 @@
 class YOKAI_API Input : public Component
 {
   public:
+  	Input();
 	/**
 	 * @brief Construct a new Input object
 	 * @param parent 

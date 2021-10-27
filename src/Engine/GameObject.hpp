@@ -33,10 +33,15 @@ class YOKAI_API GameObject
          */
         void Start();
         /**
-         * @brief Is called once a frame
+         * @brief Update Before Physics Simulation
          * @param timeDelta 
          */
         void Update(float timeDelta);
+        /**
+         * @brief Update After Physics Simulation
+         * @param timeDelta 
+         */
+        void LateUpdate(float timeDelta);
         /**
          * @brief Draws the game Object
          */

@@ -1,6 +1,6 @@
 #include "DrawableEntity.hpp"
 
-DrawableEntity::DrawableEntity(GameObject* parent) : Component(parent){}
+DrawableEntity::DrawableEntity(GameObject* parent) : Component(parent), m_offset(1.0f){}
 
 void DrawableEntity::Start()
 {
@@ -20,13 +20,19 @@ void DrawableEntity::Update(float deltaTime)
 
 void DrawableEntity::Draw()
 {
+    //m_parent->GetComponent<Transform>()->getMatrix() + m_offset;
+
+    glm::mat4 temp = m_parent->GetComponent<Transform>()->getMatrix() * m_offset;
+
     if(m_animator == nullptr)
     {
-        Yokai::getInstance().getModelManager()->DrawModel(m_modelID,m_parent->GetComponent<Transform>()->getMatrix());
+        //Yokai::getInstance().getModelManager()->DrawModel(m_modelID,m_parent->GetComponent<Transform>()->getMatrix());
+        Yokai::getInstance().getModelManager()->DrawModel(m_modelID, temp);
     }
     else
     {
-        Yokai::getInstance().getModelManager()->DrawModel(m_modelID,m_parent->GetComponent<Transform>()->getMatrix(),m_animator->finalTransforms);
+        //Yokai::getInstance().getModelManager()->DrawModel(m_modelID,m_parent->GetComponent<Transform>()->getMatrix(),m_animator->finalTransforms);
+        Yokai::getInstance().getModelManager()->DrawModel(m_modelID,temp,m_animator->finalTransforms);
     }
   
 }
@@ -52,4 +58,13 @@ void DrawableEntity::SetAnimation(std::string animation)
 void DrawableEntity::RenderGUI()
 {
 
+}
+void DrawableEntity::SetOffset(glm::mat4 offset) 
+{
+    m_offset = offset;
+}
+
+glm::mat4 DrawableEntity::GetOffset() 
+{
+    return m_offset;
 }

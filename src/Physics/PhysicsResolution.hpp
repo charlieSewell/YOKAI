@@ -3,14 +3,13 @@
 #include <glm/glm.hpp>
 #include "ReactMath.hpp"
 #include "PhysicsSystem.hpp"
-//#include "ResolutionFunctions.hpp"
 
 class PhysicsResolution : public rp3d::EventListener {
   public:
-
       virtual void onContact(const rp3d::CollisionCallback::CallbackData &callbackData) override;
-      //virtual void onTrigger(const rp3d::OverlapCallback::CallbackData &callbackData) override;
 
   private:
-      void collisionResolution(int body1, int body2, double pen, glm::dvec3 contactNormal, glm::dvec3 body1ContactPoint, glm::dvec3 body2ContactPoint);
+      void ResolvePenetration(int body1, int body2, float penetration, glm::vec3 contactNormal);
+      void CollisionResolution(int body1, int body2, float penetration, glm::vec3 contactNormal, glm::vec3 body1ContactPoint, glm::vec3 body2ContactPoint, CollisionCallback::ContactPair::EventType eventType);
+      glm::vec3 Damping(glm::vec3 vel);
 };

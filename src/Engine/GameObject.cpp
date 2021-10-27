@@ -25,6 +25,13 @@ void GameObject::Update(float timeDelta)
         m_components[i]->Update(timeDelta);
     }
 }
+void GameObject::LateUpdate(float timeDelta)
+{
+    for(int i = m_components.size() - 1; i >= 0; i--)
+    {
+        m_components[i]->LateUpdate(timeDelta);
+    }
+}
 
 void GameObject::Draw()
 {

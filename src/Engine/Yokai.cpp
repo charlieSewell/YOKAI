@@ -8,13 +8,18 @@
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
-
 Yokai &Yokai::getInstance() 
 {
     static Yokai instance;
     return instance;
 }
-
+Yokai::Yokai()
+{
+    if(!Init())
+	{
+        exit(EXIT_FAILURE);
+    }
+}
 bool Yokai::Init()
 {
     InitialiseLogger();
@@ -30,9 +35,8 @@ bool Yokai::Init()
         return(false);
     }
     InputManagerGLFW::getInstance().AddWindow(window.getWindow());
-    //Add layers to layer stack
+    
     activeLayer = 0;
-
     try
     {
         PhysicsSystem::getInstance().Init();
@@ -43,12 +47,6 @@ bool Yokai::Init()
     {
         SPDLOG_ERROR(e.what());
     }
-
-    for(auto& layer: layers)
-    {
-        layer->Init();
-    }
-
     isPaused = false;
     SPDLOG_INFO("Engine Succesfully Initialised");
     return(true);
@@ -56,18 +54,38 @@ bool Yokai::Init()
 void Yokai::Run()
 {
     const float timeStep = 1.0f / 60;
-
     double lastTime = 0;
     double accumulator = 0;
+    bool isPausePressed = false;
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(77);
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(27);
     while(isRunning)
 	{
+        InputManagerGLFW::getInstance().processMouse();
+		InputManagerGLFW::getInstance().processGamepadAxis(); 
 		InputManagerGLFW::getInstance().processKeyboard();
 		InputManagerGLFW::getInstance().processGamepadButtons();
-        InputManagerGLFW::getInstance().processMouse();
-		InputManagerGLFW::getInstance().processGamepadAxis();
-		double currentTime = glfwGetTime();
+		    
+        double currentTime = glfwGetTime();
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
+
+        if(InputManagerGLFW::getInstance().m_keyStates[77])
+        {
+            if(isPausePressed == false)
+            {
+                isPausePressed = true;
+                TogglePause();
+            }
+        }
+        else
+        {
+            isPausePressed = false;
+        }
+        if(InputManagerGLFW::getInstance().m_keyStates[27])
+        {
+            Shutdown();
+        }
 
         //Renderer::getInstance().Clear();
         window.startFrame();
@@ -75,12 +93,15 @@ void Yokai::Run()
         if (!isPaused)
         {
 			accumulator += deltaTime;
-			while (accumulator >= timeStep) 
+			layers[activeLayer]->Update(deltaTime);
+            while (accumulator >= timeStep) 
 			{
                 PhysicsSystem::getInstance().update(timeStep);
+                //layers[activeLayer]->Update(timeStep);
 				accumulator -= timeStep;
 			}
-            layers[activeLayer]->Update(timeStep);
+            layers[activeLayer]->LateUpdate(deltaTime);
+            
         }
         else 
         {
@@ -91,8 +112,8 @@ void Yokai::Run()
             layers[activeLayer]->GetLightManager()->RenderGUI();
         }
         layers[activeLayer]->GetLightManager()->UpdateLights();
-        layers[activeLayer]->Draw();
         PhysicsSystem::getInstance().RendererUpdate();
+        layers[activeLayer]->Draw();
         Renderer::getInstance().DrawScene();
         Renderer::getInstance().DrawGui();
         window.endFrame();
@@ -163,5 +184,6 @@ void Yokai::InitialiseLogger()
 
 void Yokai::addScene(std::shared_ptr<Scene> scene)
 {
+    scene->Init();
 	layers.push_back(std::shared_ptr<Scene>(scene));
 }

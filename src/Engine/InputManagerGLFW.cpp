@@ -18,7 +18,6 @@ void InputManagerGLFW::AddWindow(GLFWwindow* window)
 }
 void InputManagerGLFW::processKeyboard()
 {
-
 	if(!glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
 		for(int i=0; i < m_activeKeys.size(); ++i)
@@ -26,15 +25,6 @@ void InputManagerGLFW::processKeyboard()
 			m_keyStates[m_activeKeys[i]] = (glfwGetKey(m_Window, m_keyMap[m_activeKeys[i]]) == GLFW_PRESS);
 		}
 	}
-
-		//TODO CONNOR: This needs to get moved out
-		if (glfwGetKey(m_Window, GLFW_KEY_E) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::pausePressed);
-		if (glfwGetKey(m_Window, GLFW_KEY_E) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::pauseReleased);
-		if (glfwGetKey(m_Window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::ExitPressed);
-
 }
 
 void InputManagerGLFW::processMouse()
