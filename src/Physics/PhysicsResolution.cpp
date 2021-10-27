@@ -7,6 +7,7 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
     for (int p = 0; p < callbackData.getNbContactPairs(); p++) 
     {
         CollisionCallback::ContactPair contactPair = callbackData.getContactPair(p);
+
         int body1 = contactPair.getCollider1()->getEntity().id;
         int body2 = contactPair.getCollider2()->getEntity().id;
 
@@ -116,10 +117,10 @@ void PhysicsResolution::CollisionResolution(int body1, int body2, float penetrat
         else if (eventType == CollisionCallback::ContactPair::EventType::ContactStay) 
         {
             //ResolvePenetration(body1, body2, penetration, contactNormal);
-            //linearVelocity1  = Damping(linearVelocity1);
-            //linearVelocity2  = Damping(linearVelocity2);
-            //angularVelocity1 = Damping(angularVelocity1);
-            //angularVelocity2 = Damping(angularVelocity2);
+            linearVelocity1  = Damping(linearVelocity1);
+            linearVelocity2  = Damping(linearVelocity2);
+            angularVelocity1 = Damping(angularVelocity1);
+            angularVelocity2 = Damping(angularVelocity2);
 
             //linearVelocity1 = PhysicsSystem::getInstance().getPhysicsBody(body1)->GetLinearVelocity();
             //angularVelocity1 = PhysicsSystem::getInstance().getPhysicsBody(body1)->GetAngularVelocity();

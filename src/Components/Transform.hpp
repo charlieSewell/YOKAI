@@ -12,8 +12,11 @@
 class YOKAI_API Transform : public Component
 {
 public:
+
+	//ctrs
 	Transform(GameObject* parent);
 	Transform();
+	Transform(glm::mat4 matrix);
 	
 	void translate(glm::vec3 translation);
 	/**
