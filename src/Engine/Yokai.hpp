@@ -67,14 +67,6 @@ public:
 private:
     //Singleton pattern requires that all constructors,destructors and copy constructors be private
     /**
-     * @brief Registers Engine close event with EMS
-     */
-    void registerClose();
-    /**
-     * @brief Registers Engine Pause event with EMS
-     */
-    void registerPause();
-    /**
      * @brief Privatised Default Constructor
      */
     Yokai() = default;

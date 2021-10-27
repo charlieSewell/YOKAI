@@ -50,8 +50,6 @@ bool Yokai::Init()
     }
 
     isPaused = false;
-    registerClose();
-    registerPause();
     SPDLOG_INFO("Engine Succesfully Initialised");
     return(true);
 }
@@ -137,6 +135,7 @@ bool Yokai::getIsPaused() const
 {
     return isPaused;
 }
+
 
 void Yokai::InitialiseLogger()
 {
