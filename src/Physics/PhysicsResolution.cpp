@@ -17,7 +17,7 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
             for (int c = 0; c < contactPair.getNbContactPoints(); c++) 
             {
                 CollisionCallback::ContactPoint contactPoint = contactPair.getContactPoint(c);
-                double penetration = contactPoint.getPenetrationDepth();
+                float penetration = contactPoint.getPenetrationDepth();
                 glm::dvec3 contactNormal = ReactMath::rp3dVecToGlm(const_cast<rp3d::Vector3&>(contactPoint.getWorldNormal()));
 
                 // Get the contact point on the first collider and convert it in world-space
@@ -27,64 +27,58 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
                 //std::cout << "b1 col - (" << body1ContactPoint.x << ", " << body1ContactPoint.y << ", " << body1ContactPoint.z << ")" << std::endl;
                 //std::cout << "b2 col - (" << body2ContactPoint.x << ", " << body2ContactPoint.y << ", " << body2ContactPoint.z << ")" << std::endl;
 
-                ResolvePenetration(body1, body2, penetration, contactNormal);
                 CollisionResolution(body1, body2, penetration, contactNormal, body1ContactPoint, body2ContactPoint, eventType);
             }
         }
     }
 }
 
-void PhysicsResolution::ResolvePenetration(int body1, int body2, double penetration, glm::dvec3 contactNormal) 
+void PhysicsResolution::ResolvePenetration(int body1, int body2, float penetration, glm::vec3 contactNormal) 
 {
     if (!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject()) 
     {
-        PhysicsSystem::getInstance().getPhysicsBody(body1)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body1)->GetPosition() + ((-(penetration / 2)) * contactNormal));
+        PhysicsSystem::getInstance().getPhysicsBody(body1)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body1)->GetPosition() + ((-(penetration)) * contactNormal));
     }
 
     if (!PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
     {
-        PhysicsSystem::getInstance().getPhysicsBody(body2)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body2)->GetPosition() - ((-(penetration / 2)) * contactNormal));
+        PhysicsSystem::getInstance().getPhysicsBody(body2)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body2)->GetPosition() - ((-(penetration)) * contactNormal));
     }
 }
 
-void PhysicsResolution::CollisionResolution(int body1, int body2, double penetration, glm::dvec3 contactNormal, glm::dvec3 body1ContactPoint, glm::dvec3 body2ContactPoint, CollisionCallback::ContactPair::EventType eventType) 
+void PhysicsResolution::CollisionResolution(int body1, int body2, float penetration, glm::vec3 contactNormal, glm::vec3 body1ContactPoint, glm::vec3 body2ContactPoint, CollisionCallback::ContactPair::EventType eventType) 
 {
-    double coefficientOfRestitution = 0.5;
+    float coefficientOfRestitution = 0.6;
 
-    glm::dvec3 linearVelocity1 = PhysicsSystem::getInstance().getPhysicsBody(body1)->GetLinearVelocity();
-    glm::dvec3 angularVelocity1 = PhysicsSystem::getInstance().getPhysicsBody(body1)->GetAngularVelocity();
+    glm::vec3 linearVelocity1 = PhysicsSystem::getInstance().getPhysicsBody(body1)->GetLinearVelocity();
+    glm::vec3 angularVelocity1 = PhysicsSystem::getInstance().getPhysicsBody(body1)->GetAngularVelocity();
 
-    glm::dvec3 linearVelocity2 = PhysicsSystem::getInstance().getPhysicsBody(body2)->GetLinearVelocity();
-    glm::dvec3 angularVelocity2 = PhysicsSystem::getInstance().getPhysicsBody(body2)->GetAngularVelocity();
+    glm::vec3 linearVelocity2 = PhysicsSystem::getInstance().getPhysicsBody(body2)->GetLinearVelocity();
+    glm::vec3 angularVelocity2 = PhysicsSystem::getInstance().getPhysicsBody(body2)->GetAngularVelocity();
 
-    glm::dvec3 r1 = body1ContactPoint - (PhysicsSystem::getInstance().getPhysicsBody(body1)->GetCentreOfMass());
-    glm::dvec3 r2 = body2ContactPoint - (PhysicsSystem::getInstance().getPhysicsBody(body2)->GetCentreOfMass());
+    glm::vec3 r1 = body1ContactPoint - (PhysicsSystem::getInstance().getPhysicsBody(body1)->GetPosition());
+    glm::vec3 r2 = body2ContactPoint - (PhysicsSystem::getInstance().getPhysicsBody(body2)->GetPosition());
 
-    double restitution = -(1.0 + coefficientOfRestitution);
-    glm::dvec3 relativeVelocity = linearVelocity1 - linearVelocity2;
-    double combinedInverseMass = PhysicsSystem::getInstance().getPhysicsBody(body1)->GetInverseMass() + PhysicsSystem::getInstance().getPhysicsBody(body2)->GetInverseMass();
+    ResolvePenetration(body1, body2, penetration, contactNormal);
 
-    glm::dvec3 r1CrossNormal = glm::cross(r1, contactNormal);
-    glm::dvec3 r2CrossNormal = glm::cross(r2, contactNormal);
+    float restitution = -(1.0 + coefficientOfRestitution);
+    glm::vec3 relativeVelocity = linearVelocity1 - linearVelocity2;
+    float combinedInverseMass = PhysicsSystem::getInstance().getPhysicsBody(body1)->GetInverseMass() + PhysicsSystem::getInstance().getPhysicsBody(body2)->GetInverseMass();
 
-    double lambdaNumerator = restitution * (glm::dot(contactNormal, relativeVelocity) + glm::dot(angularVelocity1, r1CrossNormal) - glm::dot(angularVelocity2, r2CrossNormal));
+    glm::vec3 r1CrossNormal = glm::cross(r1, contactNormal);
+    glm::vec3 r2CrossNormal = glm::cross(r2, contactNormal);
+
+    float lambdaNumerator = restitution * (glm::dot(contactNormal, relativeVelocity) + glm::dot(angularVelocity1, r1CrossNormal) - glm::dot(angularVelocity2, r2CrossNormal));
     //glm::dvec3 lambdaDenominator = combinedInverseMass + ((r1CrossNormal * PhysicsSystem::getInstance().getPhysicsBody(body1)->GetInverseInertiaTensor() * r1CrossNormal) + (r2CrossNormal * PhysicsSystem::getInstance().getPhysicsBody(body2)->GetInverseInertiaTensor() * r2CrossNormal));
-    double lambdaDenominator = combinedInverseMass + (glm::dot(r1CrossNormal, PhysicsSystem::getInstance().getPhysicsBody(body1)->GetInverseInertiaTensor() * r1CrossNormal) + glm::dot(r2CrossNormal, PhysicsSystem::getInstance().getPhysicsBody(body2)->GetInverseInertiaTensor() * r2CrossNormal));
+    float lambdaDenominator = combinedInverseMass + (glm::dot(r1CrossNormal, PhysicsSystem::getInstance().getPhysicsBody(body1)->GetInverseInertiaTensor() * r1CrossNormal) + glm::dot(r2CrossNormal, PhysicsSystem::getInstance().getPhysicsBody(body2)->GetInverseInertiaTensor() * r2CrossNormal));
 
     //glm::dvec3 lambda = lambdaNumerator / lambdaDenominator;
-    double lambda = lambdaNumerator / lambdaDenominator;
+    float lambda = lambdaNumerator / lambdaDenominator;
 
-    if (lambda > 1) {
-        //lambda = 1;
-    }
-
-    if (lambda < -1) {
-        //lambda = -1;
-    }
 
 	//glm::dvec3 linearImpulse = ((lambdaNumerator * contactNormal) / lambdaDenominator);
 
-    glm::dvec3 linearImpulse = lambda * contactNormal;
+    glm::vec3 linearImpulse = lambda * contactNormal;
 
     if (lambda < 0) 
     {
@@ -93,6 +87,16 @@ void PhysicsResolution::CollisionResolution(int body1, int body2, double penetra
 
         linearVelocity2 -= linearImpulse / PhysicsSystem::getInstance().getPhysicsBody(body2)->GetMass();
         angularVelocity2 -= (lambda * PhysicsSystem::getInstance().getPhysicsBody(body2)->GetInverseInertiaTensor()) * r2CrossNormal;
+
+        if (!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject()) {
+            PhysicsSystem::getInstance().getPhysicsBody(body1)->SetLinearVelocity(linearVelocity1);
+            PhysicsSystem::getInstance().getPhysicsBody(body1)->SetAngularVelocity(angularVelocity1);
+        }
+
+        if (!PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) {
+            PhysicsSystem::getInstance().getPhysicsBody(body2)->SetLinearVelocity(linearVelocity2);
+            PhysicsSystem::getInstance().getPhysicsBody(body2)->SetAngularVelocity(angularVelocity2);
+        }
     }
 
     if ((!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject() && PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) || (PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject() && !PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject())) 
@@ -132,23 +136,11 @@ void PhysicsResolution::CollisionResolution(int body1, int body2, double penetra
             //std::cout << "A2 - (" << angularVelocity2.x << ", " << angularVelocity2.y << ", " << angularVelocity2.z << ")" << std::endl;
         } 
     }
-
-    if (!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject()) 
-    {
-        PhysicsSystem::getInstance().SubmitLinearVelocity(body1, linearVelocity1);
-        PhysicsSystem::getInstance().SubmitAngularVelocity(body1, angularVelocity1);
-    }
-
-    if (!PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
-    {
-        PhysicsSystem::getInstance().SubmitLinearVelocity(body2, linearVelocity2);
-        PhysicsSystem::getInstance().SubmitAngularVelocity(body2, angularVelocity2);
-    }
 }
 
-glm::dvec3 PhysicsResolution::Damping(glm::dvec3 velocity) 
+glm::vec3 PhysicsResolution::Damping(glm::vec3 velocity) 
 {
-    double damping = 0.95;
+    float damping = 0.8;
 
     velocity = velocity * damping; 
 
