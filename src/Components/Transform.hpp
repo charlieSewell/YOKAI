@@ -116,7 +116,8 @@ public:
      */
 	Transform& operator=(const Transform &other);
 
-
+	void Deserialize(const nlohmann::json &j) override;
+	void Serialise( nlohmann::json &j) override;
 	void RenderGUI();
 private:
     ///transform

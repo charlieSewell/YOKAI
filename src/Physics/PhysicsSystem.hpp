@@ -112,6 +112,7 @@ public:
     //Physics
     void IntegrateVelocities();
 
+    void ClearColliders();
 
 private:
     bool isDebugEnabled = false;

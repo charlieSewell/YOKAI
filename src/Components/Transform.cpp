@@ -1,6 +1,9 @@
 #include "Transform.hpp"
 #include "imgui/imgui.h"
 #include "ImGuizmo.h"
+#include <iostream>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 Transform::Transform(GameObject* parent)
 	: Component(parent), m_transform(glm::mat4(1.0))
 {
@@ -156,4 +159,45 @@ void Transform::RenderGUI()
         ImGui::Separator();
 		ImGuizmo::RecomposeMatrixFromComponents(&position[0],&rotation[0],&scale[0],&m_transform[0][0]);
 	}
+}
+void Transform::Deserialize(const nlohmann::json &j)
+{
+	for(auto& component : j.at("Components"))
+	{
+		if(component.at("Type").get<std::string>() == "Transform")
+		{
+			std::vector<float> temp = component.at("matrix").get<std::vector<float>>();
+			glm::mat4 tempMat = glm::make_mat4(&temp[0]);
+			m_transform = tempMat;
+			decompose();
+		}
+	}	
+}
+void Transform::Serialise(nlohmann::json &j)
+{
+	nlohmann::json temp = nlohmann::json::object();
+	std::vector<float> flatMat;
+	flatMat.push_back(m_transform[0][0]);
+    flatMat.push_back(m_transform[0][1]);
+    flatMat.push_back(m_transform[0][2]);
+    flatMat.push_back(m_transform[0][3]);
+
+    flatMat.push_back(m_transform[1][0]);
+    flatMat.push_back(m_transform[1][1]);
+    flatMat.push_back(m_transform[1][2]);
+    flatMat.push_back(m_transform[1][3]);
+
+    flatMat.push_back(m_transform[2][0]);
+    flatMat.push_back(m_transform[2][1]);
+    flatMat.push_back(m_transform[2][2]);
+    flatMat.push_back(m_transform[2][3]);
+
+    flatMat.push_back(m_transform[3][0]);
+    flatMat.push_back(m_transform[3][1]);
+    flatMat.push_back(m_transform[3][2]);
+    flatMat.push_back(m_transform[3][3]);
+
+	temp["Type"] = "Transform";
+	temp["matrix"] = flatMat;
+	j.push_back(temp);
 }

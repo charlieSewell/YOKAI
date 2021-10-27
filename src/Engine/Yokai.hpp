@@ -57,7 +57,7 @@ public:
     bool getIsPaused() const;
 
 	void addScene(std::shared_ptr<Scene> scene);
-
+    void SwitchScene(unsigned int scene);
 	ModelManager* getModelManager(){return modelManager;}
 private:
     /**

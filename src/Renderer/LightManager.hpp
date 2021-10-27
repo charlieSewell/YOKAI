@@ -3,6 +3,7 @@
 #include "Renderer/Renderer.hpp"
 #include "Export.hpp"
 #include <Imgui/imgui.h>
+#include "Engine/JSONTypes.hpp"
 class YOKAI_API LightManager
 {
     public:
@@ -12,6 +13,12 @@ class YOKAI_API LightManager
         PointLight* GetLight(unsigned int lightIndex);
         void UpdateLights();
         void RenderGUI();
+        void Serialise(nlohmann::json &j);
+        void Deserialise(const nlohmann::json &j);
+        /**
+         * @brief Clears the Lighting Manager
+         */
+        void Clear();
     private:
         std::vector<PointLight> m_Lights;
         unsigned int m_LightCount;

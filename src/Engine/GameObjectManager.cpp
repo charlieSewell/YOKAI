@@ -75,3 +75,19 @@ void GameObjectManager::RenderGUI()
     }
 	ImGui::End();
 }
+void GameObjectManager::Serialise(nlohmann::json &j)
+{
+    j["Objects"] = nlohmann::json::array();
+
+    for(auto& object : m_gameObjects)
+    {
+        nlohmann::json temp = nlohmann::json::object();
+        object.second->Serialise(temp);
+        j["Objects"].push_back(temp);
+    }
+}
+void GameObjectManager::Clear()
+{
+    m_gameObjects.clear();
+    m_objectCount = 0;
+}
