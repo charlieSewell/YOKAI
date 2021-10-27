@@ -42,4 +42,5 @@ class Component
     protected:
         ///parent game object
         GameObject* m_parent;
+		bool m_hasStarted = false;
 };

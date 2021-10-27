@@ -5,15 +5,20 @@ BoxCollider::BoxCollider(GameObject* parent) : Component(parent){}
 
 void BoxCollider::Start()
 {
-    //extents = glm::vec3(1,1,1);
-    if(m_parent->GetComponent<Transform>() == nullptr)
-    {
-        m_parent->AddComponent<Transform>();
-    }
-	m_colliderID = PhysicsSystem::getInstance().addAABB(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),extents.x,extents.y,extents.z);
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
-    SetCentreOfMass(GetPosition());
-    SetGravityAffected(false);
+	if(!m_hasStarted)
+	{
+		//extents = glm::vec3(1,1,1);
+		if(m_parent->GetComponent<Transform>() == nullptr)
+		{
+			m_parent->AddComponent<Transform>();
+		}
+		m_colliderID = PhysicsSystem::getInstance().addAABB(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(),extents.x,extents.y,extents.z);
+		PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
+		SetCentreOfMass(GetPosition());
+		SetGravityAffected(false);
+
+		m_hasStarted = true;
+	}
 }
 void BoxCollider::SetExtents(glm::vec3 extent)
 {
@@ -168,7 +173,7 @@ void BoxCollider::StaticSet()
     SetCollisionMaskBits(Physics::CATEGORY2);
     SetLinearVelocity(glm::dvec3(0, 0, 0));
 	SetAngularVelocity(glm::dvec3(0, 0, 0));
-	SetMass(999999999999999.0);
+	SetMass(5.0);
 	SetIsStaticObject(true);
     SetGravityAffected(false);
 	SetInertiaTensor();
