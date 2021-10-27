@@ -52,13 +52,7 @@ int BoxCollider::GetColliderID()
 
 void BoxCollider::Update(float deltaTime)
 {
-    //SetPosition(m_parent->GetComponent<Transform>()->getPosition());
-    //SetOrientation(m_parent->GetComponent<Transform>()->getRotation());
-
-    Translate(GetLinearVelocity() * static_cast<double>(deltaTime));
-    Rotate(GetAngularVelocity(), deltaTime);
-    SetCentreOfMass(GetPosition());
-
+   
     m_parent->GetComponent<Transform>()->setPosition(GetPosition());
     m_parent->GetComponent<Transform>()->setRotation(GetOrientation());
 }

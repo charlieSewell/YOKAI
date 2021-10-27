@@ -15,9 +15,9 @@ namespace YokaiPhysics {
 
     double TangentialAcceleration(double angularAcceleration, double radius);
 
-    glm::dmat3x3 RectangleInertiaTensor(glm::dvec3 ext, double mass);
+    glm::mat3x3 RectangleInertiaTensor(glm::dvec3 ext, double mass);
 
-    glm::dmat3x3 SphereInertiaTensor(double radius, double mass);
+    glm::mat3x3 SphereInertiaTensor(double radius, double mass);
 
     double DegreesToRadians(double degrees);
 

@@ -9,7 +9,7 @@ class PhysicsResolution : public rp3d::EventListener {
       virtual void onContact(const rp3d::CollisionCallback::CallbackData &callbackData) override;
 
   private:
-      void ResolvePenetration(int body1, int body2, double penetration, glm::dvec3 contactNormal);
-      void CollisionResolution(int body1, int body2, double penetration, glm::dvec3 contactNormal, glm::dvec3 body1ContactPoint, glm::dvec3 body2ContactPoint, CollisionCallback::ContactPair::EventType eventType);
-      glm::dvec3 Damping(glm::dvec3 vel);
+      void ResolvePenetration(int body1, int body2, float penetration, glm::vec3 contactNormal);
+      void CollisionResolution(int body1, int body2, float penetration, glm::vec3 contactNormal, glm::vec3 body1ContactPoint, glm::vec3 body2ContactPoint, CollisionCallback::ContactPair::EventType eventType);
+      glm::vec3 Damping(glm::vec3 vel);
 };
