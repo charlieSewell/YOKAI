@@ -37,7 +37,7 @@ void DrawableEntity::Draw()
   
 }
 
-void DrawableEntity::LoadModel(std::string filename)
+unsigned int DrawableEntity::LoadModel(std::string filename)
 {
     m_modelID = Yokai::getInstance().getModelManager()->GetModelID(filename);
     Model* model = Yokai::getInstance().getModelManager()->GetModel(m_modelID);
@@ -50,7 +50,10 @@ void DrawableEntity::LoadModel(std::string filename)
         delete m_animator;
         m_animator = nullptr;
     }
+
+	return m_modelID;
 }
+
 void DrawableEntity::SetAnimation(std::string animation)
 {
     m_animator->setAnimation(animation);
@@ -79,4 +82,9 @@ void DrawableEntity::SetOffset(glm::mat4 offset)
 glm::mat4 DrawableEntity::GetOffset() 
 {
     return m_offset;
+}
+
+void DrawableEntity::SetModelID(unsigned int modelID)
+{
+	m_modelID = modelID;
 }

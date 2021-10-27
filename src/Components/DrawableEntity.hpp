@@ -35,7 +35,7 @@ class YOKAI_API DrawableEntity : public Component {
          * @brief Loads model from given Path
          * @param filename 
          */
-        void LoadModel(std::string filename);
+        unsigned int LoadModel(std::string filename);
         /**
          * @brief Sets the Animation to be played
          * @param animation 
@@ -47,6 +47,7 @@ class YOKAI_API DrawableEntity : public Component {
          */
         unsigned int GetModelID(){return m_modelID;}
 
+		void SetModelID(unsigned int modelID); 
         void RenderGUI();
         void SetOffset(glm::mat4 offset);
         glm::mat4 GetOffset();

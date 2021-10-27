@@ -4,14 +4,19 @@ SphereCollider::SphereCollider(GameObject* parent) : Component(parent){}
 
 void SphereCollider::Start()
 {
-    if(m_parent->GetComponent<Transform>() == nullptr)
-    {
-        m_parent->AddComponent<Transform>();
+	if (!m_hasStarted)
+	{
+		if(m_parent->GetComponent<Transform>() == nullptr)
+		{
+			m_parent->AddComponent<Transform>();
+		}
+		m_colliderID = PhysicsSystem::getInstance().addSphere(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(), m_radius);
+		PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
+		SetCentreOfMass(GetPosition());
+		SetGravityAffected(false);
+
+		m_hasStarted = true;
 	}
-    m_colliderID = PhysicsSystem::getInstance().addSphere(m_parent->GetObjectID(),m_parent->GetComponent<Transform>().get(), m_radius);
-    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(m_parent->GetComponent<Transform>()->getPosition());
-    SetCentreOfMass(GetPosition());
-    SetGravityAffected(false);
 }
 
 void SphereCollider::SetOrientation(glm::quat orientation) 

@@ -58,8 +58,8 @@ void Yokai::Run()
     double accumulator = 0;
     bool isPausePressed = false;
     bool isPhysicsPressed = false;
-    InputManagerGLFW::getInstance().m_activeKeys.push_back(77);
-    InputManagerGLFW::getInstance().m_activeKeys.push_back(27);
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(unsigned int(YOKAI_INPUT::GRAVE_ACCENT));
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(unsigned int(YOKAI_INPUT::ESCAPE));
     InputManagerGLFW::getInstance().m_activeKeys.push_back(70);
     while(isRunning)
 	{
@@ -72,7 +72,7 @@ void Yokai::Run()
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        if(InputManagerGLFW::getInstance().m_keyStates[77])
+        if(InputManagerGLFW::getInstance().m_keyStates[unsigned int(YOKAI_INPUT::GRAVE_ACCENT)])
         {
             if(isPausePressed == false)
             {
@@ -84,12 +84,12 @@ void Yokai::Run()
         {
             isPausePressed = false;
         }
-        if(InputManagerGLFW::getInstance().m_keyStates[27])
+        if(InputManagerGLFW::getInstance().m_keyStates[unsigned int(YOKAI_INPUT::ESCAPE)])
         {
             Shutdown();
         }
 
-        if (InputManagerGLFW::getInstance().m_keyStates[70]) 
+        if (InputManagerGLFW::getInstance().m_keyStates[unsigned int(YOKAI_INPUT::F)])
         {
             if (isPhysicsPressed == false) 
             {
