@@ -77,7 +77,7 @@ void PhysicsSystem::update(float dt)
     }
 
     for (auto &m_collider : m_colliders) {
-        if (m_collider.second.GetGravityAffected()) 
+        if (!m_collider.second.GetIsStaticObject()) 
         {
             m_collider.second.SetPosition(m_collider.second.GetPosition() + m_collider.second.GetLinearVelocity() * dt);
             m_collider.second.SetOrientation(glm::normalize(m_collider.second.GetOrientation() + ((0.5f * glm::quat(0.0, m_collider.second.GetAngularVelocity()) * m_collider.second.GetOrientation())*dt)));
