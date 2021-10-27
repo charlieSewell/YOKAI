@@ -41,9 +41,7 @@ int SphereCollider::GetColliderID()
 
 void SphereCollider::Update(float deltaTime) 
 {
-    Translate(GetLinearVelocity() * static_cast<double>(deltaTime));
-    Rotate(GetAngularVelocity(), deltaTime);
-    SetCentreOfMass(GetPosition());
+
 }
 
 void SphereCollider::SetMass(double m) 

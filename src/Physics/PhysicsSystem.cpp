@@ -68,14 +68,13 @@ void PhysicsSystem::update(float dt)
 
     physicsWorld->update(static_cast<rp3d::decimal>(dt));
 	
-     for (auto &m_collider : m_colliders) {
+    for (auto &m_collider : m_colliders) {
         if (m_collider.second.GetGravityAffected()) {
              m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() +(dt * glm::vec3(0, -1, 0)));
             // std::cout << (glm::dvec3(0, -1, 0) * double(dt)).x << ", " << (glm::dvec3(0, -1, 0) *
             // double(dt)).y << ", " << (glm::dvec3(0, -1, 0) * double(dt)).z << std::endl;
         }
     }
-
     for (auto &m_collider : m_colliders) {
         if (!m_collider.second.GetIsStaticObject()) 
         {
