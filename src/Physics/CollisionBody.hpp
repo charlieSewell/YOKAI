@@ -2,21 +2,22 @@
 #include <reactphysics3d/reactphysics3d.h>
 #include <glm/glm.hpp>
 #include "Physics/Shapes/ReactTerrainShape.hpp"
-#include "PhysicsUnits.hpp"
-//#include "PhysicsResolution.hpp"
+#include "Physics.hpp"
 #include "ReactMath.hpp"
+//#include "PhysicsResolution.hpp"
+
 /**
- * @class RigidBody
+ * @class CollisionBody
  * @brief Class for a physics Rigid body
  */
-class CollisionBody {
-
+class CollisionBody 
+{
   public:
     /**
      * @brief Sets Position
      * @param vec3 -position
      */
-    void SetPosition(glm::dvec3 position);
+    void SetPosition(glm::vec3 position);
     /**
      * @brief Sets Orientation
      * @param quat - orientation
@@ -41,7 +42,7 @@ class CollisionBody {
      * @brief Gets position
      * @return vec3
      */
-    glm::dvec3 GetPosition();
+    glm::vec3 GetPosition();
     /**
      * @brief Gets Orientation
      * @return quat
@@ -87,24 +88,24 @@ class CollisionBody {
         return gameObjectID;
     }
 
-    void SetMass(double m);
-    double GetMass();
+    void SetMass(float m);
+    float GetMass();
 
-    double GetInverseMass();
+    float GetInverseMass();
 
-    void SetCentreOfMass(glm::dvec3 com);
-    glm::dvec3 GetCentreOfMass();
+    void SetCentreOfMass(glm::vec3 com);
+    glm::vec3 GetCentreOfMass();
 
-    void SetInertiaTensor(glm::dmat3x3 it);
-    glm::dmat3x3 GetInertiaTensor();
+    void SetInertiaTensor(glm::mat3x3 it);
+    glm::mat3x3 GetInertiaTensor();
 
-    glm::dmat3x3 GetInverseInertiaTensor();
+    glm::mat3x3 GetInverseInertiaTensor();
 
-    void SetLinearVelocity(glm::dvec3 lv);
-    glm::dvec3 GetLinearVelocity();
+    void SetLinearVelocity(glm::vec3 lv);
+    glm::vec3 GetLinearVelocity();
 
-    void SetAngularVelocity(glm::dvec3 av);
-    glm::dvec3 GetAngularVelocity();
+    void SetAngularVelocity(glm::vec3 av);
+    glm::vec3 GetAngularVelocity();
 
     void SetIsStaticObject(bool s);
     bool GetIsStaticObject();
@@ -112,8 +113,23 @@ class CollisionBody {
     void SetGravityAffected(bool g);
     bool GetGravityAffected();
 
+    void setForce(glm::dvec3 f);
+    glm::dvec3 getForce();
+
+    void setIsStaticObject(bool s);
+    bool getIsStaticObject();
+
+    void setGravityAffected(bool g);
+    bool getGravityAffected();
+    void SetCollisionCategory(unsigned short category);
+    void SetCollisionMaskBits(unsigned short maskBits);
+
+	// bad
+	glm::dvec3 m_tempLinearVelocity = {};
+	bool hasCollided = false;
+	int counter = 0;
     glm::mat4 GetTransform();
-    void SetTransform(glm::mat4 transform);
+    void UpdateBody();
 
   private:
     /// Shape of collider
@@ -126,18 +142,17 @@ class CollisionBody {
     reactphysics3d::Collider *m_collider;
 
     // PHYSICS
-    double m_mass;
-    double m_inverseMass;
-    glm::dvec3 m_centreOfMass           = {};
-    glm::dmat3x3 m_inertiaTensor        = {};
-    glm::dmat3x3 m_inverseInertiaTensor = {};
+    float m_mass;
+    float m_inverseMass;
+    glm::vec3 m_centreOfMass           = {};
+    glm::mat3x3 m_inertiaTensor        = {};
+    glm::mat3x3 m_inverseInertiaTensor = {};
 
-    glm::dvec3 m_linearVelocity  = {};
-    glm::dvec3 m_angularVelocity = {};
-
+    glm::vec3 m_linearVelocity  = {};
+    glm::vec3 m_angularVelocity = {};
+    glm::quat m_orientation     = {};
     bool m_staticObject;
     bool m_gravityAffected;
 
-    glm::dvec3 m_position = {};
-    glm::dvec3 m_tempLinearVelocity = {};
+    glm::vec3 m_position = {};
 };

@@ -15,9 +15,13 @@ class Scene
      */
     virtual void Init() = 0;
     /**
-     * @brief Updates a Layer
+     * @brief Updates a Layer Before Physics
      */
     virtual void Update(double deltaTime) = 0;
+    /**
+     * @brief Updates a Layer After Physics
+     */
+    virtual void LateUpdate(double deltaTime) = 0;
     /**
      * @brief Draw a Layer
      */
@@ -30,7 +34,13 @@ class Scene
      * @brief Disable a Layer
      */
     virtual void Disable() = 0;
+    /**
+     * @brief Gets the Game Object Manager
+     * @return GameObjectManager* 
+     */
 
+    GameObjectManager* GetGameObjectManager() {return &m_objectManager;}
+    LightManager* GetLightManager() {return &m_lightManager;}
   protected:
     ///Game Object Manager
     GameObjectManager m_objectManager;

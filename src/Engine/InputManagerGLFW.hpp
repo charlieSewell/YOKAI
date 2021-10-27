@@ -110,12 +110,12 @@ class InputManagerGLFW
        * @brief Processes Keyboard Input
        * @param GLFWwindow* - window
        */
-	  void processKeyboard(GLFWwindow * window);
+	  void processKeyboard();
       /**
        * @brief Processes Mouse Input
        * @param GLFWwindow* - window
        */
-	  void processMouse(GLFWwindow* window);
+	  void processMouse();
 
 		/**
 		* @brief Processes gamepad button Input	
@@ -133,7 +133,9 @@ class InputManagerGLFW
 	  std::vector<unsigned int> m_activeKeys;
 
 	  Mouse m_mouse;
-
+	  void ShowMouse();
+	  void HideMouse();
+	  void AddWindow(GLFWwindow* window);
   private:
       /**
        * @brief Privatised constructor for Singleton Pattern
@@ -146,4 +148,6 @@ class InputManagerGLFW
 	  ///Key map
 	  std::map<unsigned int, unsigned int> m_keyMap;
 	  void createMap();
+	  ///Pointer to current window
+	  GLFWwindow* m_Window;
 };

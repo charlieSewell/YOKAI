@@ -1,6 +1,11 @@
 //InputManagerGLFW.cpp
 
 #include "InputComponent.hpp"
+Input::Input()
+	: Component(nullptr)
+{
+
+}
 
 Input::Input(GameObject* parent)
 	: Component(parent)
@@ -52,5 +57,13 @@ bool Input::GetKeyToggle(YOKAI_INPUT key)
 Mouse Input::GetMouseState()
 {
 	return(InputManagerGLFW::getInstance().m_mouse);
+}
+void Input::HideMouse()
+{
+	InputManagerGLFW::getInstance().HideMouse();
+}
+void Input::ShowMouse()
+{
+	InputManagerGLFW::getInstance().ShowMouse();
 }
 

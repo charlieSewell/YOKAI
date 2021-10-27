@@ -40,12 +40,6 @@ void PhysicsSystem::Init()
     assert(t_vao_ != 0);
     glGenBuffers(1, &t_vbo_);
     assert(t_vbo_ != 0);
-
-
-    //physicsWorld->setEventListener(&listener);
-    //for (auto &n : m_colliders) {
-    //    n.second.SetMass(10);
-    //}
 }
 void PhysicsSystem::DeInit()
 {
@@ -65,33 +59,27 @@ PhysicsSystem& PhysicsSystem::getInstance()
 
 void PhysicsSystem::update(float dt)
 {
+    
     physicsWorld->update(static_cast<rp3d::decimal>(dt));
 	
-	for (auto& m_linearVelocity : m_linearVelocities)
-	{ 
-		//m_colliders[colliderID] [total linear velocity, collision counter]
-		m_colliders[m_linearVelocity.first].SetLinearVelocity((m_linearVelocity.second.first / double(m_linearVelocity.second.second)));
-        //std::cout << "Count - " << m_linearVelocity.second.second << std::endl;
-	}
-
-    for (auto &m_collider : m_colliders) 
-    {
-        if (m_collider.second.GetGravityAffected()) 
+    //Intergrate Gravity
+    for (auto &m_collider : m_colliders) {
+        if (m_collider.second.GetGravityAffected()) {
+             m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() +(dt * glm::vec3(0, -3, 0)));
+        }
+    }
+    //Intergrate Positions
+    for (auto &m_collider : m_colliders) {
+        if (!m_collider.second.GetIsStaticObject()) 
         {
-            m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() + (glm::dvec3(0, -1, 0) * double(dt)));
-            //std::cout << (glm::dvec3(0, -1, 0) * double(dt)).x << ", " << (glm::dvec3(0, -1, 0) * double(dt)).y << ", " << (glm::dvec3(0, -1, 0) * double(dt)).z << std::endl;
+            m_collider.second.SetPosition(m_collider.second.GetPosition() + m_collider.second.GetLinearVelocity() * dt);
+            m_collider.second.SetOrientation(glm::normalize(m_collider.second.GetOrientation() + ((0.5f * glm::quat(0.0, m_collider.second.GetAngularVelocity()) * m_collider.second.GetOrientation())*dt)));
+            m_collider.second.SetCentreOfMass(m_collider.second.GetPosition());
+
+            m_collider.second.UpdateBody();
         }
     }
 
-    for (auto &m_angularVelocity : m_angularVelocities) 
-    {
-        // m_colliders[colliderID] [total angular velocity, collision counter]
-        m_colliders[m_angularVelocity.first].SetAngularVelocity((m_angularVelocity.second.first / double(m_angularVelocity.second.second)));
-        //std::cout << "Count - " << m_angularVelocity.second.second << std::endl;
-    }
-
-	m_linearVelocities.clear();
-    m_angularVelocities.clear();
 }
 
 unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, float radius)
@@ -220,6 +208,12 @@ void PhysicsSystem::Draw()
 
 void PhysicsSystem::RendererUpdate() {
     reactphysics3d::DebugRenderer& debug_renderer = physicsWorld->getDebugRenderer();
+    if(Yokai::getInstance().getIsPaused())
+    {
+        debug_renderer.reset();
+        debug_renderer.computeDebugRenderingPrimitives(*physicsWorld);
+    }
+    
     line_num_ = debug_renderer.getNbLines();
     if (line_num_ > 0) {
         glBindBuffer(GL_ARRAY_BUFFER, l_vbo_);
@@ -233,31 +227,5 @@ void PhysicsSystem::RendererUpdate() {
         auto sizeVertices = static_cast<GLsizei>(triag_num_ * sizeof(rp3d::DebugRenderer::DebugTriangle));
         glBufferData(GL_ARRAY_BUFFER, sizeVertices, debug_renderer.getTrianglesArray(), GL_STREAM_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
-}
-
-void PhysicsSystem::SubmitLinearVelocity(int colliderID, glm::dvec3 linearVelocity)
-{
-	if(m_linearVelocities.find(colliderID) == m_linearVelocities.end())
-	{
-		m_linearVelocities[colliderID] = std::pair<glm::dvec3, int>(linearVelocity, 1);
-	}
-	else
-	{
-		m_linearVelocities[colliderID].first += linearVelocity;
-		m_linearVelocities[colliderID].second++;
-	}
-}
-
-void PhysicsSystem::SubmitAngularVelocity(int colliderID, glm::dvec3 angularVelocity) 
-{
-    if (m_angularVelocities.find(colliderID) == m_angularVelocities.end()) 
-    {
-        m_angularVelocities[colliderID] = std::pair<glm::dvec3, int>(angularVelocity, 1);
-    } 
-    else 
-    {
-        m_angularVelocities[colliderID].first += angularVelocity;
-        m_angularVelocities[colliderID].second++;
     }
 }

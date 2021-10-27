@@ -22,14 +22,20 @@ public:
      */
     void Start();
     /**
-     * @brief Updates Once a frame
+     * @brief Updates Before the Physics Simulation
      * @param deltaTime 
      */
     void Update(float deltaTime);
     /**
+     * @brief Updates After the Physics Simulation
+     * @param deltaTime 
+     */
+    void LateUpdate(float deltaTime);
+    /**
      * @brief Set the Extents of the Bounding Box
      * @param extent 
      */
+    void RenderGUI();
     void SetExtents(glm::vec3 extent);
     /**
      * @brief Set the Extents of the Bounding Box
@@ -51,19 +57,19 @@ public:
 
     double GetInverseMass();
 
-    void SetCentreOfMass(glm::dvec3 com);
-    glm::dvec3 GetCentreOfMass();
+    void SetCentreOfMass(glm::vec3 com);
+    glm::vec3 GetCentreOfMass();
 
     void SetInertiaTensor();
-    glm::dmat3x3 GetInertiaTensor();
+    glm::mat3x3 GetInertiaTensor();
 
-    glm::dmat3x3 GetInverseInertiaTensor();
+    glm::mat3x3 GetInverseInertiaTensor();
 
-    void SetLinearVelocity(glm::dvec3 lv);
-    glm::dvec3 GetLinearVelocity();
+    void SetLinearVelocity(glm::vec3 lv);
+    glm::vec3 GetLinearVelocity();
 
-    void SetAngularVelocity(glm::dvec3 av);
-    glm::dvec3 GetAngularVelocity();
+    void SetAngularVelocity(glm::vec3 av);
+    glm::vec3 GetAngularVelocity();
 
     void SetIsStaticObject(bool s);
     bool GetIsStaticObject();
@@ -77,23 +83,26 @@ public:
 	* @brief Set the Positin of the Bounding Box
 	* @param orientation
 	*/
-	void SetPosition(glm::dvec3 newPosition);
+	void SetPosition(glm::vec3 newPosition);
 
-    glm::dvec3 GetPosition();
+    glm::vec3 GetPosition();
 
 	int GetColliderID();
 
-    void Translate(glm::dvec3 velocity);
+    void Translate(glm::vec3 velocity);
 
-    void Rotate(glm::dvec3 angVelocity, float deltaTime);
+    void Rotate(glm::vec3 angVelocity, float deltaTime);
 
     void StaticSet();
+
+    void SetCollisionCategory(unsigned short category);
+    void SetCollisionMaskBits(unsigned short maskBits);
 
 private:
     ///Collider ID
     unsigned int m_colliderID;
     ///Extents of Bounding Box
-    glm::dvec3 extents = {};
+    glm::vec3 extents = {};
 
-    glm::dvec3 m_offset = {};
+    glm::vec3 m_offset = {};
 };

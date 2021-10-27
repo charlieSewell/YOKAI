@@ -8,13 +8,18 @@
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
-
 Yokai &Yokai::getInstance() 
 {
     static Yokai instance;
     return instance;
 }
-
+Yokai::Yokai()
+{
+    if(!Init())
+	{
+        exit(EXIT_FAILURE);
+    }
+}
 bool Yokai::Init()
 {
     InitialiseLogger();
@@ -29,9 +34,9 @@ bool Yokai::Init()
     {
         return(false);
     }
-    //Add layers to layer stack
+    InputManagerGLFW::getInstance().AddWindow(window.getWindow());
+    
     activeLayer = 0;
-
     try
     {
         PhysicsSystem::getInstance().Init();
@@ -42,32 +47,60 @@ bool Yokai::Init()
     {
         SPDLOG_ERROR(e.what());
     }
-
-    for(auto& layer: layers)
-    {
-        layer->Init();
-    }
-
     isPaused = false;
-    registerClose();
     SPDLOG_INFO("Engine Succesfully Initialised");
     return(true);
 }
 void Yokai::Run()
 {
     const float timeStep = 1.0f / 60;
-
     double lastTime = 0;
     double accumulator = 0;
-
+    bool isPausePressed = false;
+    bool isPhysicsPressed = false;
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(77);
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(27);
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(70);
     while(isRunning)
 	{
-		InputManagerGLFW::getInstance().processKeyboard(window.getWindow());
+        InputManagerGLFW::getInstance().processMouse();
+		InputManagerGLFW::getInstance().processGamepadAxis(); 
+		InputManagerGLFW::getInstance().processKeyboard();
 		InputManagerGLFW::getInstance().processGamepadButtons();
-
-		double currentTime = glfwGetTime();
+		    
+        double currentTime = glfwGetTime();
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
+
+        if(InputManagerGLFW::getInstance().m_keyStates[77])
+        {
+            if(isPausePressed == false)
+            {
+                isPausePressed = true;
+                TogglePause();
+            }
+        }
+        else
+        {
+            isPausePressed = false;
+        }
+        if(InputManagerGLFW::getInstance().m_keyStates[27])
+        {
+            Shutdown();
+        }
+
+        if (InputManagerGLFW::getInstance().m_keyStates[70]) 
+        {
+            if (isPhysicsPressed == false) 
+            {
+                isPhysicsPressed = true;
+                PhysicsSystem::getInstance().TogglePhysicsDebug();
+            } 
+        } 
+        else 
+        {
+            isPhysicsPressed = false;
+        }
 
         //Renderer::getInstance().Clear();
         window.startFrame();
@@ -75,21 +108,28 @@ void Yokai::Run()
         if (!isPaused)
         {
 			accumulator += deltaTime;
-			while (accumulator >= timeStep) 
+			layers[activeLayer]->Update(deltaTime);
+            while (accumulator >= timeStep) 
 			{
-				InputManagerGLFW::getInstance().processMouse(window.getWindow());
-				InputManagerGLFW::getInstance().processGamepadAxis();
-                layers[activeLayer]->Update(timeStep);
                 PhysicsSystem::getInstance().update(timeStep);
                 //layers[activeLayer]->Update(timeStep);
 				accumulator -= timeStep;
 			}
+            layers[activeLayer]->LateUpdate(deltaTime);
+            
+        }
+        else 
+        {
+            
+            layers[activeLayer]->GetGameObjectManager()->RenderGUI();
+            layers[activeLayer]->GetLightManager()->RenderGUI();
         }
         ImGui::Begin("YOKAI DEBUG");
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         ImGui::End();
-        layers[activeLayer]->Draw();
+        layers[activeLayer]->GetLightManager()->UpdateLights();
         PhysicsSystem::getInstance().RendererUpdate();
+        layers[activeLayer]->Draw();
         Renderer::getInstance().DrawScene();
         Renderer::getInstance().DrawGui();
         window.endFrame();
@@ -100,26 +140,9 @@ void Yokai::Run()
     window.DeInit();
 }
 
-void Yokai::registerClose()
+void Yokai::Shutdown()
 {
-    static bool isPressed = false;
-    auto pauseRelease     = [&]() { isPressed = false; };
-    EMS::getInstance().add(NoReturnEvent::pauseReleased, pauseRelease);
-
-    auto pausePress = [&]()
-    {
-        if (!isPressed)
-        {
-            //TODO: Make better
-            isRunning = false;
-        }
-    };
-    EMS::getInstance().add(NoReturnEvent::pausePressed, pausePress);
-}
-
-void Yokai::setIsRunning(bool s) 
-{
-    isRunning = s;
+    isRunning = false;
 }
 
 std::vector<std::shared_ptr<Scene>> Yokai::getLayer()
@@ -132,15 +155,24 @@ void Yokai::setActiveLayer(int a)
     activeLayer = a;
 }
 
-void Yokai::setIsPaused(bool p) 
+void Yokai::TogglePause() 
 {
-    isPaused = p;
+    isPaused = !isPaused;
+    if(isPaused)
+    {
+        InputManagerGLFW::getInstance().ShowMouse();
+    }
+    else
+    {
+        InputManagerGLFW::getInstance().HideMouse();
+    }
 }
 
 bool Yokai::getIsPaused() const
 {
     return isPaused;
 }
+
 
 void Yokai::InitialiseLogger()
 {
@@ -168,5 +200,6 @@ void Yokai::InitialiseLogger()
 
 void Yokai::addScene(std::shared_ptr<Scene> scene)
 {
+    scene->Init();
 	layers.push_back(std::shared_ptr<Scene>(scene));
 }

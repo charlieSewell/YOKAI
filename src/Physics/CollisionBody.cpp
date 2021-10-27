@@ -13,25 +13,19 @@ void CollisionBody::DeleteBody(rp3d::PhysicsWorld* physicsWorld,rp3d::PhysicsCom
     physicsWorld->destroyCollisionBody(m_body);
     shape->DeleteShape(physicsCommon);
 }
-void CollisionBody::SetPosition(glm::dvec3 position){
+void CollisionBody::SetPosition(glm::vec3 position){
     m_position = position;
-    rp3d::Transform currTransform = m_body->getTransform();
-    currTransform.setPosition(ReactMath::glmVecToRP3d(position));
-    m_body->setTransform(currTransform);
-    
 }
 void CollisionBody::SetOrientation(glm::quat orientation)
 {
-    rp3d::Transform currTransform = m_body->getTransform();
-    currTransform.setOrientation(ReactMath::glmQuatToRP3d(orientation));
-    m_body->setTransform(currTransform);
+    m_orientation = orientation;
 }
 glm::quat CollisionBody::GetOrientation()
 {
     rp3d::Quaternion temp = m_body->getTransform().getOrientation();
     return ReactMath::rp3dQuatToGlm(temp);
 }
-glm::dvec3 CollisionBody::GetPosition()
+glm::vec3 CollisionBody::GetPosition()
 {
     rp3d::Vector3 temp = m_body->getTransform().getPosition();
     //return ReactMath::rp3dVecToGlmD(temp);
@@ -55,62 +49,63 @@ void CollisionBody::SetRollingResistance(float resistance)
     m_collider->getMaterial().setRollingResistance(resistance);
 }
 
-void CollisionBody::SetMass(double m) 
+void CollisionBody::SetMass(float m) 
 {
     m_mass = m;
 }
 
-double CollisionBody::GetMass() 
+float CollisionBody::GetMass() 
 {
     return m_mass;
 }
 
-double CollisionBody::GetInverseMass() 
+float CollisionBody::GetInverseMass() 
 {
     return 1.0 / m_mass;
 }
 
-void CollisionBody::SetCentreOfMass(glm::dvec3 com) 
+void CollisionBody::SetCentreOfMass(glm::vec3 com) 
 {
     m_centreOfMass = com;
 }
 
-glm::dvec3 CollisionBody::GetCentreOfMass() 
+glm::vec3 CollisionBody::GetCentreOfMass() 
 {
     return m_centreOfMass;
 }
 
-void CollisionBody::SetInertiaTensor(glm::dmat3x3 it) 
+void CollisionBody::SetInertiaTensor(glm::mat3x3 it) 
 {
     m_inertiaTensor = it;
+    m_inverseInertiaTensor = glm::inverse(m_inertiaTensor);
 }
 
-glm::dmat3x3 CollisionBody::GetInertiaTensor() 
+glm::mat3x3 CollisionBody::GetInertiaTensor() 
 {
     return m_inertiaTensor;
 }
 
-glm::dmat3x3 CollisionBody::GetInverseInertiaTensor() 
+glm::mat3x3 CollisionBody::GetInverseInertiaTensor() 
 {
-    return glm::inverse(m_inertiaTensor);
+    return m_inverseInertiaTensor;
 }
 
-void CollisionBody::SetLinearVelocity(glm::dvec3 lv) 
+void CollisionBody::SetLinearVelocity(glm::vec3 lv) 
 {
     m_linearVelocity = lv;
 }
 
-glm::dvec3 CollisionBody::GetLinearVelocity() 
+glm::vec3 CollisionBody::GetLinearVelocity() 
 {
     return m_linearVelocity;
 }
 
-void CollisionBody::SetAngularVelocity(glm::dvec3 av) 
+void CollisionBody::SetAngularVelocity(glm::vec3 av) 
 {
     m_angularVelocity = av;
 }
 
-glm::dvec3 CollisionBody::GetAngularVelocity() 
+glm::vec3 CollisionBody::GetAngularVelocity() 
 {
     return m_angularVelocity;
 }
@@ -141,7 +136,17 @@ glm::mat4 CollisionBody::GetTransform()
     return ReactMath::rp3dMat4ToGlm(temp);
 }
 
-void CollisionBody::SetTransform(glm::mat4 transform) 
+void CollisionBody::UpdateBody() 
 {
+    rp3d::Transform temp = rp3d::Transform(ReactMath::glmVecToRP3d(m_position), ReactMath::glmQuatToRP3d(m_orientation));
+    m_body->setTransform(temp);
+}
 
+void CollisionBody::SetCollisionCategory(unsigned short category)
+ {
+     m_collider->setCollisionCategoryBits(category);
+}
+void CollisionBody::SetCollisionMaskBits(unsigned short maskBits)
+{
+     m_collider->setCollideWithMaskBits(maskBits);
 }
