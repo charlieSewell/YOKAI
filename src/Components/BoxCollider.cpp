@@ -23,6 +23,7 @@ void BoxCollider::SetExtents(glm::vec3 extent)
 void BoxCollider::SetOrientation(glm::quat orientation)
 {
 	PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(orientation);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->UpdateBody();
 }
 
 void BoxCollider::SetExtents(float x,float y, float z)
@@ -33,6 +34,7 @@ void BoxCollider::SetExtents(float x,float y, float z)
 void BoxCollider::SetPosition(glm::dvec3 newPosition)
 {
 	PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(newPosition);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->UpdateBody();
 }
 
 glm::dvec3 BoxCollider::GetPosition() 

@@ -38,12 +38,12 @@ void PhysicsResolution::ResolvePenetration(int body1, int body2, float penetrati
 {
     if (!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject()) 
     {
-        PhysicsSystem::getInstance().getPhysicsBody(body1)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body1)->GetPosition() + ((-(penetration)) * contactNormal));
+        PhysicsSystem::getInstance().getPhysicsBody(body1)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body1)->GetPosition() + ((-(penetration/2)) * contactNormal));
     }
 
     if (!PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
     {
-        PhysicsSystem::getInstance().getPhysicsBody(body2)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body2)->GetPosition() - ((-(penetration)) * contactNormal));
+        PhysicsSystem::getInstance().getPhysicsBody(body2)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body2)->GetPosition() - ((-(penetration/2)) * contactNormal));
     }
 }
 

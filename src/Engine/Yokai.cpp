@@ -62,6 +62,8 @@ void Yokai::Run()
 
     while(isRunning)
 	{
+        InputManagerGLFW::getInstance().processMouse(window.getWindow());
+		InputManagerGLFW::getInstance().processGamepadAxis(); 
 		InputManagerGLFW::getInstance().processKeyboard(window.getWindow());
 		InputManagerGLFW::getInstance().processGamepadButtons();
 
@@ -77,8 +79,7 @@ void Yokai::Run()
 			accumulator += deltaTime;
 			while (accumulator >= timeStep) 
 			{
-				InputManagerGLFW::getInstance().processMouse(window.getWindow());
-				InputManagerGLFW::getInstance().processGamepadAxis();  
+	 
                 PhysicsSystem::getInstance().update(timeStep);
                 
                 //layers[activeLayer]->Update(timeStep);
