@@ -12,30 +12,26 @@ InputManagerGLFW& InputManagerGLFW::getInstance()
 	static InputManagerGLFW instance;
 	return instance;
 }
-
-void InputManagerGLFW::processKeyboard(GLFWwindow* window)
+void InputManagerGLFW::AddWindow(GLFWwindow* window)
 {
-
+	m_Window = window;
+}
+void InputManagerGLFW::processKeyboard()
+{
 	if(!glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
 		for(int i=0; i < m_activeKeys.size(); ++i)
 		{
-			m_keyStates[m_activeKeys[i]] = (glfwGetKey(window, m_keyMap[m_activeKeys[i]]) == GLFW_PRESS);
+			m_keyStates[m_activeKeys[i]] = (glfwGetKey(m_Window, m_keyMap[m_activeKeys[i]]) == GLFW_PRESS);
 		}
 	}
-
-		//TODO CONNOR: This needs to get moved out
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::pausePressed);
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::pauseReleased);
 }
 
-void InputManagerGLFW::processMouse(GLFWwindow* window)
+void InputManagerGLFW::processMouse()
 {
 	if (!glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
-		glfwGetCursorPos(window, &m_mouse.position.x, &m_mouse.position.y);
+		glfwGetCursorPos(m_Window, &m_mouse.position.x, &m_mouse.position.y);
 
 		if (!mouseInit)
 		{
@@ -211,4 +207,12 @@ void InputManagerGLFW::createMap()
 	m_keyMap[(unsigned int)YOKAI_INPUT::BACKSLASH]= GLFW_KEY_BACKSLASH;
 	m_keyMap[(unsigned int)YOKAI_INPUT::RIGHT_BRACKET] = GLFW_KEY_RIGHT_BRACKET;
 	m_keyMap[(unsigned int)YOKAI_INPUT::GRAVE_ACCENT] = GLFW_KEY_GRAVE_ACCENT;
+}
+void InputManagerGLFW::ShowMouse()
+{
+	glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+void InputManagerGLFW::HideMouse()
+{
+	glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }

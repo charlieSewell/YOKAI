@@ -47,6 +47,7 @@ class YOKAI_API DrawableEntity : public Component {
          */
         unsigned int GetModelID(){return m_modelID;}
 
+        void RenderGUI();
         void SetOffset(glm::mat4 offset);
         glm::mat4 GetOffset();
 

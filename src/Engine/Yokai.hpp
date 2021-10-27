@@ -8,10 +8,9 @@
 #include <spdlog/spdlog.h>
 #include "Export.hpp"
 #include "ModelManager.hpp"
-#include "Components/InputComponent.hpp"
 #include "Physics/PhysicsResolution.hpp"
-
 //workaround to allow vector of layer pointers
+class InputComponent;
 class Scene;
 class PhysicsResolution;
 /**
@@ -27,20 +26,15 @@ public:
      */
     static Yokai& getInstance();
     /**
-     * @brief Initialises the engine
-     */
-    bool Init();
-    /**
      * @brief Runs the engine loop
      */
     void Run();
     ///window used by the engine
     Window window = {};
     /**
-     * @brief Set is Running
-     * @param s
+     * @brief Shuts the engine down :(
      */
-    void setIsRunning(bool s);
+    void Shutdown();
     /**
      * @brief Gets a layer Pointer
      * @return Scene*
@@ -55,7 +49,7 @@ public:
      * Sets the paused state
      * @param p
      */
-    void setIsPaused(bool p);
+    void TogglePause();
     /**
      * Return true if engine paused
      * @return bool
@@ -66,16 +60,15 @@ public:
 
 	ModelManager* getModelManager(){return modelManager;}
 private:
-    //Singleton pattern requires that all constructors,destructors and copy constructors be private
     /**
-     * @brief Registers Engine close event with EMS
+     * @brief Initialises the engine
      */
-    void registerClose();
-
+    bool Init();
+    //Singleton pattern requires that all constructors,destructors and copy constructors be private
     /**
      * @brief Privatised Default Constructor
      */
-    Yokai() = default;
+    Yokai();
     /**
      * @brief Privatised Default Destructor
      */
@@ -102,6 +95,6 @@ private:
     std::vector<spdlog::sink_ptr> sinks;
     ///Model Manager
     ModelManager* modelManager;
-
+    InputComponent* input;
     PhysicsResolution *randomListener;
 };

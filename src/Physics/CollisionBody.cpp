@@ -141,3 +141,12 @@ void CollisionBody::UpdateBody()
     rp3d::Transform temp = rp3d::Transform(ReactMath::glmVecToRP3d(m_position), ReactMath::glmQuatToRP3d(m_orientation));
     m_body->setTransform(temp);
 }
+
+void CollisionBody::SetCollisionCategory(unsigned short category)
+ {
+     m_collider->setCollisionCategoryBits(category);
+}
+void CollisionBody::SetCollisionMaskBits(unsigned short maskBits)
+{
+     m_collider->setCollideWithMaskBits(maskBits);
+}

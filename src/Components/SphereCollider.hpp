@@ -33,6 +33,9 @@ public:
      * @param deltaTime
      */
     void Update(float deltaTime);
+    void LateUpdate(float deltaTime);
+
+    void PhysicsUpdate(float deltaTime);
 
     void SetOrientation(glm::quat orientation);
 
@@ -77,7 +80,11 @@ public:
 
     void Translate(glm::dvec3 position);
 
+    void StaticSet();
+
     void Rotate(glm::dvec3 angVelocity, float deltaTime);
+    void SetCollisionCategory(unsigned short category);
+    void SetCollisionMaskBits(unsigned short maskBits);
 
 private:
     ///Collider ID

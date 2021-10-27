@@ -22,14 +22,23 @@ class Component
          */
         virtual void Start() {}
         /**
-         * @brief Updates once a frame
+         * @brief Updates Before Physics Simulation
          * @param deltaTime 
          */
         virtual void Update(float deltaTime) {}
         /**
+         * @brief Updates After Physics Simulation
+         * @param deltaTime 
+         */
+        virtual void LateUpdate(float deltaTime) {}
+        /**
          * @brief Draws once a frame after update
          */
         virtual void Draw() {}
+        /**
+         * @brief Renders Component GUI
+         */
+        virtual void RenderGUI() {}
     protected:
         ///parent game object
         GameObject* m_parent;

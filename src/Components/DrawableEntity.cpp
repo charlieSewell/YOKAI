@@ -1,5 +1,5 @@
 #include "DrawableEntity.hpp"
-
+#include "ImGuizmo.h"
 DrawableEntity::DrawableEntity(GameObject* parent) : Component(parent), m_offset(1.0f){}
 
 void DrawableEntity::Start()
@@ -55,7 +55,22 @@ void DrawableEntity::SetAnimation(std::string animation)
 {
     m_animator->setAnimation(animation);
 }
-
+void DrawableEntity::RenderGUI()
+{
+    float position[3];
+	float rotation[3];
+	float scale[3];
+	if(ImGui::TreeNode("Model"))
+	{
+		ImGuizmo::DecomposeMatrixToComponents(&m_offset[0][0],&position[0],&rotation[0],&scale[0]);
+		ImGui::DragFloat3("Position: ",&position[0],0.01f);
+		ImGui::DragFloat3("Rotation: ",&rotation[0],0.01f);
+		ImGui::DragFloat3("Scale: ",&scale[0],0.01f);
+		ImGui::TreePop();
+        ImGui::Separator();
+		ImGuizmo::RecomposeMatrixFromComponents(&position[0],&rotation[0],&scale[0],&m_offset[0][0]);
+	}
+}
 void DrawableEntity::SetOffset(glm::mat4 offset) 
 {
     m_offset = offset;

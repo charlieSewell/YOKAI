@@ -4,6 +4,8 @@
 #include "Export.hpp"
 #include <vector>
 #include <memory>
+#include <string>
+#include <imgui/imgui.h>
 /**
  * @Class GameObject
  * @brief Generic game object type that holds components
@@ -11,11 +13,17 @@
 class YOKAI_API GameObject
 {
     public:
-    /**
-     * @brief Construct a new Game Object object
-     * @param id 
-     */
+        /**
+         * @brief Construct a new Game Object object
+         * @param id 
+         */
         GameObject(unsigned int id);
+        /**
+         * @brief Construct a new Game Object object
+         * @param id 
+         * @param objectName 
+         */
+        GameObject(unsigned int id, std::string objectName);
         /**
          * @brief Sets a game objects state to active
          */
@@ -25,10 +33,17 @@ class YOKAI_API GameObject
          */
         void Start();
         /**
-         * @brief Is called once a frame
+         * @brief Update Before Physics Simulation
          * @param timeDelta 
          */
         void Update(float timeDelta);
+        /**
+         * @brief Update After Physics Simulation
+         * @param timeDelta 
+         */
+        void LateUpdate(float timeDelta);
+
+
         /**
          * @brief Draws the game Object
          */
@@ -38,9 +53,24 @@ class YOKAI_API GameObject
          * @return unsigned int 
          */
         unsigned int GetObjectID();
+        /**
+         * @brief Set the Objects Name
+         * @param objectName 
+         */
+        void SetName(std::string objectName);
+        /**
+         * @brief Get the Objects Name
+         * @return std::string 
+         */
+        std::string GetName(){return m_objectName;}
+        /**
+         * @brief Renders the components GUI
+         */
+        void RenderGUI();
     private:
         ///Game object ID
-        unsigned int gameObjectID;
+        unsigned int m_gameObjectID;
+        std::string m_objectName = "Default Object";
         ///Vector of game object Components
         std::vector<std::shared_ptr<Component>> m_components;
     public:
