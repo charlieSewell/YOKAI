@@ -107,7 +107,7 @@ public:
     ///physics world for simulation
     reactphysics3d::PhysicsWorld* physicsWorld;
 
-    void IsDebugEnabled(bool isEnabled){isDebugEnabled = isEnabled;}
+    void TogglePhysicsDebug(){isDebugEnabled = !isDebugEnabled;}
 
     //Physics
     void IntegrateVelocities();

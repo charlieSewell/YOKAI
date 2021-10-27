@@ -57,8 +57,10 @@ void Yokai::Run()
     double lastTime = 0;
     double accumulator = 0;
     bool isPausePressed = false;
+    bool isPhysicsPressed = false;
     InputManagerGLFW::getInstance().m_activeKeys.push_back(77);
     InputManagerGLFW::getInstance().m_activeKeys.push_back(27);
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(70);
     while(isRunning)
 	{
         InputManagerGLFW::getInstance().processMouse();
@@ -85,6 +87,19 @@ void Yokai::Run()
         if(InputManagerGLFW::getInstance().m_keyStates[27])
         {
             Shutdown();
+        }
+
+        if (InputManagerGLFW::getInstance().m_keyStates[70]) 
+        {
+            if (isPhysicsPressed == false) 
+            {
+                isPhysicsPressed = true;
+                PhysicsSystem::getInstance().TogglePhysicsDebug();
+            } 
+        } 
+        else 
+        {
+            isPhysicsPressed = false;
         }
 
         //Renderer::getInstance().Clear();

@@ -56,6 +56,7 @@ class YOKAI_API GameObjectManager
      * @brief Renders GUI
      */
     void RenderGUI();
+
   private:
     /// Map of GameObjects, with the key of the GameObject id, and value of the GameObject smart pointer
     std::map<unsigned int,std::shared_ptr<GameObject>> m_gameObjects;

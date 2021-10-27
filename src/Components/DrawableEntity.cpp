@@ -63,9 +63,9 @@ void DrawableEntity::RenderGUI()
 	if(ImGui::TreeNode("Model"))
 	{
 		ImGuizmo::DecomposeMatrixToComponents(&m_offset[0][0],&position[0],&rotation[0],&scale[0]);
-		ImGui::DragFloat3("Position: ",&position[0],0.1f);
-		ImGui::DragFloat3("Rotation: ",&rotation[0],0.1f);
-		ImGui::DragFloat3("Scale: ",&scale[0],0.1f);
+		ImGui::DragFloat3("Position: ",&position[0],0.01f);
+		ImGui::DragFloat3("Rotation: ",&rotation[0],0.01f);
+		ImGui::DragFloat3("Scale: ",&scale[0],0.01f);
 		ImGui::TreePop();
         ImGui::Separator();
 		ImGuizmo::RecomposeMatrixFromComponents(&position[0],&rotation[0],&scale[0],&m_offset[0][0]);

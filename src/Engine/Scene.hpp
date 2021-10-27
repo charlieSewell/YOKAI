@@ -38,6 +38,7 @@ class Scene
      * @brief Gets the Game Object Manager
      * @return GameObjectManager* 
      */
+
     GameObjectManager* GetGameObjectManager() {return &m_objectManager;}
     LightManager* GetLightManager() {return &m_lightManager;}
   protected:

@@ -29,8 +29,8 @@ bool Window::Init()
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
 
-    //window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", NULL, NULL);
-    window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", glfwGetPrimaryMonitor(), nullptr);
+    window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", NULL, NULL);
+    //window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", glfwGetPrimaryMonitor(), nullptr);
 
     if (!window)
     {

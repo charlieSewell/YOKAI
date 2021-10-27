@@ -17,11 +17,13 @@ void SphereCollider::Start()
 void SphereCollider::SetOrientation(glm::quat orientation) 
 {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(orientation);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->UpdateBody();
 }
 
 void SphereCollider::SetPosition(glm::dvec3 newPosition) 
 {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetPosition(newPosition);
+    PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->UpdateBody();
 }
 
 glm::dvec3 SphereCollider::GetPosition() 
@@ -41,14 +43,23 @@ int SphereCollider::GetColliderID()
 
 void SphereCollider::Update(float deltaTime)
 {
+   glm::quat temp = glm::inverse(m_parent->GetComponent<Transform>()->getRotation());
    SetPosition(m_parent->GetComponent<Transform>()->getPosition());
-   PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->UpdateBody();
-   //SetOrientation(m_parent->GetComponent<Transform>()->getRotation());
+   SetOrientation(temp);
+   //PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->UpdateBody();
 }
 void SphereCollider::LateUpdate(float deltaTime)
 {
     m_parent->GetComponent<Transform>()->setPosition(GetPosition());
     m_parent->GetComponent<Transform>()->setRotation(GetOrientation());
+}
+
+void SphereCollider::PhysicsUpdate(float deltaTime) 
+{
+    //glm::quat temp = glm::inverse(m_parent->GetComponent<Transform>()->getRotation());
+    //SetPosition(m_parent->GetComponent<Transform>()->getPosition());
+    //SetOrientation(temp);
+    // PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->UpdateBody();
 }
 
 void SphereCollider::SetMass(double m) 
@@ -152,6 +163,18 @@ void SphereCollider::Translate(glm::dvec3 position)
 void SphereCollider::Rotate(glm::dvec3 angVelocity, float deltaTime) 
 {
     PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->SetOrientation(glm::normalize(GetOrientation() + (0.5f * GetOrientation() * glm::quat(0.0, angVelocity) * deltaTime)));
+}
+
+void SphereCollider::StaticSet() 
+{
+    SetCollisionCategory(Physics::CATEGORY1);
+    SetCollisionMaskBits(Physics::CATEGORY2);
+    SetLinearVelocity(glm::dvec3(0, 0, 0));
+    SetAngularVelocity(glm::dvec3(0, 0, 0));
+    SetMass(999999999999999.0);
+    SetIsStaticObject(true);
+    SetGravityAffected(false);
+    SetInertiaTensor();
 }
 
 void SphereCollider::SetCollisionCategory(unsigned short category)

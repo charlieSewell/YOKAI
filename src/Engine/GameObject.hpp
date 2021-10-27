@@ -42,6 +42,8 @@ class YOKAI_API GameObject
          * @param timeDelta 
          */
         void LateUpdate(float timeDelta);
+
+
         /**
          * @brief Draws the game Object
          */

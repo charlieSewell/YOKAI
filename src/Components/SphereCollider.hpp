@@ -34,6 +34,9 @@ public:
      */
     void Update(float deltaTime);
     void LateUpdate(float deltaTime);
+
+    void PhysicsUpdate(float deltaTime);
+
     void SetOrientation(glm::quat orientation);
 
     glm::quat GetOrientation();
@@ -76,6 +79,8 @@ public:
     int GetColliderID();
 
     void Translate(glm::dvec3 position);
+
+    void StaticSet();
 
     void Rotate(glm::dvec3 angVelocity, float deltaTime);
     void SetCollisionCategory(unsigned short category);
