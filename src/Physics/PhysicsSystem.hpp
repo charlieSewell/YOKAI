@@ -112,8 +112,6 @@ public:
     //Physics
     void IntegrateVelocities();
 
-	void SubmitLinearVelocity(int colliderID, glm::dvec3 linearVelocity);
-    void SubmitAngularVelocity(int colliderID, glm::dvec3 angularVelocity);
 
 private:
     bool isDebugEnabled = false;
@@ -132,8 +130,5 @@ private:
     int m_mapCount;
     ///map of colliders
     std::map<int, CollisionBody> m_colliders;	//TODO: make colliders so can add spheres
-
-	std::map<int, std::pair<glm::dvec3, int>> m_linearVelocities;
-    std::map<int, std::pair<glm::dvec3, int>> m_angularVelocities;
 
 };

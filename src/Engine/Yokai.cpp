@@ -105,12 +105,13 @@ void Yokai::Run()
         }
         else 
         {
-            ImGui::Begin("YOKAI DEBUG");
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
+            
             layers[activeLayer]->GetGameObjectManager()->RenderGUI();
             layers[activeLayer]->GetLightManager()->RenderGUI();
         }
+        ImGui::Begin("YOKAI DEBUG");
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
         layers[activeLayer]->GetLightManager()->UpdateLights();
         PhysicsSystem::getInstance().RendererUpdate();
         layers[activeLayer]->Draw();
