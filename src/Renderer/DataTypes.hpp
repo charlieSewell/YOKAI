@@ -52,7 +52,7 @@ class Texture
      * @brief Returns texture ID
      * @return int
      */
-    virtual int getID()=0;
+    virtual int GetID()=0;
     /**
      * @brief Creates a Texture in the currently selected RenderAPI
      * @param fileName
@@ -149,10 +149,16 @@ class VertexArrayBuffer
      */
     static std::shared_ptr<VertexArrayBuffer> Create(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 };
+/**
+ * @struct PointLight
+ * @brief Stores point light info for GPU
+ */
 struct PointLight
 {
+  ///Color of light
 	glm::vec4 color = {};
+  ///Position of light
 	glm::vec4 position = {};
+  ///Padding and radius of light
 	glm::vec4 paddingAndRadius = {};
-
 };

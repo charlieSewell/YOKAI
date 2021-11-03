@@ -74,54 +74,54 @@ class Model
      * @param name
      * @return SkeletalAnimation*
      */
-    SkeletalAnimation* getAnimation(const std::string& name);
+    SkeletalAnimation* GetAnimation(const std::string& name);
     /**
      * @brief Gets the size of the bones array
      * @return
      */
-    int getBonesSize(){return bones.size();}
+    int GetBonesSize(){return m_bones.size();}
     /**
      * @brief Gets the root node of the model
      * @return
      */
-    Node getRootNode();
+    Node GetRootNode();
     /**
      * @brief Gets the map of string to bone ID
      * @return
      */
-    std::map<std::string, unsigned int>* getBoneMap(){return &boneMap;}
+    std::map<std::string, unsigned int>* GetBoneMap(){return &m_boneMap;}
     /**
      * @brief Returns the vector of bones
      * @return mat4
      */
-    std::vector<Bone>* getBones(){return &bones;}
+    std::vector<Bone>* GetBones(){return &m_bones;}
     /**
      * @brief Get the Meshes array
      * @return std::vector<Mesh>* 
      */
-    std::vector<Mesh>* getMeshes(){return &meshes;}
+    std::vector<Mesh>* GetMeshes(){return &m_meshes;}
     /**
      * @brief gets the global inverse transform
      * @return mat4
      */
-    glm::mat4 getGlobalInverseTransform(){return globalInverseTransform;}
+    glm::mat4 GetGlobalInverseTransform(){return m_globalInverseTransform;}
     /**
      * @brief is the model animated
      * @return bool
      */
-    bool isAnimated();
+    bool IsAnimated();
   private:
     ///Global transform
-    glm::mat4 globalInverseTransform{};
+    glm::mat4 m_globalInverseTransform{};
     ///list of models meshes
-    std::vector<Mesh> meshes;
+    std::vector<Mesh> m_meshes;
     ///list of models bones
-    std::vector<Bone> bones;
+    std::vector<Bone> m_bones;
     ///map of bone names to index
-    std::map<std::string, unsigned int> boneMap;
+    std::map<std::string, unsigned int> m_boneMap;
     ///Root node of scene
-    Node rootNode;
+    Node m_rootNode;
     ///Animations
-    std::vector<SkeletalAnimation> animations;
+    std::vector<SkeletalAnimation> m_animations;
 };
 

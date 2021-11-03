@@ -98,53 +98,60 @@ class InputManagerGLFW
 {
   public:
     /**
-     * Returns this instance of InputManagerGLFW
-     * @return InputManagerGLFW&
-     */
-	  static InputManagerGLFW& getInstance();
-      ///Deleted copy constructor
-	  InputManagerGLFW(InputManagerGLFW const&) = delete;
-      ///Deleted = operator
-	  void operator=(InputManagerGLFW const&) = delete;
-      /**
-       * @brief Processes Keyboard Input
-       * @param GLFWwindow* - window
-       */
-	  void processKeyboard();
-      /**
-       * @brief Processes Mouse Input
-       * @param GLFWwindow* - window
-       */
-	  void processMouse();
+    * Returns this instance of InputManagerGLFW
+    * @return InputManagerGLFW&
+    */
+	static InputManagerGLFW& getInstance();
+    ///Deleted copy constructor
+	InputManagerGLFW(InputManagerGLFW const&) = delete;
+    ///Deleted = operator
+	void operator=(InputManagerGLFW const&) = delete;
+    /**
+    * @brief Processes Keyboard Input
+    * @param GLFWwindow* - window
+    */
+	void processKeyboard();
+    /**
+    * @brief Processes Mouse Input
+    * @param GLFWwindow* - window
+    */
+	void processMouse();
+	/**
+	* @brief Processes gamepad button Input	
+	*/
+	void processGamepadButtons();
+	/**
+	* @brief Processes gamepad axis Input
+	*/
+    void processGamepadAxis();
+	//TODO CONNOR: These will be private with Getter/Setter
+	bool m_keyStates[128];
+	bool m_keyActive[128];
+	std::vector<unsigned int> m_activeKeys;
 
-		/**
-		* @brief Processes gamepad button Input	
-		*/
-	  void processGamepadButtons();
-
-		/**
-		* @brief Processes gamepad axis Input
-		*/
-	  void processGamepadAxis();
-
-	  //TODO CONNOR: These will be private with Getter/Setter
-	  bool m_keyStates[128];
-	  bool m_keyActive[128];
-	  std::vector<unsigned int> m_activeKeys;
-
-	  Mouse m_mouse;
-	  void ShowMouse();
-	  void HideMouse();
-	  void AddWindow(GLFWwindow* window);
+	Mouse m_mouse;
+	/**
+	 * @brief Shows The Mouse
+	 */
+	void ShowMouse();
+	/**
+	 * @brief Hides the Mouse
+	 */
+	void HideMouse();
+	/**
+	 * @brief Window to pull input from
+	 * @param window 
+	 */
+	void AddWindow(GLFWwindow* window);
   private:
       /**
        * @brief Privatised constructor for Singleton Pattern
        */
 	  InputManagerGLFW();
       ///Mouse Init
-	  bool mouseInit = false;
+	  bool m_mouseInit = false;
       ///Last Mouse X and Y
-	  double lastX, lastY;
+	  double m_lastX, m_lastY;
 	  ///Key map
 	  std::map<unsigned int, unsigned int> m_keyMap;
 	  void createMap();

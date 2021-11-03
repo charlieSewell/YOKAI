@@ -71,9 +71,19 @@ class RenderAPI
      * @param bool - isEnabled
      */
     virtual void UpdateLights(std::vector<PointLight> &lightsArray) = 0;
+    /**
+     * @brief Enables Depth Testing
+     * @param isEnabled 
+     */
     virtual void SetDepthTesting(bool isEnabled) = 0;
+    /**
+     * @brief Draws the Scene
+     */
     virtual void DrawScene() = 0;
-    
+    /**
+     * @brief Adds a mesh to be Drawn
+     * @param drawItem 
+     */
     virtual void SubmitDraw(RENDER::DrawItem drawItem) = 0;
     /**
      * @brief Creates a specific rendering API

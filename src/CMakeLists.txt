@@ -7,7 +7,6 @@ target_sources(${PROJECT_NAME} PRIVATE
         Model/SkeletalAnimation.cpp
 		Model/Animator.cpp
 		Model/Animator.cpp
-		Model/KeyframeAnimation.cpp
 
 		Components/Transform.cpp
 		Components/DrawableEntity.cpp

@@ -9,29 +9,29 @@ void Renderer::Init()
 {
     try
     {
-        renderApi = RenderAPI::Create();
+        m_renderApi = RenderAPI::Create();
     } catch (const std::exception& e) {
         std::cout << "Exception: "<<e.what() << std::endl;
     }
-    renderApi->Init();
+    m_renderApi->Init();
     registerToggleWireframe();
 }
 
 void Renderer::DrawArrays(VertexArrayBuffer& VAO,size_t indiceSize)
 {
-    renderApi->DrawArrays(VAO,indiceSize);
+    m_renderApi->DrawArrays(VAO,indiceSize);
 }
 void Renderer::DrawScene()
 {
-	renderApi->DrawScene();
+	m_renderApi->DrawScene();
 }
 void Renderer::DrawGui() 
 {
-    renderApi->DrawGui();
+    m_renderApi->DrawGui();
 }
 void Renderer::ToggleWireFrame()
 {
-    renderApi->ToggleWireFrame();
+    m_renderApi->ToggleWireFrame();
 }
 void Renderer::registerToggleWireframe()
 {
@@ -48,7 +48,7 @@ void Renderer::registerToggleWireframe()
 	{
 		if (!wireFrameActive)
 		{
-			renderApi->ToggleWireFrame();
+			m_renderApi->ToggleWireFrame();
 			wireFrameActive = true;
 		}
 	};
@@ -57,27 +57,27 @@ void Renderer::registerToggleWireframe()
 
 void Renderer::Clear() 
 {
-    renderApi->Clear();
+    m_renderApi->Clear();
 }
 
 void Renderer::DeInit() 
 {
-    renderApi->DeInit();
+    m_renderApi->DeInit();
 }
 void Renderer::SetDepthTesting(bool isEnabled)
 {
-    renderApi->SetDepthTesting(isEnabled);
+    m_renderApi->SetDepthTesting(isEnabled);
 }
 void Renderer::UpdateLights(std::vector<PointLight> &lightsArray)
 {
-    renderApi->UpdateLights(lightsArray);
+    m_renderApi->UpdateLights(lightsArray);
 }
 void Renderer::AddToDraw(Mesh* mesh, glm::mat4 model)
 {
     RENDER::DrawItem drawItem;
     drawItem.transform = model;
     drawItem.mesh = mesh;
-    renderApi->SubmitDraw(drawItem);
+    m_renderApi->SubmitDraw(drawItem);
 }
 void Renderer::AddToDraw(Mesh* mesh, glm::mat4 model, std::vector<glm::mat4> &finalTransforms)
 {
@@ -86,5 +86,5 @@ void Renderer::AddToDraw(Mesh* mesh, glm::mat4 model, std::vector<glm::mat4> &fi
     drawItem.mesh = mesh;
     drawItem.isAnimated = true;
     drawItem.finalTransforms = finalTransforms;
-    renderApi->SubmitDraw(drawItem);
+    m_renderApi->SubmitDraw(drawItem);
 }

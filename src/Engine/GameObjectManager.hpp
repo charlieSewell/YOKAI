@@ -10,7 +10,7 @@
 class YOKAI_API GameObjectManager
 {
   public:
-      /**
+    /**
      * @brief Constructs the Game Object Manager object
      */
     GameObjectManager();
@@ -18,7 +18,7 @@ class YOKAI_API GameObjectManager
      * @brief Destroy the Game Object Manager object
      */
     ~GameObjectManager();
-    /*!
+    /**
      * @brief Creates a GameObject and stores it within a map of GameObjects
      * @return unsigned int 
      */
@@ -29,23 +29,27 @@ class YOKAI_API GameObjectManager
      * @return unsigned int 
      */
     unsigned int CreateObject(std::string objectName);
-    /*!
+    /**
      * @brief Getter for a GameObject with the specified id
      * @param int - id
      * @return GameObject
      */
     std::shared_ptr<GameObject> GetObject(unsigned int id);
-
-    /*!
+    /**
      * @brief Calls the update function for all GameObjects
      */
     void Update(float dt);
-
+    /**
+     * @brief Update After Physics Simulation
+     * @param dt 
+     */
     void LateUpdate(float dt);
-
-    void Serialise(nlohmann::json &j);
-
-    /*!
+    /**
+     * @brief Serialises all GameObjects
+     * @param j 
+     */
+    void Serialize(nlohmann::json &j);
+    /**
      * @brief Calls the draw function for all GameObjects
      */
     void Draw();
@@ -65,7 +69,6 @@ class YOKAI_API GameObjectManager
   private:
     /// Map of GameObjects, with the key of the GameObject id, and value of the GameObject smart pointer
     std::map<unsigned int,std::shared_ptr<GameObject>> m_gameObjects;
-
     /// Stores the number of GameObjects within the map
     unsigned int m_objectCount;
 };

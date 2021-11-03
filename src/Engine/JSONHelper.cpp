@@ -18,9 +18,10 @@ void YOKAI_PARSE::LoadScene(std::string file, GameObjectManager &objectManager, 
     for (auto &object  : j.at("Objects"))
     {
         auto ObjectToFill = objectManager.GetObject(object.at("ID").get<unsigned int>());
-        ObjectToFill->Deserialise(object);
+        ObjectToFill->Deserialize(object);
     }
-    lightManager.Deserialise(j);
+    lightManager.Deserialize(j);
+    input.close();
 
 }
 void YOKAI_PARSE::SaveScene(std::string file, GameObjectManager objectManager, LightManager lightManager)
@@ -30,10 +31,9 @@ void YOKAI_PARSE::SaveScene(std::string file, GameObjectManager objectManager, L
     
     j = nlohmann::json::object();
     
-    objectManager.Serialise(j);
-    lightManager.Serialise(j);
+    objectManager.Serialize(j);
+    lightManager.Serialize(j);
     output << std::setw(4) << j << std::endl;
-    //input >> j;
-
+    output.close();
 }
 

@@ -46,15 +46,31 @@ class YOKAI_API DrawableEntity : public Component {
          * @return unsigned int 
          */
         unsigned int GetModelID(){return m_modelID;}
-
-		void SetModelID(unsigned int modelID); 
+        /**
+         * @brief Set the Model ID
+         * @param modelID 
+         */
+		void SetModelID(unsigned int modelID);
+        /**
+         * @brief Render object GUI
+         */
         void RenderGUI();
+        /**
+         * @brief Set the Offset fron transform
+         * @param offset 
+         */
         void SetOffset(glm::mat4 offset);
+        /**
+         * @brief Get the Offset from the transform
+         * @return glm::mat4 
+         */
         glm::mat4 GetOffset();
 
     private:
         ///Model ID
         unsigned int m_modelID;
+        ///Animator of model
         Animator* m_animator = nullptr;
+        ///Offset from transform
         glm::mat4 m_offset;
 };

@@ -14,19 +14,19 @@ void PhysicsSystem::Init()
     //settings.isSleepingEnabled = false;
     settings.gravity = reactphysics3d::Vector3(0, 0, 0);
 
-    physicsWorld = physicsCommon.createPhysicsWorld(settings);
+    m_physicsWorld = m_physicsCommon.createPhysicsWorld(settings);
     
-    physicsWorld->setIsDebugRenderingEnabled(true);
+    m_physicsWorld->setIsDebugRenderingEnabled(true);
     m_gravity = glm::vec3(0, -3, 0);
 
-    DebugRenderer& debugRenderer = physicsWorld->getDebugRenderer(); 
+    DebugRenderer& debugRenderer = m_physicsWorld->getDebugRenderer(); 
 
     debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::COLLISION_SHAPE, true); 
 	debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::CONTACT_POINT, true);
 	debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::CONTACT_NORMAL, true);
-    path1 ="content/Shaders/debugVertex.vs";
-    path2 ="content/Shaders/debugFragment.fs";
-    shader_ = new Shader("content/Shaders/debugVertex.vert","content/Shaders/debugFragment.frag");
+    m_vertexPath ="content/Shaders/debugVertex.vs";
+    m_fragmentPath ="content/Shaders/debugFragment.fs";
+    m_debugShader = new Shader("content/Shaders/debugVertex.vert","content/Shaders/debugFragment.frag");
 
     //Generate line buffers for test renderer
     glGenVertexArrays(1, &l_vao_);
@@ -45,16 +45,16 @@ void PhysicsSystem::DeInit()
 {
     for(auto& m_collider : m_colliders)
     {
-        m_collider.second.DeleteBody(physicsWorld,physicsCommon);
+        m_collider.second.DeleteBody(m_physicsWorld,m_physicsCommon);
     }
     m_colliders.clear();
-    physicsCommon.destroyPhysicsWorld(physicsWorld);
+    m_physicsCommon.destroyPhysicsWorld(m_physicsWorld);
 }
 void PhysicsSystem::ClearColliders()
 {
     for(auto& m_collider : m_colliders)
     {
-        m_collider.second.DeleteBody(physicsWorld,physicsCommon);
+        m_collider.second.DeleteBody(m_physicsWorld,m_physicsCommon);
     }
     m_colliders.clear();
 }
@@ -64,10 +64,10 @@ PhysicsSystem& PhysicsSystem::getInstance()
     return instance;
 }
 
-void PhysicsSystem::update(float dt)
+void PhysicsSystem::Update(float dt)
 {
     
-    physicsWorld->update(static_cast<rp3d::decimal>(dt));
+    m_physicsWorld->update(static_cast<rp3d::decimal>(dt));
 	
     //Intergrate Gravity
     for (auto &m_collider : m_colliders) 
@@ -92,60 +92,60 @@ void PhysicsSystem::update(float dt)
 
 }
 
-unsigned int PhysicsSystem::addSphere(unsigned int ID,Transform *transform, float radius)
+unsigned int PhysicsSystem::AddSphere(unsigned int ID,Transform *transform, float radius)
 {
     CollisionBody object;
     auto* sphere = new ReactSphereShape();
-    object.CreateBody(ID,physicsWorld,transform->getPosition(),transform->getRotation());
-    sphere->CreateSphereShape(radius,physicsCommon);
+    object.CreateBody(ID,m_physicsWorld,transform->GetPosition(),transform->GetRotation());
+    sphere->CreateSphereShape(radius,m_physicsCommon);
     object.AddCollisionShape(sphere);
-    unsigned int temp = object.getColliderID();
-    m_colliders.emplace(object.getColliderID(),object);
+    unsigned int temp = object.GetColliderID();
+    m_colliders.emplace(object.GetColliderID(),object);
     return temp;
 }
 
-unsigned int PhysicsSystem::addConcaveShape(unsigned int ID, Transform* transform,unsigned int modelID)
+unsigned int PhysicsSystem::AddConcaveShape(unsigned int ID, Transform* transform,unsigned int modelID)
 {
     CollisionBody object;
     auto* shape = new ReactConcaveShape();
-    glm::vec3 newPos = glm::vec3(transform->getPosition().x,transform->getPosition().y,transform->getPosition().z);
-    object.CreateBody(ID,physicsWorld,newPos,transform->getRotation());
-    shape->CreateConcaveShape(physicsCommon,modelID);
+    glm::vec3 newPos = glm::vec3(transform->GetPosition().x,transform->GetPosition().y,transform->GetPosition().z);
+    object.CreateBody(ID,m_physicsWorld,newPos,transform->GetRotation());
+    shape->CreateConcaveShape(m_physicsCommon,modelID);
     object.AddCollisionShape(shape);
-    unsigned int temp = object.getColliderID();
-    m_colliders.emplace(object.getColliderID(),object);
+    unsigned int temp = object.GetColliderID();
+    m_colliders.emplace(object.GetColliderID(),object);
     return temp;
 }
 
-unsigned int PhysicsSystem::addTerrainShape(unsigned int ID, Transform* transform,std::vector<std::vector<float>> heightvals)
+unsigned int PhysicsSystem::AddTerrainShape(unsigned int ID, Transform* transform,std::vector<std::vector<float>> heightvals)
 {
     CollisionBody terrain;
     ReactTerrainShape* terrShape = new ReactTerrainShape();
-    glm::vec3 position = transform->getPosition();
+    glm::vec3 position = transform->GetPosition();
     auto orientation = glm::identity<glm::quat>();
-    terrain.CreateBody(ID,physicsWorld,position,orientation);
-    terrShape->CreateTerrainShape(physicsCommon,heightvals);
+    terrain.CreateBody(ID,m_physicsWorld,position,orientation);
+    terrShape->CreateTerrainShape(m_physicsCommon,heightvals);
     terrain.AddCollisionShape(terrShape);
     terrain.SetRollingResistance(1.0);
-    unsigned int temp = terrain.getColliderID();
-    m_colliders.emplace(terrain.getColliderID(),terrain);
+    unsigned int temp = terrain.GetColliderID();
+    m_colliders.emplace(terrain.GetColliderID(),terrain);
     return temp;
 }
 
-unsigned int PhysicsSystem::addAABB(unsigned int ID,Transform* transform, float width, float height, float length)
+unsigned int PhysicsSystem::AddAABB(unsigned int ID,Transform* transform, float width, float height, float length)
 {
     CollisionBody object;
     auto* box = new ReactBoxShape();
-    glm::vec3 newPos = glm::vec3(transform->getPosition().x,transform->getPosition().y,transform->getPosition().z);
-    object.CreateBody(ID,physicsWorld,newPos,transform->getRotation());
-    box->CreateBoxShape(glm::vec3(width,height,length),physicsCommon);
+    glm::vec3 newPos = glm::vec3(transform->GetPosition().x,transform->GetPosition().y,transform->GetPosition().z);
+    object.CreateBody(ID,m_physicsWorld,newPos,transform->GetRotation());
+    box->CreateBoxShape(glm::vec3(width,height,length),m_physicsCommon);
     object.AddCollisionShape(box);
-    unsigned int temp = object.getColliderID();
-    m_colliders.emplace(object.getColliderID(),object);
+    unsigned int temp = object.GetColliderID();
+    m_colliders.emplace(object.GetColliderID(),object);
     return temp;
 }
 
-CollisionBody * PhysicsSystem::getPhysicsBody(int colliderID)
+CollisionBody * PhysicsSystem::GetPhysicsBody(int colliderID)
 {
     try{
         return &m_colliders.at(colliderID);
@@ -156,85 +156,78 @@ CollisionBody * PhysicsSystem::getPhysicsBody(int colliderID)
     }
 }
 
-void PhysicsSystem::deleteRigidBody(int ID)
+void PhysicsSystem::DeleteRigidBody(int ID)
 {
-    m_colliders.at(ID).DeleteBody(physicsWorld,physicsCommon);
+    m_colliders.at(ID).DeleteBody(m_physicsWorld,m_physicsCommon);
     m_colliders.erase(ID);
 }
 
 void PhysicsSystem::Draw()
  {
-     if(isDebugEnabled)
+     if(m_isDebugEnabled)
      {
-        shader_->useShader();
+        m_debugShader->UseShader();
         //TODO Setup the shader, verify data is okay being passed in like this.
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        shader_->setMat4("projection", EMS::getInstance().fire(ReturnMat4Event::getPerspective));
-        shader_->setMat4("view", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
-        shader_->setMat4("model", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
+        m_debugShader->SetMat4("projection", EMS::getInstance().fire(ReturnMat4Event::getPerspective));
+        m_debugShader->SetMat4("view", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
+        m_debugShader->SetMat4("model", EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
 
-        if (line_num_ > 0) {
-            // Bind the VAO
-            glBindVertexArray(l_vao_);
-            glBindBuffer(GL_ARRAY_BUFFER, l_vbo_);
+        glBindVertexArray(l_vao_);
+        glBindBuffer(GL_ARRAY_BUFFER, l_vbo_);
 
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (char*) nullptr);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (char*) nullptr);
             
-            glEnableVertexAttribArray(1);
-            glVertexAttribIPointer(1, 3, GL_UNSIGNED_INT, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (void*) sizeof(rp3d::Vector3));
+        glEnableVertexAttribArray(1);
+        glVertexAttribIPointer(1, 3, GL_UNSIGNED_INT, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (void*) sizeof(rp3d::Vector3));
             
-            // Draw the lines geometry
-            glDrawArrays(GL_LINES, 0, line_num_ * 2);
-            glDisableVertexAttribArray(0);
-            glDisableVertexAttribArray(1);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-        }
+        // Draw the lines geometry
+        glDrawArrays(GL_LINES, 0, m_lineCount * 2);
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
 
-        if (triag_num_ > 0) {
+        // Bind the VAO
+        glBindVertexArray(t_vao_);
+        glBindBuffer(GL_ARRAY_BUFFER, t_vbo_);
 
-            // Bind the VAO
-            glBindVertexArray(t_vao_);
-            glBindBuffer(GL_ARRAY_BUFFER, t_vbo_);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (char*) nullptr);
 
-            glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (char*) nullptr);
-
-            glEnableVertexAttribArray(1);
-            glVertexAttribIPointer(1, 3, GL_UNSIGNED_INT, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (void*) sizeof(rp3d::Vector3));
-
-            // Draw the triangles geometry
-            glDrawArrays(GL_TRIANGLES, 0, triag_num_ * 3);
-            glDisableVertexAttribArray(0);
-            glDisableVertexAttribArray(1);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glBindVertexArray(0);
-        }
+        glEnableVertexAttribArray(1);
+        glVertexAttribIPointer(1, 3, GL_UNSIGNED_INT, sizeof(rp3d::Vector3) + sizeof(rp3d::uint32), (void*) sizeof(rp3d::Vector3));
+        // Draw the triangles geometry
+        glDrawArrays(GL_TRIANGLES, 0, m_triangleCount * 3);
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         //shader->Use();
      }
 }
 
 void PhysicsSystem::RendererUpdate() {
-    reactphysics3d::DebugRenderer& debug_renderer = physicsWorld->getDebugRenderer();
-    if(Yokai::getInstance().getIsPaused())
+    reactphysics3d::DebugRenderer& debug_renderer = m_physicsWorld->getDebugRenderer();
+    if(Yokai::getInstance().GetIsPaused())
     {
         debug_renderer.reset();
-        debug_renderer.computeDebugRenderingPrimitives(*physicsWorld);
+        debug_renderer.computeDebugRenderingPrimitives(*m_physicsWorld);
     }
     
-    line_num_ = debug_renderer.getNbLines();
-    if (line_num_ > 0) {
+    m_lineCount = debug_renderer.getNbLines();
+    if (m_lineCount > 0) {
         glBindBuffer(GL_ARRAY_BUFFER, l_vbo_);
-        auto sizeVertices = static_cast<GLsizei>(line_num_ * sizeof(rp3d::DebugRenderer::DebugLine));
+        auto sizeVertices = static_cast<GLsizei>(m_lineCount * sizeof(rp3d::DebugRenderer::DebugLine));
         glBufferData(GL_ARRAY_BUFFER, sizeVertices, debug_renderer.getLinesArray(), GL_STREAM_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
-    triag_num_ = debug_renderer.getNbTriangles();
-    if (triag_num_ > 0) {
+    m_triangleCount = debug_renderer.getNbTriangles();
+    if (m_triangleCount > 0) {
         glBindBuffer(GL_ARRAY_BUFFER, t_vbo_);
-        auto sizeVertices = static_cast<GLsizei>(triag_num_ * sizeof(rp3d::DebugRenderer::DebugTriangle));
+        auto sizeVertices = static_cast<GLsizei>(m_triangleCount * sizeof(rp3d::DebugRenderer::DebugTriangle));
         glBufferData(GL_ARRAY_BUFFER, sizeVertices, debug_renderer.getTrianglesArray(), GL_STREAM_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }

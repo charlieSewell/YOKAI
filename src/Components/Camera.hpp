@@ -19,26 +19,28 @@ class YOKAI_API Camera : public Component
          * @brief Constructor for camera
          */
         Camera(GameObject* parent);
-        
+        /**
+         * @brief Awakens the camera
+         */
         void Awake();
         /**
          * @brief Returns The view Matrix of the Camera
          * @return mat4
          */
-        glm::mat4 getViewMatrix();
+        glm::mat4 GetViewMatrix();
         /**
          * @brief Registers the View Matrix with the EMS
          */
-        void registerViewMatrix();
+        void RegisterViewMatrix();
         /**
          * @brief Registers the Projection matrix with the EMS
          */
-        void registerPerspective();
+        void RegisterPerspective();
         /**
          * @brief Get the Position component
          * @return glm::vec3 
          */
-        glm::vec3 getPosition();
+        glm::vec3 GetPosition();
         ///pointer to gameobject transform
         std::shared_ptr<Transform> m_transform;
         ///position offset of camera transform

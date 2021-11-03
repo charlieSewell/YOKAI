@@ -41,11 +41,6 @@ public:
      */
     std::vector<std::shared_ptr<Scene>> getLayer();
     /**
-     * @brief Sets active lauer
-     * @param a
-     */
-    void setActiveLayer(int a);
-    /**
      * Sets the paused state
      * @param p
      */
@@ -54,11 +49,23 @@ public:
      * Return true if engine paused
      * @return bool
      */
-    bool getIsPaused() const;
-
-	void addScene(std::shared_ptr<Scene> scene);
+    bool GetIsPaused() const;
+    /**
+     * @brief Add Scene to Engine
+     * @param scene 
+     */
+	void AddScene(std::shared_ptr<Scene> scene);
+    /**
+     * @brief Switch scene to scene index
+     * @param scene 
+     */
     void SwitchScene(unsigned int scene);
-	ModelManager* getModelManager(){return modelManager;}
+    /**
+     * @brief Get the Model Manager
+     * 
+     * @return ModelManager* 
+     */
+	ModelManager* GetModelManager();
 private:
     /**
      * @brief Initialises the engine
@@ -77,24 +84,26 @@ private:
      * @brief Deleted Copy Constructor
      */
     Yokai(const Yokai&) = delete;
-
+    /**
+     * @brief Initialises the Logger
+     */
     void InitialiseLogger();
     /**
      * @brief Privatised assign operator
      */
     Yokai& operator =(const Yokai&);
     ///Is engine Running
-    bool isRunning = true;
+    bool m_isRunning = true;
     ///Vector of Scene layers
-    std::vector<std::shared_ptr<Scene>> layers;
+    std::vector<std::shared_ptr<Scene>> m_layers;
     ///is paused
-    bool isPaused;
+    bool m_isPaused;
     ///active layer
-    int activeLayer;
+    int m_activeLayer;
     ///Log sinks for Engine class
-    std::vector<spdlog::sink_ptr> sinks;
+    std::vector<spdlog::sink_ptr> m_sinks;
     ///Model Manager
-    ModelManager* modelManager;
-    InputComponent* input;
-    PhysicsResolution *randomListener;
+    ModelManager m_modelManager;
+    ///Physics Listener
+    PhysicsResolution *m_physicsListener;
 };

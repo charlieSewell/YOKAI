@@ -54,6 +54,6 @@ class YOKAI_API Input : public Component
 	 */
 	void HideMouse();
   private:
-	
-	  std::map<YOKAI_INPUT, bool> m_toggleStates;
+	///Map of whether keys have been toggled
+	std::map<YOKAI_INPUT, bool> m_toggleStates;
 };

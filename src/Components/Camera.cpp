@@ -11,25 +11,25 @@ void Camera::Awake()
     {
         m_transform = m_parent->AddComponent<Transform>();
     }
-    registerViewMatrix();
-    registerPerspective();
+    RegisterViewMatrix();
+    RegisterPerspective();
 }
 
-glm::mat4 Camera::getViewMatrix()
+glm::mat4 Camera::GetViewMatrix()
 {
-    return glm::lookAt(getPosition(), getPosition() + m_frontDirection, m_upDirection);
+    return glm::lookAt(GetPosition(), GetPosition() + m_frontDirection, m_upDirection);
 }
 
-void Camera::registerViewMatrix()
+void Camera::RegisterViewMatrix()
 {
     auto viewMatrix = [&]()
     {
-		return glm::lookAt(getPosition(), getPosition() + m_frontDirection, m_upDirection);
+		return glm::lookAt(GetPosition(), GetPosition() + m_frontDirection, m_upDirection);
     };
 
     EMS::getInstance().add(ReturnMat4Event::getViewMatrix, viewMatrix);
 }
-void Camera::registerPerspective()
+void Camera::RegisterPerspective()
 {
     auto perspective = [&]()
     {
@@ -38,7 +38,7 @@ void Camera::registerPerspective()
 
     EMS::getInstance().add(ReturnMat4Event::getPerspective, perspective);
 }
-glm::vec3 Camera::getPosition()
+glm::vec3 Camera::GetPosition()
 {
-   return m_parent->GetComponent<Transform>()->getPosition() + m_posOffset;
+   return m_parent->GetComponent<Transform>()->GetPosition() + m_posOffset;
 }

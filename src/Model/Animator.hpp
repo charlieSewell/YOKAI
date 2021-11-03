@@ -29,20 +29,20 @@ class Animator{
          * @brief Adds the model to be animated
          * @param model
          */
-        void addModel(Model* model){modelToAnimate = model;}
+        void AddModel(Model* model){m_modelToAnimate = model;}
         /**
          * @brief Sets the animation string
          * @param animationToSet
          */
-        void setAnimation(std::string animationToSet);
+        void SetAnimation(std::string animationToSet);
         /**
          * @brief Starts the animation
          */
-        void startAnimation(){shouldEnd = false;}
+        void StartAnimation(){m_shouldEnd = false;}
         /**
          * @brief Tells animation to stop when finished
          */
-        void endAnimation(){shouldEnd = true;}
+        void EndAnimation(){m_shouldEnd = true;}
         ///transforms to be fed into shader
         std::vector<glm::mat4> finalTransforms;
 
@@ -69,12 +69,12 @@ class Animator{
          */
         glm::vec3 CalcInterpolatedPosition(double AnimationTime, const Frame* pNodeAnim);
         ///current animation time
-        float currTime;
+        float m_currTime;
         ///should animation end
-        bool shouldEnd = false;
+        bool m_shouldEnd = false;
         ///string of animation to play
-        std::string animation;
+        std::string m_animation;
         ///pointer to model
-        Model* modelToAnimate;
+        Model* m_modelToAnimate;
 
 };

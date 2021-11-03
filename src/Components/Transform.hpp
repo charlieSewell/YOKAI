@@ -18,107 +18,117 @@ public:
 	Transform();
 	Transform(glm::mat4 matrix);
 	
-	void translate(glm::vec3 translation);
+	void Translate(glm::vec3 translation);
 	/**
 	 * @brief Translates the transform on a x,y,z coordinate
 	 * @param x
 	 * @param y
 	 * @param z
 	 */
-	void translate(float x, float y, float z);
+	void Translate(float x, float y, float z);
 	/**
 	 * @brief Translates post multiply on a vector
 	 * @param translation
 	 */
-	void translatePostMultiply(glm::vec3 translation);
+	void TranslatePostMultiply(glm::vec3 translation);
     /**
      * @brief Translates post multiply on a x,y,z coordinate
      * @param translation
      */
-	void translatePostMultiply(float x, float y, float z);
+	void TranslatePostMultiply(float x, float y, float z);
 	/**
 	 * @brief Rotates the transform
 	 * @param angle
 	 * @param upVector
 	 */
-	void rotate(float Angle, glm::vec3 upVector);
+	void Rotate(float Angle, glm::vec3 upVector);
 	/**
 	 * @brief Scales the transform given a vector
 	 * @param scale
 	 */
-	void scale(glm::vec3 scale);
+	void Scale(glm::vec3 scale);
     /**
      * @brief Scales the transform given a x,y,z coordinate
      * @param scale
      */
-	void scale(float x, float y, float z);
+	void Scale(float x, float y, float z);
 	/**
 	 * @brief Scales the transform on a scalar
 	 * @param scale
 	 */
-	void scale(float scale);
+	void Scale(float scale);
     /**
      * @brief Gets the Scale
      * @return vec3
      */
-	glm::vec3 getScale();
+	glm::vec3 GetScale();
 	/**
 	 * @brief Gets the rotation
 	 * @return quat
 	 */
-	glm::quat getRotation();
+	glm::quat GetRotation();
 	/**
 	 * @brief Gets the position
 	 * @return vec3
 	 */
-	glm::vec3 getPosition();
+	glm::vec3 GetPosition();
 	/**
 	 * @brief Gets the transform
 	 * @return mat4
 	 */
-	glm::mat4 getMatrix();
+	glm::mat4 GetMatrix();
     /**
      * @brief Sets the scale given a vector
      * @param scale
      */
-	void setScale(glm::vec3 scale);
+	void SetScale(glm::vec3 scale);
     /**
      * @brief Sets the scale given a x,y,z coordinate
      * @param scale
      */
-	void setScale(float x, float y, float z);
+	void SetScale(float x, float y, float z);
 	/**
 	 * @brief sets the scale given a scalar
 	 * @param scale
 	 */
-	void setScale(float scale);
+	void SetScale(float scale);
     /**
      * @brief Sets the rotation given a quat
      * @param rotation
      */
-	void setRotation(glm::quat rotation);
+	void SetRotation(glm::quat rotation);
     /**
      * @brief Sets the position given a vector
      * @param position
      */
-	void setPosition(glm::vec3 position);
+	void SetPosition(glm::vec3 position);
 	/**
 	 * @brief Sets the position given a x,y,z coordinate
 	 * @param x
 	 * @param y
 	 * @param z
 	 */
-	void setPosition(float x, float y, float z);
+	void SetPosition(float x, float y, float z);
     /**
      * Overloaded = operator
      * @param other
      * @return
      */
 	Transform& operator=(const Transform &other);
-
+	/**
+	 * @brief Deserializes the transform
+	 * @param jsonstream
+	 */
 	void Deserialize(const nlohmann::json &j) override;
-	void Serialise( nlohmann::json &j) override;
-	void RenderGUI();
+	/**
+	 * @brief Serializes the transform
+	 * @param jsonstream
+	 */
+	void Serialize( nlohmann::json &j) override;
+	/**
+	 * @brief Renders the Transforms GUI
+	 */
+	void RenderGUI() override;
 private:
     ///transform
 	glm::mat4 m_transform = {};
@@ -135,9 +145,9 @@ private:
     /**
      * @brief Decomposes a transform into their componenets
      */
-	void decompose();
+	void Decompose();
 	/**
 	 * @brief Recomposes components into a transform
 	 */
-	void recompose();
+	void Recompose();
 };

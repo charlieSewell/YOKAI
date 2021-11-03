@@ -4,10 +4,10 @@
 void ReactBoxShape::CreateBoxShape(glm::vec3 bounds, reactphysics3d::PhysicsCommon &physicsCommon)
 {
     reactphysics3d::Vector3 extent(bounds.x,bounds.y,bounds.z);
-    shape = physicsCommon.createBoxShape(extent);
-    shapeID = shape->getId();
+    m_shape = physicsCommon.createBoxShape(extent);
+    m_shapeID = m_shape->getId();
 
 }
 void ReactBoxShape::DeleteShape(reactphysics3d::PhysicsCommon &physicsCommon){
-    physicsCommon.destroyBoxShape(dynamic_cast<rp3d::BoxShape*>(shape));
+    physicsCommon.destroyBoxShape(dynamic_cast<rp3d::BoxShape*>(m_shape));
 }

@@ -49,7 +49,6 @@ class Mesh
      * @return mat4
      */
     glm::mat4 getTransform(){return transform;}
-
     /**
      * @brief Sets up the mesh
      */
@@ -61,7 +60,10 @@ class Mesh
      * @param weight 
      */
     void addBoneData(unsigned int vertexID,unsigned int boneID, float weight);
-
+    /**
+     * @brief Get the VAO for this mesh
+     * @return std::shared_ptr<VertexArrayBuffer> 
+     */
     std::shared_ptr<VertexArrayBuffer> GetVAO(){return VAO;}
   private:
     ///Pointer to the Mesh vertex array

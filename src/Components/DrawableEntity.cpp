@@ -22,26 +22,25 @@ void DrawableEntity::Draw()
 {
     //m_parent->GetComponent<Transform>()->getMatrix() + m_offset;
 
-    glm::mat4 temp = m_parent->GetComponent<Transform>()->getMatrix() * m_offset;
+    glm::mat4 temp = m_parent->GetComponent<Transform>()->GetMatrix() * m_offset;
 
     if(m_animator == nullptr)
     {
-        //Yokai::getInstance().getModelManager()->DrawModel(m_modelID,m_parent->GetComponent<Transform>()->getMatrix());
-        Yokai::getInstance().getModelManager()->DrawModel(m_modelID, temp);
+        Yokai::getInstance().GetModelManager()->DrawModel(m_modelID, temp);
     }
     else
     {
         //Yokai::getInstance().getModelManager()->DrawModel(m_modelID,m_parent->GetComponent<Transform>()->getMatrix(),m_animator->finalTransforms);
-        Yokai::getInstance().getModelManager()->DrawModel(m_modelID,temp,m_animator->finalTransforms);
+        Yokai::getInstance().GetModelManager()->DrawModel(m_modelID,temp,m_animator->finalTransforms);
     }
   
 }
 
 unsigned int DrawableEntity::LoadModel(std::string filename)
 {
-    m_modelID = Yokai::getInstance().getModelManager()->GetModelID(filename);
-    Model* model = Yokai::getInstance().getModelManager()->GetModel(m_modelID);
-    if(model->isAnimated())
+    m_modelID = Yokai::getInstance().GetModelManager()->GetModelID(filename);
+    Model* model = Yokai::getInstance().GetModelManager()->GetModel(m_modelID);
+    if(model->IsAnimated())
     {
         m_animator = new Animator(model);
     }
@@ -56,7 +55,7 @@ unsigned int DrawableEntity::LoadModel(std::string filename)
 
 void DrawableEntity::SetAnimation(std::string animation)
 {
-    m_animator->setAnimation(animation);
+    m_animator->SetAnimation(animation);
 }
 void DrawableEntity::RenderGUI()
 {

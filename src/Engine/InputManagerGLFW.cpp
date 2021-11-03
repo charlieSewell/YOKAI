@@ -33,18 +33,18 @@ void InputManagerGLFW::processMouse()
 	{
 		glfwGetCursorPos(m_Window, &m_mouse.position.x, &m_mouse.position.y);
 
-		if (!mouseInit)
+		if (!m_mouseInit)
 		{
-			lastX = m_mouse.position.x;
-			lastY = m_mouse.position.y;
-			mouseInit = true;
+			m_lastX = m_mouse.position.x;
+			m_lastY = m_mouse.position.y;
+			m_mouseInit = true;
 		}
 
-		m_mouse.offset.x = m_mouse.position.x - lastX;
-		m_mouse.offset.y = m_mouse.position.y - lastY;
+		m_mouse.offset.x = m_mouse.position.x - m_lastX;
+		m_mouse.offset.y = m_mouse.position.y - m_lastY;
 
-		lastX = m_mouse.position.x;
-		lastY = m_mouse.position.y;
+		m_lastX = m_mouse.position.x;
+		m_lastY = m_mouse.position.y;
 	}
 }
 
