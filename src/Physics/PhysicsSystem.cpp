@@ -17,7 +17,7 @@ void PhysicsSystem::Init()
     physicsWorld = physicsCommon.createPhysicsWorld(settings);
     
     physicsWorld->setIsDebugRenderingEnabled(true);
-    //physicsWorld->setEventListener(listener.getListener());
+    m_gravity = glm::vec3(0, -3, 0);
 
     DebugRenderer& debugRenderer = physicsWorld->getDebugRenderer(); 
 
@@ -70,13 +70,16 @@ void PhysicsSystem::update(float dt)
     physicsWorld->update(static_cast<rp3d::decimal>(dt));
 	
     //Intergrate Gravity
-    for (auto &m_collider : m_colliders) {
-        if (m_collider.second.GetGravityAffected()) {
-             m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() +(dt * glm::vec3(0, -3, 0)));
+    for (auto &m_collider : m_colliders) 
+    {
+        if (m_collider.second.GetGravityAffected()) 
+        {
+             m_collider.second.SetLinearVelocity(m_collider.second.GetLinearVelocity() + (dt * m_gravity));
         }
     }
     //Intergrate Positions
-    for (auto &m_collider : m_colliders) {
+    for (auto &m_collider : m_colliders) 
+    {
         if (!m_collider.second.GetIsStaticObject()) 
         {
             m_collider.second.SetPosition(m_collider.second.GetPosition() + m_collider.second.GetLinearVelocity() * dt);

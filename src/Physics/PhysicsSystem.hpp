@@ -131,5 +131,5 @@ private:
     int m_mapCount;
     ///map of colliders
     std::map<int, CollisionBody> m_colliders;	//TODO: make colliders so can add spheres
-
+    glm::vec3 m_gravity;
 };
