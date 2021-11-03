@@ -43,7 +43,7 @@ public:
 	void wander();
 	
     ///Heading of AI
-	glm::vec3 Heading = glm::vec3(0);
+	glm::vec3 Heading = glm::vec3(0.5f, 0, 0.5f);
 	///angle
 	float Angle = 0;
 	///AI Top speed
