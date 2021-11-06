@@ -72,6 +72,10 @@ class RenderAPI
      */
     virtual void UpdateLights(std::vector<PointLight> &lightsArray) = 0;
     /**
+     * @brief Resets the GPU Lights Buffer
+     */
+    virtual void ResetLightsBuffer() = 0;
+    /**
      * @brief Enables Depth Testing
      * @param isEnabled 
      */

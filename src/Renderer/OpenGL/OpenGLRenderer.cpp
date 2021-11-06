@@ -208,20 +208,34 @@ void OpenGLRenderer::UpdateLights(std::vector<PointLight> &lightsArray)
 	size_t maxLights = std::min(lightsArray.size(),NUM_LIGHTS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
 	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
-
 	for (int i = 0; i < maxLights; i++) 
 	{
 		PointLight &light = pointLights[i];
 		light.position = lightsArray[i].position;
 		light.color = lightsArray[i].color;
-		light.paddingAndRadius = lightsArray[i].paddingAndRadius;
+		light.paddingAndRadius = lightsArray[i].paddingAndRadius;		
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
+void OpenGLRenderer::ResetLightsBuffer()
+{
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
+	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
+	for (int i = 0; i < NUM_LIGHTS; i++) 
+	{
+		PointLight &light = pointLights[i];
+		light.position = glm::vec4(0.0f);
+		light.color = glm::vec4(0.0f);
+		light.paddingAndRadius = glm::vec4(0.0f);		
+	}
 
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+}
 
 void OpenGLRenderer::ToggleWireFrame() 
 {

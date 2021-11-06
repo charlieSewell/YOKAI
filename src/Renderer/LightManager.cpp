@@ -25,6 +25,12 @@ void LightManager::UpdateLights()
 {
     Renderer::getInstance().UpdateLights(m_Lights);
 }
+void LightManager::Clear()
+{
+    m_LightCount = 0;
+    m_Lights.clear();
+    Renderer::getInstance().ResetLightsBuffer();
+}
 void LightManager::RenderGUI()
 {
     ImGui::Begin("Lighting Manager");
@@ -71,9 +77,4 @@ void LightManager::Deserialize(const nlohmann::json &j)
     {
         AddLight( light.at("Color").get<glm::vec4>(),light.at("Position").get<glm::vec4>(),light.at("PaddingAndRadius").get<glm::vec4>());
     }
-}
-void LightManager::Clear()
-{
-    m_LightCount = 0;
-    m_Lights.clear();
 }

@@ -66,6 +66,10 @@ class Renderer
      */
     void UpdateLights(std::vector<PointLight> &m_lights);
     /**
+     * @brief Resets the GPU Lights buffer
+     */
+    void ResetLightsBuffer();
+    /**
      * @brief Draws the Current Scene
      */
     void DrawScene();
@@ -79,6 +83,6 @@ class Renderer
      */
     void registerToggleWireframe();
     ///Pointer to chosen RenderAPI
-    std::shared_ptr<RenderAPI> m_renderApi;
+    std::shared_ptr<RenderAPI> m_renderAPI;
 };
 
