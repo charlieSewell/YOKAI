@@ -3,23 +3,32 @@
 
 #define PI 3.14159265358979323846
 
-namespace YokaiPhysics {
-
-    double AverageAngularVelocity(double arcStart, double arcEnd, double time, double radius);
-
-    double AngularDisplacement(double arc, double radius);
-
-    double AverageAngularAcceleration(double angularVelocityStart, double angularVelocityEnd, double time);
-
-    double TangentialVelocity(double omega, double radius);
-
-    double TangentialAcceleration(double angularAcceleration, double radius);
-
+namespace YokaiPhysics 
+{
+    /**
+     * @brief Calculates Rectangular Inertia Tensor
+     * @param ext 
+     * @param mass 
+     * @return glm::mat3x3 
+     */
     glm::mat3x3 RectangleInertiaTensor(glm::dvec3 ext, double mass);
-
+    /**
+     * @brief Calculates Spherical Inertia Tensor
+     * @param radius 
+     * @param mass 
+     * @return glm::mat3x3 
+     */
     glm::mat3x3 SphereInertiaTensor(double radius, double mass);
-
+    /**
+     * @brief Degrees To radians
+     * @param degrees 
+     * @return double 
+     */
     double DegreesToRadians(double degrees);
-
+    /**
+     * @brief Radians to Degrees
+     * @param radians 
+     * @return double 
+     */
     double RadiansToDegrees(double radians);
 }

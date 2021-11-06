@@ -1,53 +1,13 @@
 #include "ResolutionFunctions.hpp"
 
-double YokaiPhysics::AverageAngularVelocity(double arcStart, double arcEnd, double time, double radius) 
-{
-    double initialDisplacement;
-    double endDisplacement;
-    double omega;
-
-    initialDisplacement = arcStart / radius;
-    endDisplacement     = arcEnd / radius;
-
-    omega = (endDisplacement - initialDisplacement) / time;
-    return omega;
-}
-
-double YokaiPhysics::AngularDisplacement(double arc, double radius) 
-{
-    double theta;
-    theta = arc / radius;
-    return theta;
-}
-
-double YokaiPhysics::AverageAngularAcceleration(double angularVelocityStart, double angularVelocityEnd, double time) 
-{
-    double alpha;
-    alpha = (angularVelocityEnd - angularVelocityStart) / time;
-    return alpha;
-}
-
-double YokaiPhysics::TangentialVelocity(double omega, double radius) 
-{
-    double tangential;
-    tangential = omega * radius;
-    return tangential;
-}
-
-double YokaiPhysics::TangentialAcceleration(double angularAcceleration, double radius) 
-{
-    double acceleration;
-    acceleration = angularAcceleration * radius;
-    return acceleration;
-}
 
 glm::mat3x3 YokaiPhysics::RectangleInertiaTensor(glm::dvec3 ext, double mass) 
 {
     //Rectangular cylinder: Ixx = (1/12) m(a2 + l2); Iyy = (1/12) m(b2 + l2); Izz = (1/12) m(a2 + b2)
     glm::mat3x3 inertia(0.0);
-    ext.x *= 4;
-    ext.y *= 4;
-    ext.z *= 4;
+    ext.x *= 2;
+    ext.y *= 2;
+    ext.z *= 2;
     // length / Ixx = (1/12) m(a2 + l2)
     inertia[0][0] = (1.0f / 12.0f) * mass * (ext.y * ext.y + ext.x * ext.x);
 
