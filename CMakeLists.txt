@@ -76,7 +76,7 @@ add_executable(run_tests tests/main_tests.cpp)
 
 # Set C++ standard.
 set_target_properties(${PROJECT_NAME} PROPERTIES
-        CXX_STANDARD 17
+        CXX_STANDARD 20
         CXX_STANDARD_REQUIRED ON
         CXX_EXTENSIONS OFF
         VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
