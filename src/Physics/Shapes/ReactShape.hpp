@@ -2,7 +2,6 @@
 // Created by charl on 19/05/2021.
 //
 #pragma once
-#include <iostream>
 #include <reactphysics3d/reactphysics3d.h>
 #include "Components/Transform.hpp"
 class ReactShape {
@@ -15,7 +14,7 @@ class ReactShape {
      * @brief Returns a pointer to the collision shape
      * @return CollisionShape*
      */
-    virtual reactphysics3d::CollisionShape* getCollisionShape(){return shape;}
+    virtual reactphysics3d::CollisionShape* getCollisionShape(){return m_shape;}
     /**
      * @brief Virtual function to delete a shape
      * @param physicsCommon
@@ -25,7 +24,7 @@ class ReactShape {
      * @brief Returns a shapeID
      * @return shapeID
      */
-    unsigned int getShapeID() const{return shapeID;}
+    unsigned int getShapeID() const{return m_shapeID;}
     /**
      * @brief Returns a pointer to the collision shape
      * @return CollisionShape*
@@ -34,7 +33,7 @@ class ReactShape {
 
 protected:
     ///Shape Pointer
-    reactphysics3d::CollisionShape* shape;
+    reactphysics3d::CollisionShape* m_shape;
     ///ShapeID
-    unsigned int shapeID;
+    unsigned int m_shapeID;
 };

@@ -8,5 +8,5 @@ void ReactShape::DeleteShape(reactphysics3d::PhysicsCommon &physicsCommon) {
 }
 
 reactphysics3d::CollisionShape* ReactShape::getShape() {
-    return shape;
+    return m_shape;
 }

@@ -7,8 +7,8 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <memory>
 #include "Model/Model.hpp"
-#include "Model/SkeletalAnimation.hpp"
 #include "Engine/TextureManager.hpp"
 /** @class ModelLoader
  *  @brief Class that loads models
@@ -22,11 +22,9 @@ class ModelLoader
      * @param string - filename
      * @return vector<Mesh>
      */
-    Model loadModel(const std::string& filename);
+    Model LoadModel(const std::string& filename);
 
   private:
-    ///string that stores the directory
-    std::string directory;
     /**
      * @brief processes and indivudial node in the scene
      * @param vector<Mesh> - meshes
@@ -34,7 +32,7 @@ class ModelLoader
      * @param const aiScene* - scene
      * @param mat4 - transform
      */
-    void processNode(std::vector<SkeletalAnimation> &animations, std::vector<Mesh> &meshes,
+    void ProcessNode(std::vector<SkeletalAnimation> &animations, std::vector<Mesh> &meshes,
                      std::vector<Bone> &bones,
                      std::map<std::string, unsigned int> &boneMap, aiNode *node,
                      const aiScene *scene, glm::mat4 transform);
@@ -45,7 +43,7 @@ class ModelLoader
      * @param mat4 - transform
      * @return Mesh
      */
-    Mesh processMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 transform);
+    Mesh ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 transform);
     /**
      * @brief Loads the Textures for a model
      * @param aiMaterial* - mat
@@ -53,25 +51,55 @@ class ModelLoader
      * @param string - typeName
      * @return vector<ModelTexture>
      */
-    std::vector<ModelTexture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string& typeName);
-    ///Finds the root node of the skeleton
-    aiNode* findRootNode(aiNode* node, aiMesh* mesh);
-    ///Loads in the Node Heirachy
-    void loadAnimNodes(aiNode* node,aiMesh* mesh);
-    ///Creates a node heirachy given a aiNode
-    Node loadNodeHeirachy(aiNode *root);
-    ///Adds the Bone Data
-    void addBoneData(unsigned int BoneID, float Weight);
-    ///Loads a models animations
-    void loadAnimations(std::vector<SkeletalAnimation> &animations, const aiScene *scene);
-    ///Loads the bones of a mesh
-    void loadBones(std::vector<Mesh> &meshes, std::vector<Bone> &bones,
+    std::vector<ModelTexture> LoadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string& typeName);
+    /**
+     * @brief Finds the Root node of a model
+     * @param node 
+     * @param mesh 
+     * @return aiNode* 
+     */
+    aiNode* FindRootNode(aiNode* node, aiMesh* mesh);
+    /**
+     * @brief Loads each animation for a node
+     * @param node 
+     * @param mesh 
+     */
+    void LoadAnimNodes(aiNode* node,aiMesh* mesh);
+    /**
+     * @brief Loads the Node Heirachy of a model
+     * @param root 
+     * @return Node 
+     */
+    Node LoadNodeHeirachy(aiNode *root);
+    /**
+     * @brief Adds the bone data of a model
+     * @param BoneID 
+     * @param Weight 
+     */
+    void AddBoneData(unsigned int BoneID, float Weight);
+    /**
+     * @brief Loads the Animations of a model
+     * @param animations 
+     * @param scene 
+     */
+    void LoadAnimations(std::vector<SkeletalAnimation> &animations, const aiScene *scene);
+    /**
+     * @brief Loads the Bones of a model
+     * @param meshes 
+     * @param bones 
+     * @param boneMap 
+     * @param meshIndex 
+     * @param mesh 
+     */
+    void LoadBones(std::vector<Mesh> &meshes, std::vector<Bone> &bones,
                    std::map<std::string,unsigned int> &boneMap,
                    unsigned int meshIndex, const aiMesh *mesh);
     ///List of textures currently loaded for a model
-    std::vector<ModelTexture> textures_loaded;
+    std::vector<ModelTexture> m_textures_loaded;
     /// Number of bones in current model
-    int numBones = 0;
+    int m_numBones = 0;
     ///Root animation node
-    Node rootAnimNode;
+    Node m_rootAnimNode;
+    ///string that stores the directory
+    std::string m_directory;
 };

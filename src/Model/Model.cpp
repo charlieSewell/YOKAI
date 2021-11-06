@@ -4,48 +4,56 @@
 #include <utility>
 Model::Model(std::vector<Mesh> meshes)
 {
-    this->meshes = std::move(meshes);
-
+    this->m_meshes = std::move(meshes);
 }
 Model::Model(std::vector<Mesh> meshes, std::vector<Bone> bones, std::map<std::string, unsigned int> boneMap, Node rootNode, std::vector<SkeletalAnimation> animations, glm::mat4 globalInverseTransformation)
 {
-    this->meshes = std::move(meshes);
-    this->bones = std::move(bones);
-    this->rootNode = std::move(rootNode);
-    this->boneMap = std::move(boneMap);
-    this->animations = std::move(animations);
-    this->globalInverseTransform = globalInverseTransformation;
+    this->m_meshes = std::move(meshes);
+    this->m_bones = std::move(bones);
+    this->m_rootNode = std::move(rootNode);
+    this->m_boneMap = std::move(boneMap);
+    this->m_animations = std::move(animations);
+    this->m_globalInverseTransform = globalInverseTransformation;
 }
-void Model::Draw(Shader &shader, glm::mat4 transform) 
+void Model::Draw(glm::mat4 transform) 
 {
-    shader.useShader();
-    shader.setMat4("projection",EMS::getInstance().fire(ReturnMat4Event::getPerspective));
-    shader.setMat4("view",EMS::getInstance().fire(ReturnMat4Event::getViewMatrix));
-
-    for(auto& mesh: meshes)
+    for(auto& mesh: m_meshes)
     {
         glm::mat4 model(1.0);
         //multiply parent by child transform
         model = transform* mesh.getTransform();
-
-        shader.setMat4("model", model);
-        mesh.Draw(shader);
+        Renderer::getInstance().AddToDraw(&mesh,model);
     }
 }
-SkeletalAnimation* Model::getAnimation(const std::string& name)
+void Model::Draw(glm::mat4 transform, std::vector<glm::mat4> &finalTransforms)
 {
-    for(auto& anim : animations)
+    for(auto& mesh: m_meshes)
     {
-        if(anim.getName() == name)
+        glm::mat4 model(1.0);
+        //multiply parent by child transform
+        model = transform* mesh.getTransform();
+        Renderer::getInstance().AddToDraw(&mesh,model,finalTransforms);
+    }
+}
+SkeletalAnimation* Model::GetAnimation(const std::string& name)
+{
+    for(auto& anim : m_animations)
+    {
+        if(anim.GetName() == name)
         {
             return &anim;
         }
     }
     return nullptr;
 }
-Node Model::getRootNode()
+Node Model::GetRootNode()
 {
-    return rootNode;
+    return m_rootNode;
+}
+bool Model::IsAnimated()
+{
+    //if the array is empty it returns true which means the model isnt animated
+    return !m_animations.empty();
 }
 
 

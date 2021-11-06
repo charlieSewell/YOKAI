@@ -10,13 +10,13 @@
 class ReactBoxShape : public ReactShape
 {
     public:
-    /**
-     * @brief Default Constructor
-     */
+        /**
+         * @brief Default Constructor
+         */
         ReactBoxShape() =default;
-    /**
-    * @brief Default Destructor
-    */
+        /**
+         * @brief Default Destructor
+         */
         ~ReactBoxShape()=default;
         /**
          * @brief Creates a box shape
@@ -29,6 +29,4 @@ class ReactBoxShape : public ReactShape
          * @param physicsCommon
          */
         void DeleteShape(reactphysics3d::PhysicsCommon &physicsCommon) override;
-    private:
-
 };

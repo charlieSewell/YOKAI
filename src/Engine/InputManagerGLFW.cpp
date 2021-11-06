@@ -12,43 +12,39 @@ InputManagerGLFW& InputManagerGLFW::getInstance()
 	static InputManagerGLFW instance;
 	return instance;
 }
-
-void InputManagerGLFW::processKeyboard(GLFWwindow* window)
+void InputManagerGLFW::AddWindow(GLFWwindow* window)
 {
-
+	m_Window = window;
+}
+void InputManagerGLFW::processKeyboard()
+{
 	if(!glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
 		for(int i=0; i < m_activeKeys.size(); ++i)
 		{
-			m_keyStates[m_activeKeys[i]] = (glfwGetKey(window, m_keyMap[m_activeKeys[i]]) == GLFW_PRESS);
+			m_keyStates[m_activeKeys[i]] = (glfwGetKey(m_Window, m_keyMap[m_activeKeys[i]]) == GLFW_PRESS);
 		}
 	}
-
-		//TODO CONNOR: This needs to get moved out
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-			EMS::getInstance().fire(NoReturnEvent::pausePressed);
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_RELEASE)
-			EMS::getInstance().fire(NoReturnEvent::pauseReleased);
 }
 
-void InputManagerGLFW::processMouse(GLFWwindow* window)
+void InputManagerGLFW::processMouse()
 {
 	if (!glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
-		glfwGetCursorPos(window, &m_mouse.position.x, &m_mouse.position.y);
+		glfwGetCursorPos(m_Window, &m_mouse.position.x, &m_mouse.position.y);
 
-		if (!mouseInit)
+		if (!m_mouseInit)
 		{
-			lastX = m_mouse.position.x;
-			lastY = m_mouse.position.y;
-			mouseInit = true;
+			m_lastX = m_mouse.position.x;
+			m_lastY = m_mouse.position.y;
+			m_mouseInit = true;
 		}
 
-		m_mouse.offset.x = m_mouse.position.x - lastX;
-		m_mouse.offset.y = m_mouse.position.y - lastY;
+		m_mouse.offset.x = m_mouse.position.x - m_lastX;
+		m_mouse.offset.y = m_mouse.position.y - m_lastY;
 
-		lastX = m_mouse.position.x;
-		lastY = m_mouse.position.y;
+		m_lastX = m_mouse.position.x;
+		m_lastY = m_mouse.position.y;
 	}
 }
 
@@ -57,49 +53,49 @@ void InputManagerGLFW::processGamepadButtons()
 {
 	if (glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
-		GLFWgamepadstate state;
+		GLFWgamepadstate State;
 
-		if (glfwGetGamepadState(GLFW_JOYSTICK_1, &state))
+		if (glfwGetGamepadState(GLFW_JOYSTICK_1, &State))
 		{
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_A])
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_A])
 				EMS::getInstance().fire(NoReturnEvent::jump);		
 	
-			if(state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB])
+			if(State.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_THUMB])
 				EMS::getInstance().fire(NoReturnEvent::moveDown);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::togglePhysicsPressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_B] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::togglePhysicsReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::toggleWireFramePressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_Y] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::toggleWireFrameReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_BACK] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_BACK] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::toggleMenuPressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_BACK] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_BACK] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::toggleMenuReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::pausePressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_START] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::pauseReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::reloadPressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_X] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::reloadReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::meleePressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::meleeReleased);
 
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] == GLFW_PRESS)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] == GLFW_PRESS)
 				EMS::getInstance().fire(NoReturnEvent::sprintPressed);
-			if (state.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] == GLFW_RELEASE)
+			if (State.buttons[GLFW_GAMEPAD_BUTTON_LEFT_THUMB] == GLFW_RELEASE)
 				EMS::getInstance().fire(NoReturnEvent::sprintReleased);
 		}
 	}
@@ -211,4 +207,12 @@ void InputManagerGLFW::createMap()
 	m_keyMap[(unsigned int)YOKAI_INPUT::BACKSLASH]= GLFW_KEY_BACKSLASH;
 	m_keyMap[(unsigned int)YOKAI_INPUT::RIGHT_BRACKET] = GLFW_KEY_RIGHT_BRACKET;
 	m_keyMap[(unsigned int)YOKAI_INPUT::GRAVE_ACCENT] = GLFW_KEY_GRAVE_ACCENT;
+}
+void InputManagerGLFW::ShowMouse()
+{
+	glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+void InputManagerGLFW::HideMouse()
+{
+	glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }

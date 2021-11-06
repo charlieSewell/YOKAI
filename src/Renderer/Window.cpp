@@ -21,23 +21,28 @@ bool Window::Init()
         SPDLOG_ERROR("GLFW Failed to Initialise");
         return false;
     }
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
-    window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", NULL, NULL);
+
+    m_window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", NULL, NULL);
     //window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", glfwGetPrimaryMonitor(), nullptr);
 
-    if (!window)
+    if (!m_window)
     {
         spdlog::error("Failed to initialise the window");
         return false;
     }
 
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(m_window);
     
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     SPDLOG_INFO("Window Initialised");
     return true;
 }
@@ -50,7 +55,7 @@ bool Window::ImguiInit()
 
         ImGui::StyleColorsDark();
 
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplGlfw_InitForOpenGL(m_window, true);
         ImGui_ImplOpenGL3_Init("#version 130");
         SPDLOG_INFO("Imgui Initialised");
         return true;
@@ -64,21 +69,27 @@ void Window::DeInit()
 {
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
-    glfwDestroyWindow(window);
+    glfwDestroyWindow(m_window);
     glfwTerminate();
 }
-GLFWwindow* Window::getWindow()
+GLFWwindow* Window::GetWindow()
 {
-    return window;
+    return m_window;
 }
-void Window::startFrame()
+void Window::StartFrame()
 {
     glfwPollEvents();
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 }
-void Window::endFrame()
+void Window::EndFrame()
 {
-    glfwSwapBuffers(window);
+    glfwSwapBuffers(m_window);
+}
+glm::vec2 Window::GetWindowSize()
+{
+    int width,height;
+    glfwGetWindowSize(m_window, &width, &height);
+    return glm::vec2(width,height);
 }

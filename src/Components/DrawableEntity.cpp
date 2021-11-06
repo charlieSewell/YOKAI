@@ -1,6 +1,6 @@
 #include "DrawableEntity.hpp"
-
-DrawableEntity::DrawableEntity(GameObject* parent) : Component(parent){}
+#include "ImGuizmo.h"
+DrawableEntity::DrawableEntity(GameObject* parent) : Component(parent), m_offset(1.0f){}
 
 void DrawableEntity::Start()
 {
@@ -12,15 +12,78 @@ void DrawableEntity::Start()
 
 void DrawableEntity::Update(float deltaTime)
 {
-
+    if(m_animator != nullptr)
+    {
+        m_animator->BoneTransform(deltaTime);
+    }
 }
 
 void DrawableEntity::Draw()
 {
-    Yokai::getInstance().getModelManager()->DrawModel(modelID,m_parent->GetComponent<Transform>()->getMatrix());
+    //m_parent->GetComponent<Transform>()->getMatrix() + m_offset;
+
+    glm::mat4 temp = m_parent->GetComponent<Transform>()->GetMatrix() * m_offset;
+
+    if(m_animator == nullptr)
+    {
+        Yokai::getInstance().GetModelManager()->DrawModel(m_modelID, temp);
+    }
+    else
+    {
+        //Yokai::getInstance().getModelManager()->DrawModel(m_modelID,m_parent->GetComponent<Transform>()->getMatrix(),m_animator->finalTransforms);
+        Yokai::getInstance().GetModelManager()->DrawModel(m_modelID,temp,m_animator->finalTransforms);
+    }
+  
 }
 
-void DrawableEntity::LoadModel(std::string filename)
+unsigned int DrawableEntity::LoadModel(std::string filename)
 {
-    modelID = Yokai::getInstance().getModelManager()->GetModelID(filename);
+    m_modelID = Yokai::getInstance().GetModelManager()->GetModelID(filename);
+    Model* model = Yokai::getInstance().GetModelManager()->GetModel(m_modelID);
+    if(model->IsAnimated())
+    {
+        m_animator = new Animator(model);
+    }
+    else 
+    {
+        delete m_animator;
+        m_animator = nullptr;
+    }
+
+	return m_modelID;
+}
+
+void DrawableEntity::SetAnimation(std::string animation)
+{
+    m_animator->SetAnimation(animation);
+}
+void DrawableEntity::RenderGUI()
+{
+    float position[3];
+	float rotation[3];
+	float scale[3];
+	if(ImGui::TreeNode("Model"))
+	{
+		ImGuizmo::DecomposeMatrixToComponents(&m_offset[0][0],&position[0],&rotation[0],&scale[0]);
+		ImGui::DragFloat3("Position: ",&position[0],0.01f);
+		ImGui::DragFloat3("Rotation: ",&rotation[0],0.01f);
+		ImGui::DragFloat3("Scale: ",&scale[0],0.01f);
+		ImGui::TreePop();
+        ImGui::Separator();
+		ImGuizmo::RecomposeMatrixFromComponents(&position[0],&rotation[0],&scale[0],&m_offset[0][0]);
+	}
+}
+void DrawableEntity::SetOffset(glm::mat4 offset) 
+{
+    m_offset = offset;
+}
+
+glm::mat4 DrawableEntity::GetOffset() 
+{
+    return m_offset;
+}
+
+void DrawableEntity::SetModelID(unsigned int modelID)
+{
+	m_modelID = modelID;
 }

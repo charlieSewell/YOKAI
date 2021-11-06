@@ -5,13 +5,12 @@
 #include "SkeletalAnimation.hpp"
 
 #include <utility>
-#include "Engine/Yokai.hpp"
 SkeletalAnimation::SkeletalAnimation(std::string name, std::map<std::string,Frame> frames, float duration, float TPS)
 {
-    this->frames = std::move(frames);
-    this->duration = duration;
-    this->TPS = TPS;
-    this->name = std::move(name);
+    this->m_frames = std::move(frames);
+    this->m_duration = duration;
+    this->m_TPS = TPS;
+    this->m_name = std::move(name);
 }
 
 unsigned int SkeletalAnimation::FindPosition(double currTime, const Frame* frame)
@@ -36,11 +35,11 @@ unsigned int SkeletalAnimation::FindRotation(double currTime, const Frame* frame
     }
     return(0);
 }
-Frame* SkeletalAnimation::findFrame(const std::string& frameName)
+Frame* SkeletalAnimation::FindFrame(const std::string& frameName)
 {
-    if (frames.count(frameName)) 
+    if (m_frames.count(frameName)) 
     {
-        return &frames.at(frameName);
+        return &m_frames.at(frameName);
     }
     return nullptr;
 }

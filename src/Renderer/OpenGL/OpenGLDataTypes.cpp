@@ -10,7 +10,7 @@
 OpenGLTexture::OpenGLTexture(const std::string& path)
 {
     std::string filename = std::string(path);
-    glGenTextures(1, &textureID);
+    glGenTextures(1, &m_textureID);
     int width, height, nrComponents;
     unsigned char *data = TextureFromFile(filename,width,height,nrComponents,0);
     if (data)
@@ -30,18 +30,18 @@ OpenGLTexture::OpenGLTexture(const std::string& path)
             SPDLOG_ERROR(e.what());
         }
 
-        glBindTexture(GL_TEXTURE_2D, textureID);
+        glBindTexture(GL_TEXTURE_2D, m_textureID);
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE,data);
+		glGenerateMipmap(GL_TEXTURE_2D);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        glBindTexture(GL_TEXTURE_2D,0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
         FreeTextureData(data);
+        SPDLOG_INFO("Texture Loaded: "+  path);
     }
     else
     {
@@ -52,13 +52,13 @@ OpenGLTexture::OpenGLTexture(const std::string& path)
 
 OpenGLTexture::~OpenGLTexture()
 {
-    glDeleteTextures(1,&textureID);
+    glDeleteTextures(1,&m_textureID);
 }
 
 void OpenGLTexture::Bind(size_t slot) 
 {
     glActiveTexture(GL_TEXTURE0 + slot);
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    glBindTexture(GL_TEXTURE_2D, m_textureID);
 
 }
 
@@ -67,26 +67,26 @@ void OpenGLTexture::UnBind(size_t slot)
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D,0);
 }
-int OpenGLTexture::getID()
+int OpenGLTexture::GetID()
 {
-    return textureID;
+    return m_textureID;
 }
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(std::vector<Vertex> &vertices)
 {
-    glGenBuffers(1,&vboID);
-    glBindBuffer(GL_ARRAY_BUFFER,vboID);
+    glGenBuffers(1,&m_vboID);
+    glBindBuffer(GL_ARRAY_BUFFER,m_vboID);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 }
 
 OpenGLVertexBuffer::~OpenGLVertexBuffer()
 {
-    glDeleteBuffers(1,&vboID);
+    glDeleteBuffers(1,&m_vboID);
 }
 
 void OpenGLVertexBuffer::Bind() 
 {
-    glBindBuffer(GL_ARRAY_BUFFER,vboID);
+    glBindBuffer(GL_ARRAY_BUFFER,m_vboID);
 }
 
 void OpenGLVertexBuffer::UnBind() 
@@ -96,19 +96,19 @@ void OpenGLVertexBuffer::UnBind()
 
 OpenGLIndexBuffer::OpenGLIndexBuffer(std::vector<unsigned int> &indices)
 {
-    glGenBuffers(1,&ibID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ibID);
+    glGenBuffers(1,&m_ibID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,m_ibID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 }
 
 OpenGLIndexBuffer::~OpenGLIndexBuffer()
 {
-    glDeleteBuffers(1,&ibID);
+    glDeleteBuffers(1,&m_ibID);
 }
 
 void OpenGLIndexBuffer::Bind() 
 {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,ibID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,m_ibID);
 }
 
 void OpenGLIndexBuffer::UnBind() 
@@ -118,36 +118,43 @@ void OpenGLIndexBuffer::UnBind()
 
 OpenGLVertexArrayBuffer::OpenGLVertexArrayBuffer(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
 {
-    glGenVertexArrays(1,&vaoID);
-    glBindVertexArray(vaoID);
-    vertexBuffer = std::make_shared<OpenGLVertexBuffer>(vertices);
-    indexBuffer = std::make_shared<OpenGLIndexBuffer>(indices);
+    glGenVertexArrays(1,&m_vaoID);
+    glBindVertexArray(m_vaoID);
+    m_vertexBuffer = std::make_shared<OpenGLVertexBuffer>(vertices);
+    m_indexBuffer = std::make_shared<OpenGLIndexBuffer>(indices);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) (0));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) (0));
     // vertex normals pointer setup
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, normal));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, normal));
     // vertex coords pointer setup
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, textureCoords));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, textureCoords));
+    // Tangent
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, tangent));
+	// Bitangent
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, biTangent));
     // bone pointer setup
-    glEnableVertexAttribArray(3);
-    glVertexAttribIPointer(3, 4, GL_INT, sizeof(Vertex), (void*) offsetof(Vertex, boneIDs));
+    glEnableVertexAttribArray(5);
+    glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex), (GLvoid*) offsetof(Vertex, boneIDs));
     //bone weight setup
-    glEnableVertexAttribArray(4);
-    glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, boneWeights));
+    glEnableVertexAttribArray(6);
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, boneWeights));
+    
     glBindVertexArray(0);
 }
 
 OpenGLVertexArrayBuffer::~OpenGLVertexArrayBuffer()
 {
-    glDeleteVertexArrays(1, &vaoID);
+    glDeleteVertexArrays(1, &m_vaoID);
 }
 
 void OpenGLVertexArrayBuffer::Bind() 
 {
-    glBindVertexArray(vaoID);
+    glBindVertexArray(m_vaoID);
 }
 
 void OpenGLVertexArrayBuffer::UnBind() 

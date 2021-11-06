@@ -1,36 +1,35 @@
 #include "Camera.hpp"
-
 #include "Engine/EventManager.hpp"
 
 Camera::Camera(GameObject* parent)
 	: Component(parent)
 {
-    registerViewMatrix();
-    registerPerspective();
 }
-
-void Camera::Update(float deltaTime)
+void Camera::Awake()
 {
-    //glm::vec3 temp = m_parent->GetComponent<Transform>()->getPosition();
-    //m_position = glm::vec3(temp.x,temp.y+2,temp.z);
+    if(m_parent->GetComponent<Transform>() == nullptr)
+    {
+        m_transform = m_parent->AddComponent<Transform>();
+    }
+    RegisterViewMatrix();
+    RegisterPerspective();
 }
 
-
-glm::mat4 Camera::getViewMatrix()
+glm::mat4 Camera::GetViewMatrix()
 {
-    return glm::lookAt(m_position, m_position + m_frontDirection, m_upDirection);
+    return glm::lookAt(GetPosition(), GetPosition() + m_frontDirection, m_upDirection);
 }
 
-void Camera::registerViewMatrix()
+void Camera::RegisterViewMatrix()
 {
     auto viewMatrix = [&]()
     {
-      return glm::lookAt(m_position, m_position + m_frontDirection, m_upDirection);
+		return glm::lookAt(GetPosition(), GetPosition() + m_frontDirection, m_upDirection);
     };
 
     EMS::getInstance().add(ReturnMat4Event::getViewMatrix, viewMatrix);
 }
-void Camera::registerPerspective()
+void Camera::RegisterPerspective()
 {
     auto perspective = [&]()
     {
@@ -38,4 +37,8 @@ void Camera::registerPerspective()
     };
 
     EMS::getInstance().add(ReturnMat4Event::getPerspective, perspective);
+}
+glm::vec3 Camera::GetPosition()
+{
+   return m_parent->GetComponent<Transform>()->GetPosition() + m_posOffset;
 }

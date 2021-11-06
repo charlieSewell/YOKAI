@@ -26,5 +26,5 @@ class ReactTerrainShape : public ReactShape{
     void DeleteShape(reactphysics3d::PhysicsCommon &physicsCommon) override;
   private:
     ///float* to heightfield array
-    float *heightFieldArray = nullptr;
+    float *m_heightFieldArray = nullptr;
 };

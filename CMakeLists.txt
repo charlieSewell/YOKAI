@@ -57,6 +57,16 @@ FetchContent_Declare(
 set(TESTS OFF CACHE BOOL "Switch off CppUTest Test build")
 FetchContent_MakeAvailable(CppUTest)
 
+FetchContent_Declare(json
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
+  GIT_TAG v3.10.4)
+
+FetchContent_GetProperties(json)
+if(NOT json_POPULATED)
+  FetchContent_Populate(json)
+  add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 # Define the Library.
 add_library(${PROJECT_NAME} SHARED)
 
@@ -119,7 +129,7 @@ target_link_options(${PROJECT_NAME} PUBLIC
         )
 set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Include and link against dependencies.
-target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glad assimp glm reactphysics3d spdlog::spdlog imgui ${CMAKE_DL_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glew assimp glm reactphysics3d spdlog::spdlog imgui imguizmo nlohmann_json::nlohmann_json${CMAKE_DL_LIBS})
 
 target_link_libraries(run_tests PUBLIC YOKAI CppUTest CppUTestExt ${CMAKE_DL_LIBS})
 

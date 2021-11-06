@@ -3,7 +3,7 @@
 //
 #pragma once
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 #include "Renderer/DataTypes.hpp"
 #include <memory>
 /**
@@ -35,11 +35,11 @@ class OpenGLTexture : public Texture
      * @brief Returns the TextureID
      * @return int
      */
-    int getID() override;
+    int GetID() override;
 
   private:
     ///Texture ID
-    unsigned int textureID;
+    unsigned int m_textureID;
 };
 /**
  * @class OpenGLVertexBuffer
@@ -68,7 +68,7 @@ class OpenGLVertexBuffer : public VertexBuffer
 
   private:
     ///Vertex Buffer ID
-    unsigned int vboID;
+    unsigned int m_vboID;
 };
 /**
  * @class OpenGLIndexBuffer
@@ -97,7 +97,7 @@ class OpenGLIndexBuffer : public IndexBuffer
 
   private:
     ///Index Buffer ID
-    unsigned int ibID;
+    unsigned int m_ibID;
 };
 /**
  * @class OpenGLVertexArrayBuffer
@@ -127,9 +127,9 @@ class OpenGLVertexArrayBuffer : public VertexArrayBuffer
 
   private:
     ///Vertex Array Buffer ID
-    unsigned int vaoID;
+    unsigned int m_vaoID;
     ///Pointer to Vertex Buffer
-    std::shared_ptr<OpenGLVertexBuffer> vertexBuffer;
+    std::shared_ptr<OpenGLVertexBuffer> m_vertexBuffer;
     ///Pointer to Index Buffer
-    std::shared_ptr<OpenGLIndexBuffer> indexBuffer;
+    std::shared_ptr<OpenGLIndexBuffer> m_indexBuffer;
 };

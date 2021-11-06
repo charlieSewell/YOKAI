@@ -6,6 +6,7 @@
 #include "Component.hpp"
 #include "Export.hpp"
 #include "Engine/Yokai.hpp"
+#include "Model/Animator.hpp"
 /**
  * @class DrawableEntity
  * @brief Draws a model to the screen
@@ -34,13 +35,42 @@ class YOKAI_API DrawableEntity : public Component {
          * @brief Loads model from given Path
          * @param filename 
          */
-        void LoadModel(std::string filename);
+        unsigned int LoadModel(std::string filename);
+        /**
+         * @brief Sets the Animation to be played
+         * @param animation 
+         */
+        void SetAnimation(std::string animation);
         /**
          * @brief Get the Model ID
          * @return unsigned int 
          */
-        unsigned int GetModelID(){return modelID;}
+        unsigned int GetModelID(){return m_modelID;}
+        /**
+         * @brief Set the Model ID
+         * @param modelID 
+         */
+		void SetModelID(unsigned int modelID);
+        /**
+         * @brief Render object GUI
+         */
+        void RenderGUI();
+        /**
+         * @brief Set the Offset fron transform
+         * @param offset 
+         */
+        void SetOffset(glm::mat4 offset);
+        /**
+         * @brief Get the Offset from the transform
+         * @return glm::mat4 
+         */
+        glm::mat4 GetOffset();
+
     private:
         ///Model ID
-        unsigned int modelID;
+        unsigned int m_modelID;
+        ///Animator of model
+        Animator* m_animator = nullptr;
+        ///Offset from transform
+        glm::mat4 m_offset;
 };
