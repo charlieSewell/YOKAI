@@ -61,6 +61,7 @@ class OpenGLRenderer : public RenderAPI
     void DrawScene() override;
     void SubmitDraw(RENDER::DrawItem drawItem) override; 
     void UpdateLights(std::vector<PointLight> &lightsArray);
+    void ResetLightsBuffer();
   private:
     ///Boolean to check whether it is in wireframe
     glm::ivec2 SCREEN_SIZE;

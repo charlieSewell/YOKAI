@@ -14,3 +14,11 @@ void Scene::LoadScene()
 {
     YOKAI_PARSE::LoadScene("content/"+m_sceneName+".json", m_objectManager, m_lightManager);
 }
+void Scene::SetSceneName(std::string sceneName)
+{
+    m_sceneName = sceneName;
+}
+std::string Scene:: GetSceneName()
+{
+    return m_sceneName;
+}

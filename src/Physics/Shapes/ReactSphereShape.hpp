@@ -26,5 +26,4 @@ public:
      * @param physicsCommon
      */
     void DeleteShape(reactphysics3d::PhysicsCommon &physicsCommon) override;
-private:
 };

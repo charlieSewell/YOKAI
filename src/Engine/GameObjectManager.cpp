@@ -75,14 +75,14 @@ void GameObjectManager::RenderGUI()
     }
 	ImGui::End();
 }
-void GameObjectManager::Serialise(nlohmann::json &j)
+void GameObjectManager::Serialize(nlohmann::json &j)
 {
     j["Objects"] = nlohmann::json::array();
 
     for(auto& object : m_gameObjects)
     {
         nlohmann::json temp = nlohmann::json::object();
-        object.second->Serialise(temp);
+        object.second->Serialize(temp);
         j["Objects"].push_back(temp);
     }
 }

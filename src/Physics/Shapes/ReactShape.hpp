@@ -14,7 +14,7 @@ class ReactShape {
      * @brief Returns a pointer to the collision shape
      * @return CollisionShape*
      */
-    virtual reactphysics3d::CollisionShape* getCollisionShape(){return shape;}
+    virtual reactphysics3d::CollisionShape* getCollisionShape(){return m_shape;}
     /**
      * @brief Virtual function to delete a shape
      * @param physicsCommon
@@ -24,7 +24,7 @@ class ReactShape {
      * @brief Returns a shapeID
      * @return shapeID
      */
-    unsigned int getShapeID() const{return shapeID;}
+    unsigned int getShapeID() const{return m_shapeID;}
     /**
      * @brief Returns a pointer to the collision shape
      * @return CollisionShape*
@@ -33,7 +33,7 @@ class ReactShape {
 
 protected:
     ///Shape Pointer
-    reactphysics3d::CollisionShape* shape;
+    reactphysics3d::CollisionShape* m_shape;
     ///ShapeID
-    unsigned int shapeID;
+    unsigned int m_shapeID;
 };

@@ -4,14 +4,14 @@
 
 void CollisionBody::CreateBody(int gameObjID,rp3d::PhysicsWorld* physicsWorld,glm::vec3 position,glm::quat orientation)
 {
-    gameObjectID = gameObjID;
+    m_gameObjectID = gameObjID;
     rp3d::Transform temp(ReactMath::glmVecToRP3d(position), ReactMath::glmQuatToRP3d(orientation));
     m_body = physicsWorld->createCollisionBody(temp);
 }
 void CollisionBody::DeleteBody(rp3d::PhysicsWorld* physicsWorld,rp3d::PhysicsCommon &physicsCommon)
 {
     physicsWorld->destroyCollisionBody(m_body);
-    shape->DeleteShape(physicsCommon);
+    m_shape->DeleteShape(physicsCommon);
 }
 void CollisionBody::SetPosition(glm::vec3 position){
     m_position = position;
@@ -28,14 +28,13 @@ glm::quat CollisionBody::GetOrientation()
 glm::vec3 CollisionBody::GetPosition()
 {
     rp3d::Vector3 temp = m_body->getTransform().getPosition();
-    //return ReactMath::rp3dVecToGlmD(temp);
     return m_position;
 }
 
 void CollisionBody::AddCollisionShape(ReactShape* shapeToInsert) 
 {
-    shape = shapeToInsert;
-    m_collider = m_body->addCollider(shape->getCollisionShape(),rp3d::Transform::identity());
+    m_shape = shapeToInsert;
+    m_collider = m_body->addCollider(m_shape->getCollisionShape(),rp3d::Transform::identity());
 
 }
 

@@ -29,31 +29,30 @@ bool Yokai::Init()
         return(false);
     }
     Renderer::getInstance().Init();
-    modelManager = new ModelManager();
     if(!window.ImguiInit())
     {
         return(false);
     }
-    InputManagerGLFW::getInstance().AddWindow(window.getWindow());
+    InputManagerGLFW::getInstance().AddWindow(window.GetWindow());
     
-    activeLayer = 0;
+    m_activeLayer = 0;
     try
     {
         PhysicsSystem::getInstance().Init();
-        randomListener = new PhysicsResolution();
-        PhysicsSystem::getInstance().physicsWorld->setEventListener(randomListener);
+        m_physicsListener = new PhysicsResolution();
+        PhysicsSystem::getInstance().GetPhysicsWorld()->setEventListener(m_physicsListener);
         SPDLOG_INFO("Physics System Initialised");  
     } catch (std::exception &e)
     {
         SPDLOG_ERROR(e.what());
     }
-    isPaused = false;
+    m_isPaused = false;
     SPDLOG_INFO("Engine Succesfully Initialised");
     return(true);
 }
 void Yokai::Run()
 {
-    layers[0]->Init();
+    m_layers[0]->Init();
     const float timeStep = 1.0f / 60;
     double lastTime = 0;
     double accumulator = 0;
@@ -62,7 +61,7 @@ void Yokai::Run()
     InputManagerGLFW::getInstance().m_activeKeys.push_back(unsigned int(YOKAI_INPUT::GRAVE_ACCENT));
     InputManagerGLFW::getInstance().m_activeKeys.push_back(unsigned int(YOKAI_INPUT::ESCAPE));
     InputManagerGLFW::getInstance().m_activeKeys.push_back(70);
-    while(isRunning)
+    while(m_isRunning)
 	{
         InputManagerGLFW::getInstance().processMouse();
 		InputManagerGLFW::getInstance().processGamepadAxis(); 
@@ -79,7 +78,6 @@ void Yokai::Run()
             {
                 isPausePressed = true;
                 TogglePause();
-                //SwitchScene(1);
             }
         }
         else
@@ -104,26 +102,25 @@ void Yokai::Run()
             isPhysicsPressed = false;
         }
 
-        //Renderer::getInstance().Clear();
-        window.startFrame();
+        window.StartFrame();
 
-        if (!isPaused)
+        if (!m_isPaused)
         {
 			accumulator += deltaTime;
-			layers[activeLayer]->Update(deltaTime);
+			m_layers[m_activeLayer]->Update(deltaTime);
             while (accumulator >= timeStep) 
 			{
-                PhysicsSystem::getInstance().update(timeStep);
+                PhysicsSystem::getInstance().Update(timeStep);
                 //layers[activeLayer]->Update(timeStep);
 				accumulator -= timeStep;
 			}
-            layers[activeLayer]->LateUpdate(deltaTime);
+            m_layers[m_activeLayer]->LateUpdate(deltaTime);
         }
         else 
         {
             
-            layers[activeLayer]->GetGameObjectManager()->RenderGUI();
-            layers[activeLayer]->GetLightManager()->RenderGUI();
+            m_layers[m_activeLayer]->GetGameObjectManager()->RenderGUI();
+            m_layers[m_activeLayer]->GetLightManager()->RenderGUI();
             ImGui::Begin("YOKAI Menu",NULL, ImGuiWindowFlags_MenuBar);
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::Text("Select Scene");
@@ -131,16 +128,16 @@ void Yokai::Run()
             {
                 if (ImGui::BeginMenu("File"))
                 {
-                    if (ImGui::MenuItem("Open..", "Ctrl+O")) { layers[activeLayer]->LoadScene();}
-                    if (ImGui::MenuItem("Save", "Ctrl+S"))   { layers[activeLayer]->SaveScene();}
+                    if (ImGui::MenuItem("Open..", "Ctrl+O")) { m_layers[m_activeLayer]->LoadScene();}
+                    if (ImGui::MenuItem("Save", "Ctrl+S"))   { m_layers[m_activeLayer]->SaveScene();}
                     if (ImGui::MenuItem("Shutdown", "Ctrl+Q"))  { Shutdown();}
                     ImGui::EndMenu();
                 }
                 if(ImGui::BeginMenu("Switch Scene"))
                 {
-                    for(int i = 0; i < layers.size();i++)
+                    for(int i = 0; i < m_layers.size();i++)
                     {
-                        if (ImGui::MenuItem(layers[i]->GetSceneName().c_str()))
+                        if (ImGui::MenuItem(m_layers[i]->GetSceneName().c_str()))
                         {
                             SwitchScene(i);
                         }
@@ -154,12 +151,12 @@ void Yokai::Run()
         
 
 
-        layers[activeLayer]->GetLightManager()->UpdateLights();
+        m_layers[m_activeLayer]->GetLightManager()->UpdateLights();
         PhysicsSystem::getInstance().RendererUpdate();
-        layers[activeLayer]->Draw();
+        m_layers[m_activeLayer]->Draw();
         Renderer::getInstance().DrawScene();
         Renderer::getInstance().DrawGui();
-        window.endFrame();
+        window.EndFrame();
 	}
     PhysicsSystem::getInstance().DeInit();
     Renderer::getInstance().DeInit();
@@ -168,23 +165,18 @@ void Yokai::Run()
 
 void Yokai::Shutdown()
 {
-    isRunning = false;
+    m_isRunning = false;
 }
 
 std::vector<std::shared_ptr<Scene>> Yokai::getLayer()
 {
-    return layers;
-}
-
-void Yokai::setActiveLayer(int a) 
-{
-    activeLayer = a;
+    return m_layers;
 }
 
 void Yokai::TogglePause() 
 {
-    isPaused = !isPaused;
-    if(isPaused)
+    m_isPaused = !m_isPaused;
+    if(m_isPaused)
     {
         InputManagerGLFW::getInstance().ShowMouse();
     }
@@ -194,11 +186,14 @@ void Yokai::TogglePause()
     }
 }
 
-bool Yokai::getIsPaused() const
+bool Yokai::GetIsPaused() const
 {
-    return isPaused;
+    return m_isPaused;
 }
-
+ModelManager* Yokai::GetModelManager()
+{
+    return &m_modelManager;
+}
 
 void Yokai::InitialiseLogger()
 {
@@ -212,10 +207,10 @@ void Yokai::InitialiseLogger()
 
     auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
     auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/"+ filename,"Logger");
-    sinks.push_back(stdout_sink);
-    sinks.push_back(file_sink);
+    m_sinks.push_back(stdout_sink);
+    m_sinks.push_back(file_sink);
 
-    auto log = std::make_shared<spdlog::logger>("Yokai", begin(sinks), end(sinks));
+    auto log = std::make_shared<spdlog::logger>("Yokai", begin(m_sinks), end(m_sinks));
 
     spdlog::register_logger(log);
     spdlog::set_default_logger(log);
@@ -224,17 +219,17 @@ void Yokai::InitialiseLogger()
 
 }
 
-void Yokai::addScene(std::shared_ptr<Scene> scene)
+void Yokai::AddScene(std::shared_ptr<Scene> scene)
 {
-	layers.push_back(std::shared_ptr<Scene>(scene));
+	m_layers.push_back(std::shared_ptr<Scene>(scene));
 }
 void Yokai::SwitchScene(unsigned int scene)
 {
-    if(scene < layers.size() && scene != activeLayer)
+    if(scene < m_layers.size() && scene != m_activeLayer)
     {
         PhysicsSystem::getInstance().ClearColliders();
-        layers[activeLayer]->Reset();
-        activeLayer = scene;
-        layers[activeLayer]->Init();
+        m_layers[m_activeLayer]->Reset();
+        m_activeLayer = scene;
+        m_layers[m_activeLayer]->Init();
     }
 }

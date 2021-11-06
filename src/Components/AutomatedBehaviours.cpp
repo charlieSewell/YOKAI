@@ -24,7 +24,7 @@ void AutomatedBehaviours::accelerate()
 	if (TopSpeed < 0 && Acceleration > TopSpeed)
 		Acceleration -= AccelerationRate;
 
-	m_transform->translatePostMultiply(glm::normalize(Heading) * Acceleration);
+	m_transform->TranslatePostMultiply(glm::normalize(Heading) * Acceleration);
 }
 
 void AutomatedBehaviours::decelerate()
@@ -35,18 +35,18 @@ void AutomatedBehaviours::decelerate()
 	if (Acceleration < 0)
 		Acceleration += AccelerationRate * 3;
 
-	m_transform->translatePostMultiply(glm::normalize(Heading) * Acceleration);
+	m_transform->TranslatePostMultiply(glm::normalize(Heading) * Acceleration);
 }
 
 void AutomatedBehaviours::seek(glm::vec3 targetPosition)
 {
-	glm::vec3 targetHeading = (targetPosition - m_transform->getPosition());
+	glm::vec3 targetHeading = (targetPosition - m_transform->GetPosition());
 	calculateRotation(targetHeading);
 }
 
 void AutomatedBehaviours::evade(glm::vec3 targetPosition)
 {
-	glm::vec3 targetHeading = -(targetPosition - m_transform->getPosition());
+	glm::vec3 targetHeading = -(targetPosition - m_transform->GetPosition());
 	calculateRotation(targetHeading);
 }
 
@@ -56,17 +56,17 @@ void AutomatedBehaviours::calculateRotation(glm::vec3 targetHeading)
 	{
 		decelerate();
 		Angle += RotationSpeed;
-		m_transform->rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
+		m_transform->Rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
 	}
 	else if(feelerRightHit != -1)
 	{
 		Angle -= RotationSpeed;
-		m_transform->rotate(RotationSpeed, glm::vec3(0, 1, 0));			// turn left
+		m_transform->Rotate(RotationSpeed, glm::vec3(0, 1, 0));			// turn left
 	}
 	else if(feelerLeftHit != -1)
 	{
 		Angle += RotationSpeed;
-		m_transform->rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
+		m_transform->Rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
 	}
 	else
 	{
@@ -77,12 +77,12 @@ void AutomatedBehaviours::calculateRotation(glm::vec3 targetHeading)
 				if(angle_XZ(Heading) - angle_XZ(targetHeading) > (glm::pi<float>()))		// if difference is greater than pi, it's quicker to turn the other way
 				{
 					Angle -= RotationSpeed;
-					m_transform->rotate(RotationSpeed, glm::vec3(0, 1, 0));			// turn left
+					m_transform->Rotate(RotationSpeed, glm::vec3(0, 1, 0));			// turn left
 				}
 				else
 				{
 					Angle += RotationSpeed;
-					m_transform->rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
+					m_transform->Rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
 				}
 			}
 		}
@@ -93,12 +93,12 @@ void AutomatedBehaviours::calculateRotation(glm::vec3 targetHeading)
 				if (angle_XZ(Heading) - angle_XZ(targetHeading) > (glm::pi<float>()))	// if difference is greater than pi, it's quicker to turn the other way
 				{
 					Angle += RotationSpeed;
-					m_transform->rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
+					m_transform->Rotate(-RotationSpeed, glm::vec3(0, 1, 0));			// turn right
 				}
 				else
 				{
 					Angle -= RotationSpeed;
-					m_transform->rotate(RotationSpeed, glm::vec3(0, 1, 0));			// turn left
+					m_transform->Rotate(RotationSpeed, glm::vec3(0, 1, 0));			// turn left
 				}
 			}
 		}
@@ -113,7 +113,7 @@ void AutomatedBehaviours::wander()
 	float ringDistance = 10;
 	float ringRadius = 5;
 
-	glm::vec3 ringLocation = m_transform->getPosition() + glm::normalize(Heading) * ringDistance;
+	glm::vec3 ringLocation = m_transform->GetPosition() + glm::normalize(Heading) * ringDistance;
 
 	//rotate
 	//theta = Point2D::randomNumber(0, 6.28);  //6.28 = 2pi
@@ -158,7 +158,7 @@ void AutomatedBehaviours::updateFeelers()
 
 	feelerLeft = temp2;
 
-	glm::vec3 sourcePosition = m_transform->getPosition();
+	glm::vec3 sourcePosition = m_transform->GetPosition();
 	if(m_isCastHeightSet)
 	{
 		sourcePosition.y = m_castHeight;

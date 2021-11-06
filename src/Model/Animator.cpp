@@ -2,30 +2,30 @@
 #include <utility>
 #include "Animator.hpp"
 Animator::Animator(Model* model)
-	: currTime(0)
+	: m_currTime(0)
 {
-    this->modelToAnimate = model;
+    this->m_modelToAnimate = model;
 }
 void Animator::BoneTransform(float TimeInSeconds)
 {
-    finalTransforms.resize(modelToAnimate->getBonesSize());
+    finalTransforms.resize(m_modelToAnimate->GetBonesSize());
     glm::mat4 identity(1.0);
-    currTime += TimeInSeconds;
-    if(modelToAnimate != nullptr && modelToAnimate->getAnimation(animation) != nullptr)
+    m_currTime += TimeInSeconds;
+    if(m_modelToAnimate != nullptr && m_modelToAnimate->GetAnimation(m_animation) != nullptr)
     {
-        double TicksPerSecond = modelToAnimate->getAnimation(animation)->getTPS();
-        float TimeInTicks = currTime * static_cast<float>(TicksPerSecond);
-        if(shouldEnd && TimeInTicks >= modelToAnimate->getAnimation(animation)->getDuration())
+        double TicksPerSecond = m_modelToAnimate->GetAnimation(m_animation)->GetTPS();
+        float TimeInTicks = m_currTime * static_cast<float>(TicksPerSecond);
+        if(m_shouldEnd && TimeInTicks >= m_modelToAnimate->GetAnimation(m_animation)->GetDuration())
         {
             return;
         }
-        float AnimationTime = static_cast<float>(fmod(TimeInTicks, modelToAnimate->getAnimation(animation)->getDuration()));
+        float AnimationTime = static_cast<float>(fmod(TimeInTicks, m_modelToAnimate->GetAnimation(m_animation)->GetDuration()));
 
-        ReadNodeHeirarchy(AnimationTime, modelToAnimate->getRootNode(), identity);
+        ReadNodeHeirarchy(AnimationTime, m_modelToAnimate->GetRootNode(), identity);
     }
     else
     {
-        for(int i = 0;i < modelToAnimate->getBonesSize();i++)
+        for(int i = 0;i < m_modelToAnimate->GetBonesSize();i++)
         {
             finalTransforms[i] = glm::mat4(1.0f);
         }
@@ -35,7 +35,7 @@ void Animator::ReadNodeHeirarchy(float AnimationTime, const Node& node, const gl
 {
     glm::mat4 nodeTransformation(node.transform);
 
-    const auto* pNodeAnim = modelToAnimate->getAnimation(animation)->findFrame(node.name);
+    const auto* pNodeAnim = m_modelToAnimate->GetAnimation(m_animation)->FindFrame(node.name);
 
     if (pNodeAnim)
     {
@@ -49,10 +49,10 @@ void Animator::ReadNodeHeirarchy(float AnimationTime, const Node& node, const gl
     }
 
     glm::mat4 GlobalTransformation = parentTransform * nodeTransformation;
-    if (modelToAnimate->getBoneMap()->find(node.name) != modelToAnimate->getBoneMap()->end())
+    if (m_modelToAnimate->GetBoneMap()->find(node.name) != m_modelToAnimate->GetBoneMap()->end())
     {
-        unsigned int BoneIndex = modelToAnimate->getBoneMap()->at(node.name);
-        finalTransforms[BoneIndex]= modelToAnimate->getGlobalInverseTransform() * GlobalTransformation * modelToAnimate->getBones()->at(BoneIndex).offset;
+        unsigned int BoneIndex = m_modelToAnimate->GetBoneMap()->at(node.name);
+        finalTransforms[BoneIndex]= m_modelToAnimate->GetGlobalInverseTransform() * GlobalTransformation * m_modelToAnimate->GetBones()->at(BoneIndex).offset;
     }
 
    for(auto& child: node.children)
@@ -70,7 +70,7 @@ glm::quat Animator::CalcInterpolatedRotation(double AnimationTime, const Frame* 
         return rotation;
     }
 
-    unsigned int RotationIndex = modelToAnimate->getAnimation(animation)->FindRotation(AnimationTime, pNodeAnim);
+    unsigned int RotationIndex = m_modelToAnimate->GetAnimation(m_animation)->FindRotation(AnimationTime, pNodeAnim);
     unsigned int NextRotationIndex = (RotationIndex + 1);
 
 
@@ -92,7 +92,7 @@ glm::vec3 Animator::CalcInterpolatedPosition(double AnimationTime, const Frame *
         return result;
     }
 
-    unsigned PositionIndex = modelToAnimate->getAnimation(animation)->FindPosition(AnimationTime, pNodeAnim);
+    unsigned PositionIndex = m_modelToAnimate->GetAnimation(m_animation)->FindPosition(AnimationTime, pNodeAnim);
     unsigned NextPositionIndex = (PositionIndex + 1);
 
     double DeltaTime = pNodeAnim->position[NextPositionIndex].first - pNodeAnim->position[PositionIndex].first;
@@ -104,15 +104,15 @@ glm::vec3 Animator::CalcInterpolatedPosition(double AnimationTime, const Frame *
     result = Start + static_cast<float>(Factor) * Delta;
     return result;
 }
-void Animator::setAnimation(std::string animationToSet)
+void Animator::SetAnimation(std::string animationToSet)
 {
-	if(animation != animationToSet)
+	if(m_animation != animationToSet)
 	{
 		try
 		{
-			currTime = 0;
-			SkeletalAnimation* test = modelToAnimate->getAnimation(animationToSet);
-			this->animation = std::move(animationToSet);
+			m_currTime = 0;
+			SkeletalAnimation* test = m_modelToAnimate->GetAnimation(animationToSet);
+			this->m_animation = std::move(animationToSet);
 		}catch (std::exception &e)
 		{
 			std::cout << e.what() <<std::endl;

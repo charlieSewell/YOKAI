@@ -46,14 +46,33 @@ class Scene
      * @return LightManager* 
      */
     LightManager* GetLightManager() {return &m_lightManager;}
-    void SetSceneName(std::string sceneName){m_sceneName = sceneName;}
-    std::string GetSceneName(){return m_sceneName;}
+    /**
+     * @brief Set the Scene Name
+     * @param sceneName 
+     */
+    void SetSceneName(std::string sceneName);
+    /**
+     * @brief Get the Scene Name
+     * @return std::string 
+     */
+    std::string GetSceneName();
+    /**
+     * @brief Reset Scene to default state
+     */
     void Reset();
+    /**
+     * @brief Saves Scene to file
+     */
     void SaveScene();
+    /**
+     * @brief Loads Scene from file
+     */
     void LoadScene();
   protected:
     ///Game Object Manager
     GameObjectManager m_objectManager;
+    ///Lighting Manager
     LightManager m_lightManager;
+    ///Name of scene
     std::string m_sceneName;
 };

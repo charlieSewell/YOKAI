@@ -35,7 +35,10 @@ public:
 	 * @param tartgetPosition
 	 */
 	void seek(glm::vec3 tartgetPosition);
-
+	/**
+	 * @brief Evades from target position
+	 * @param tartgetPosition 
+	 */
 	void evade(glm::vec3 tartgetPosition);
 	/**
 	 * @brief Randomly wanders around
@@ -84,7 +87,7 @@ private:
 	std::shared_ptr <RayCaster> m_rayCaster = nullptr;
     ///AI wander angle
 	float m_wanderAngle = 0;
-
+	///Distance of raycaster hit
 	float m_castHeight = 0;
 	bool m_isCastHeightSet = false;
 	float m_castDistance = 10;
@@ -93,7 +96,10 @@ private:
 	 * @brief Updates AI Heading
 	 */
 	void updateHeading();
-
+	/**
+	 * @brief Calculates rotation to a target position
+	 * @param tartgetPosition 
+	 */
 	void calculateRotation(glm::vec3 tartgetPosition);
 	/**
 	 * @brief converts vector into an angle

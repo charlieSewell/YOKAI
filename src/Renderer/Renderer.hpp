@@ -47,20 +47,42 @@ class Renderer
      * @brief bool - isEnabled
      */
     void SetDepthTesting(bool isEnabled);
-    
+    /**
+     * @brief Adds an animated mesh to be drawn
+     * @param mesh 
+     * @param model 
+     * @param finalTransforms 
+     */
     void AddToDraw(Mesh* mesh, glm::mat4 model, std::vector<glm::mat4> &finalTransforms);
+    /**
+     * @brief Adds a mesh to be drawn
+     * @param mesh 
+     * @param model 
+     */
     void AddToDraw(Mesh* mesh, glm::mat4 model);
-    
+    /**
+     * @brief Flushes lights to GPU
+     * @param m_lights 
+     */
     void UpdateLights(std::vector<PointLight> &m_lights);
+    /**
+     * @brief Resets the GPU Lights buffer
+     */
+    void ResetLightsBuffer();
+    /**
+     * @brief Draws the Current Scene
+     */
     void DrawScene();
   private:
+    ///Default constructor for Renderer
     Renderer() = default;
+    ///Default destructor for Renderer
     ~Renderer() = default;
     /**
      * @brief Registers button to wireframe toggle
      */
     void registerToggleWireframe();
     ///Pointer to chosen RenderAPI
-    std::shared_ptr<RenderAPI> renderApi;
+    std::shared_ptr<RenderAPI> m_renderAPI;
 };
 

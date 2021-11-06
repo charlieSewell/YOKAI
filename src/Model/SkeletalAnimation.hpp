@@ -55,30 +55,30 @@ class SkeletalAnimation {
          * @param frameName
          * @return
          */
-        Frame* findFrame(const std::string& frameName);
+        Frame* FindFrame(const std::string& frameName);
         /**
          * @brief Returns the Ticks Per Second
          * @return tps
          */
-        double getTPS(){return TPS;}
+        double GetTPS(){return m_TPS;}
         /**
          * @brief Returns the Duration of the animation
          * @return
          */
-        double getDuration(){return duration;}
+        double GetDuration(){return m_duration;}
         /**
          * @brief returns the name of the animation
          * @return
          */
-        std::string getName(){return name;}
+        std::string GetName(){return m_name;}
     private:
         ///map of frame names to frames
-        std::map<std::string,Frame> frames;
+        std::map<std::string,Frame> m_frames;
         ///duration of animation
-        double duration;
+        double m_duration;
         ///ticks per second of animation
-        double TPS;
+        double m_TPS;
         ///name of animation
-        std::string name;
+        std::string m_name;
 
 };

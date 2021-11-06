@@ -17,42 +17,32 @@ class SplashScreen {
      */
     SplashScreen(const std::string& texturePath);
     /**
-     * @brief Draws Splash Screen
+     * @brief Draws splash screen
      */
-     /**
-      * @brief Draws splash screen
-      */
-    void draw();
+    void Draw();
     /**
      * @brief Sets the texture for the splash screen
      * @param string - texturePath
      */
-    void setTexture(const std::string& texturePath);
-
+    void SetTexture(const std::string& texturePath);
     /**
      * @brief Sets up splash screen panel mesh
      */
-
-    void setupPanel(float left, float right, float top, float bottom);
-
+    void SetupPanel(float left, float right, float top, float bottom);
     /**
      * @brief Sets the splash screen as active
      */
-    void setActive(bool a);
-    /**
-     * @brief Sets the splash screen as inactive
-     */
+    void SetActive(bool a);
     /**
      * @brief Returns whether the splash screen is active
      * @return bool
      */
-    bool getActive() const;
-
+    bool GetActive() const;
   private:
     ///shared_ptr to splash screen panel
-    std::shared_ptr<VertexArrayBuffer> vao;
+    std::shared_ptr<VertexArrayBuffer> m_vao;
     ///shared_ptr to splash screen texture
-    int texture = -1;
+    int m_texture = -1;
     ///is splash screen active
-    bool active = false;
+    bool m_active = false;
 };

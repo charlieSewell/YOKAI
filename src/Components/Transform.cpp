@@ -19,124 +19,124 @@ Transform::Transform()
 Transform::Transform(glm::mat4 matrix)
 	: Component(nullptr), m_transform(matrix)
 {
-	decompose();
+	Decompose();
 }
 
-void Transform::decompose()
+void Transform::Decompose()
 {
 	glm::decompose(m_transform, m_scale, m_rotation, m_position, m_skew, m_perspective);
 }
 
-void Transform::recompose()
+void Transform::Recompose()
 {
 	m_transform = glm::translate(m_position) * glm::mat4_cast(m_rotation) * glm::scale(m_scale);
 }
 
-void Transform::translate(glm::vec3 translation)
+void Transform::Translate(glm::vec3 translation)
 {
 	m_transform = glm::translate(m_transform, translation);
 }
 
-void Transform::translate(float x, float y, float z)
+void Transform::Translate(float x, float y, float z)
 {
 	m_transform = glm::translate(m_transform, glm::vec3(x, y, z));
 }
 
-void Transform::translatePostMultiply(glm::vec3 translation)
+void Transform::TranslatePostMultiply(glm::vec3 translation)
 {
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), translation);
 	m_transform = translationMatrix * m_transform;
 }
 
-void Transform::translatePostMultiply(float x, float y, float z)
+void Transform::TranslatePostMultiply(float x, float y, float z)
 {
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.f), glm::vec3(x, y, z));
 	m_transform = translationMatrix * m_transform;
 }
 
-void Transform::rotate(float angle, glm::vec3 upVector)
+void Transform::Rotate(float angle, glm::vec3 upVector)
 {
 	m_transform = glm::rotate(m_transform, angle, upVector);
 }
 
-void Transform::scale(glm::vec3 scale)
+void Transform::Scale(glm::vec3 scale)
 {
 	m_transform = glm::scale(m_transform, scale);
 }
 
-void Transform::scale(float x, float y, float z)
+void Transform::Scale(float x, float y, float z)
 {
 	m_transform = glm::scale(m_transform, glm::vec3(x, y, z));
 }
 
-void Transform::scale(float scale)
+void Transform::Scale(float scale)
 {
 	m_transform = glm::scale(m_transform, glm::vec3(scale, scale, scale));
 }
 
-glm::vec3 Transform::getScale()
+glm::vec3 Transform::GetScale()
 {
-	decompose();
+	Decompose();
 	return(m_scale);
 }
 
-glm::quat Transform::getRotation()
+glm::quat Transform::GetRotation()
 {
-	decompose();
+	Decompose();
 	m_rotation = glm::conjugate(m_rotation);
 	return(m_rotation);
 }
 
-glm::vec3 Transform::getPosition()
+glm::vec3 Transform::GetPosition()
 {
 	return(m_transform[3]);
 }
 
-glm::mat4 Transform::getMatrix()
+glm::mat4 Transform::GetMatrix()
 {
 	return m_transform;
 }
 
-void Transform::setScale(glm::vec3 scale)
+void Transform::SetScale(glm::vec3 scale)
 {
-	decompose();
+	Decompose();
 	m_scale = scale;
-	recompose();
+	Recompose();
 }
 
-void Transform::setScale(float x, float y, float z)
+void Transform::SetScale(float x, float y, float z)
 {
-	decompose();
+	Decompose();
 	m_scale = glm::vec3(x, y, z);
-	recompose();
+	Recompose();
 }
 
-void Transform::setScale(float scale)
+void Transform::SetScale(float scale)
 {
-	decompose();
+	Decompose();
 	m_scale = glm::vec3(scale, scale, scale);
-	recompose();
+	Recompose();
 }
 
-void Transform::setRotation(glm::quat rotation)
+void Transform::SetRotation(glm::quat rotation)
 {
-	decompose();
+	Decompose();
 	m_rotation = rotation;
-	recompose();
+	Recompose();
 }
 
-void Transform::setPosition(glm::vec3 position)
+void Transform::SetPosition(glm::vec3 position)
 {
-	decompose();
+	Decompose();
 	m_position = position;
-	recompose();
+	Recompose();
 }
 
-void Transform::setPosition(float x, float y, float z)
+void Transform::SetPosition(float x, float y, float z)
 {
-	decompose();
+	Decompose();
 	m_position = glm::vec3(x, y, z);
-	recompose();
+	Recompose();
 }
 
 Transform& Transform::operator=(const Transform& other)
@@ -169,11 +169,11 @@ void Transform::Deserialize(const nlohmann::json &j)
 			std::vector<float> temp = component.at("matrix").get<std::vector<float>>();
 			glm::mat4 tempMat = glm::make_mat4(&temp[0]);
 			m_transform = tempMat;
-			decompose();
+			Decompose();
 		}
 	}	
 }
-void Transform::Serialise(nlohmann::json &j)
+void Transform::Serialize(nlohmann::json &j)
 {
 	nlohmann::json temp = nlohmann::json::object();
 	std::vector<float> flatMat;

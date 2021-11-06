@@ -25,6 +25,12 @@ void LightManager::UpdateLights()
 {
     Renderer::getInstance().UpdateLights(m_Lights);
 }
+void LightManager::Clear()
+{
+    m_LightCount = 0;
+    m_Lights.clear();
+    Renderer::getInstance().ResetLightsBuffer();
+}
 void LightManager::RenderGUI()
 {
     ImGui::Begin("Lighting Manager");
@@ -53,7 +59,7 @@ void LightManager::RenderGUI()
     }
     ImGui::End();
 }
-void LightManager::Serialise(nlohmann::json &j)
+void LightManager::Serialize(nlohmann::json &j)
 {
     j["Lights"] = nlohmann::json::array();
     for(auto& light : m_Lights)
@@ -65,15 +71,10 @@ void LightManager::Serialise(nlohmann::json &j)
         j["Lights"].push_back(temp);
     }
 }
-void LightManager::Deserialise(const nlohmann::json &j)
+void LightManager::Deserialize(const nlohmann::json &j)
 {
     for (auto &light : j.at("Lights"))
     {
         AddLight( light.at("Color").get<glm::vec4>(),light.at("Position").get<glm::vec4>(),light.at("PaddingAndRadius").get<glm::vec4>());
     }
-}
-void LightManager::Clear()
-{
-    m_LightCount = 0;
-    m_Lights.clear();
 }

@@ -13,7 +13,7 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
 
         CollisionCallback::ContactPair::EventType eventType = contactPair.getEventType();
 
-        if ((!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject() || !PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject())) 
+        if ((!PhysicsSystem::getInstance().GetPhysicsBody(body1)->GetIsStaticObject() || !PhysicsSystem::getInstance().GetPhysicsBody(body2)->GetIsStaticObject())) 
         {
             for (int c = 0; c < contactPair.getNbContactPoints(); c++) 
             {
@@ -38,14 +38,14 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
 void PhysicsResolution::ResolvePenetration(int body1, int body2, float penetration, glm::vec3 contactNormal) 
 {
     //Resolves the penetration of non static objects prior to resolution, using the penetration depth and contact plane normal
-    if (!PhysicsSystem::getInstance().getPhysicsBody(body1)->GetIsStaticObject()) 
+    if (!PhysicsSystem::getInstance().GetPhysicsBody(body1)->GetIsStaticObject()) 
     {
-        PhysicsSystem::getInstance().getPhysicsBody(body1)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body1)->GetPosition() + ((-(penetration/2)) * contactNormal));
+        PhysicsSystem::getInstance().GetPhysicsBody(body1)->SetPosition(PhysicsSystem::getInstance().GetPhysicsBody(body1)->GetPosition() + ((-(penetration/2)) * contactNormal));
     }
 
-    if (!PhysicsSystem::getInstance().getPhysicsBody(body2)->GetIsStaticObject()) 
+    if (!PhysicsSystem::getInstance().GetPhysicsBody(body2)->GetIsStaticObject()) 
     {
-        PhysicsSystem::getInstance().getPhysicsBody(body2)->SetPosition(PhysicsSystem::getInstance().getPhysicsBody(body2)->GetPosition() - ((-(penetration/2)) * contactNormal));
+        PhysicsSystem::getInstance().GetPhysicsBody(body2)->SetPosition(PhysicsSystem::getInstance().GetPhysicsBody(body2)->GetPosition() - ((-(penetration/2)) * contactNormal));
     }
 }
 
@@ -55,8 +55,8 @@ void PhysicsResolution::CollisionResolution(int body1, int body2, float penetrat
     float coefficientOfRestitution = 0.6;
 
     //Pointers to collision bodies
-    CollisionBody* body1Ptr = PhysicsSystem::getInstance().getPhysicsBody(body1);
-    CollisionBody* body2Ptr = PhysicsSystem::getInstance().getPhysicsBody(body2);
+    CollisionBody* body1Ptr = PhysicsSystem::getInstance().GetPhysicsBody(body1);
+    CollisionBody* body2Ptr = PhysicsSystem::getInstance().GetPhysicsBody(body2);
 
     //Linear and Angular velocities
     glm::vec3 linearVelocity1 = body1Ptr->GetLinearVelocity();

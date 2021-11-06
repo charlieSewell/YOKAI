@@ -39,9 +39,15 @@ class Component
          * @brief Renders Component GUI
          */
         virtual void RenderGUI() {}
-        
-        virtual void Serialise(nlohmann::json &j) {}
-
+        /**
+         * @brief Serialises this component
+         * @param j jsonstream
+         */
+        virtual void Serialize(nlohmann::json &j) {}
+        /**
+         * @brief Deserialises this component
+         * @param j jsonstream
+         */
         virtual void Deserialize(const nlohmann::json &j) {}
     protected:
         ///parent game object

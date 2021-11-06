@@ -36,22 +36,22 @@ class Window {
      * @brief Returns a pointer to the window
      * @return GLFWwindow*
      */
-    GLFWwindow* getWindow();
+    GLFWwindow* GetWindow();
     /**
      * @brief Starts a frame
      */
-    void startFrame();
+    void StartFrame();
     /**
      * @brief Ends a frame and processes callbacks
      */
-    void endFrame();
+    void EndFrame();
     /**
      * @brief Returns the Current Window Size
      * @return vec2 windowSize
      */
-    glm::vec2 getWindowSize();
+    glm::vec2 GetWindowSize();
   private:
     ///GLFW window
-    GLFWwindow* window;
+    GLFWwindow* m_window;
 };
 

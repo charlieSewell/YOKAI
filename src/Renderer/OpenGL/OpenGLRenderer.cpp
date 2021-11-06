@@ -30,16 +30,16 @@ void OpenGLRenderer::Init()
 	gridShader = new Shader("content/Shaders/clusterGenerator.comp");
     
 	glm::mat4 perspective = glm::perspective(glm::radians(60.0f), 1920.0f / 1080.0f, zNear, zFar);
-	depthShader->useShader();
-	depthShader->setMat4("projection",perspective);
+	depthShader->UseShader();
+	depthShader->SetMat4("projection",perspective);
 
-    lightAccumulationShader->useShader();
-	lightAccumulationShader->setMat4("projection",perspective);
-	lightAccumulationShader->setFloat("zNear",zNear);
-	lightAccumulationShader->setFloat("zFar",zFar);
+    lightAccumulationShader->UseShader();
+	lightAccumulationShader->SetMat4("projection",perspective);
+	lightAccumulationShader->SetFloat("zNear",zNear);
+	lightAccumulationShader->SetFloat("zFar",zFar);
 	
-	hdr->useShader();
-	hdr->setFloat("exposure", 0.5f);
+	hdr->UseShader();
+	hdr->SetFloat("exposure", 0.5f);
     SPDLOG_INFO("OpenGL version: {}",glGetString(GL_VERSION));
 	SPDLOG_INFO("GLSL version: {}",glGetString(GL_SHADING_LANGUAGE_VERSION));
 	SPDLOG_INFO("Vendor: {}",glGetString(GL_VENDOR));
@@ -112,9 +112,9 @@ void OpenGLRenderer::Init()
 
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 	
- 	gridShader->useShader();
-    gridShader->setFloat("zNear", zNear);
-    gridShader->setFloat("zFar", zFar);
+ 	gridShader->UseShader();
+    gridShader->SetFloat("zNear", zNear);
+    gridShader->SetFloat("zFar", zFar);
     glDispatchCompute(gridSizeX, gridSizeY, gridSizeZ);
 	SetupDepthMap();
     SetupHDRBuffer();
@@ -208,20 +208,34 @@ void OpenGLRenderer::UpdateLights(std::vector<PointLight> &lightsArray)
 	size_t maxLights = std::min(lightsArray.size(),NUM_LIGHTS);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
 	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
-
 	for (int i = 0; i < maxLights; i++) 
 	{
 		PointLight &light = pointLights[i];
 		light.position = lightsArray[i].position;
 		light.color = lightsArray[i].color;
-		light.paddingAndRadius = lightsArray[i].paddingAndRadius;
+		light.paddingAndRadius = lightsArray[i].paddingAndRadius;		
 	}
 
 	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
 	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
+void OpenGLRenderer::ResetLightsBuffer()
+{
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, lightBuffer);
+	PointLight *pointLights = (PointLight*)glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_READ_WRITE);
+	for (int i = 0; i < NUM_LIGHTS; i++) 
+	{
+		PointLight &light = pointLights[i];
+		light.position = glm::vec4(0.0f);
+		light.color = glm::vec4(0.0f);
+		light.paddingAndRadius = glm::vec4(0.0f);		
+	}
 
+	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0);
+	glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+}
 
 void OpenGLRenderer::ToggleWireFrame() 
 {
@@ -251,8 +265,8 @@ void OpenGLRenderer::DrawScene()
     glm::vec3 viewpos = glm::vec3(inverseview[3].x,inverseview[3].y,inverseview[3].z);
 	
 	//DEPTH PASS
-	depthShader->useShader();
-    depthShader->setMat4("view",view);
+	depthShader->UseShader();
+    depthShader->SetMat4("view",view);
     glEnable(GL_DEPTH_TEST);
     glDepthMask(true);
     glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -260,14 +274,14 @@ void OpenGLRenderer::DrawScene()
 	
 	for(auto& drawItem : drawQueue)
     {
-        depthShader->setMat4("model",drawItem.transform);
+        depthShader->SetMat4("model",drawItem.transform);
         DrawMesh(depthShader,drawItem.mesh);
     }
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
 	//LIGHT CULL
-    lightCullingShader->useShader();
-    lightCullingShader->setMat4("view",view);
+    lightCullingShader->UseShader();
+    lightCullingShader->SetMat4("view",view);
 	//lightCullingShader->setInt("depthMap", 4);
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
@@ -280,14 +294,14 @@ void OpenGLRenderer::DrawScene()
 	//DRAW & LIGHT SCENE
     glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	lightAccumulationShader->useShader();
-    lightAccumulationShader->setMat4("view",view);
-	lightAccumulationShader->setVec3("viewPosition",viewpos);
+	lightAccumulationShader->UseShader();
+    lightAccumulationShader->SetMat4("view",view);
+	lightAccumulationShader->SetVec3("viewPosition",viewpos);
     for(auto& drawItem : drawQueue)
     {
-		lightAccumulationShader->setBool("isAnimated",drawItem.isAnimated);
-		lightAccumulationShader->setVecMat4("boneTrans",drawItem.finalTransforms);
-        lightAccumulationShader->setMat4("model",drawItem.transform);
+		lightAccumulationShader->SetBool("isAnimated",drawItem.isAnimated);
+		lightAccumulationShader->SetVecMat4("boneTrans",drawItem.finalTransforms);
+        lightAccumulationShader->SetMat4("model",drawItem.transform);
         DrawMesh(lightAccumulationShader,drawItem.mesh);
     }
 	//Draw Physics Debug
@@ -296,7 +310,7 @@ void OpenGLRenderer::DrawScene()
 	
 	//POST PROCESS
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	hdr->useShader();
+	hdr->UseShader();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, colorBuffer);
 	DrawQuad();
@@ -339,7 +353,7 @@ void OpenGLRenderer::SetDepthTesting(bool isEnabled)
              number = std::to_string(normalNumber++);
          else if(name == "texture_height")
              number = std::to_string(heightNumber++);
-        shader->setInt((name + number).c_str(), i);
+        shader->SetInt((name + number).c_str(), i);
      }
 
      DrawArrays(*mesh->GetVAO(),mesh->getIndices()->size());

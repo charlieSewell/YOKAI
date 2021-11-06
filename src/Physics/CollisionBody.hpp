@@ -48,14 +48,11 @@ class CollisionBody
      * @return quat
      */
     glm::quat GetOrientation();
-
     /**
      * @brief Returns the rp3d Rigidbody
      * @return RigidBody*
      */
-    reactphysics3d::CollisionBody *getCollisionBody() {
-        return m_body;
-    }
+    reactphysics3d::CollisionBody *GetCollisionBody() {return m_body;}
     /**
      * @brief Adds a collision Shape
      * @param shape
@@ -77,82 +74,152 @@ class CollisionBody
      * @brief Returns the ColliderID
      * @return ID
      */
-    uint32_t getColliderID() {
+    uint32_t GetColliderID() {
         return m_collider->getEntity().id;
     }
     /**
      * @brief Returns the owning game objects ID
      * @return
      */
-    [[nodiscard]] int getGameObjectID() const {
-        return gameObjectID;
+    [[nodiscard]] int GetGameObjectID() const {
+        return m_gameObjectID;
     }
-
+    /**
+     * @brief Set the Mass
+     * @param m 
+     */
     void SetMass(float m);
+    /**
+     * @brief Get the Mass
+     * @return float 
+     */
     float GetMass();
-
+    /**
+     * @brief Get the Inverse Mass
+     * @return float 
+     */
     float GetInverseMass();
-
+    /**
+     * @brief Set the Centre Of Mass
+     * @param com 
+     */
     void SetCentreOfMass(glm::vec3 com);
+    /**
+     * @brief Get the Centre Of Mass
+     * @return glm::vec3 
+     */
     glm::vec3 GetCentreOfMass();
-
+    /**
+     * @brief Set the Inertia Tensor
+     * @param it 
+     */
     void SetInertiaTensor(glm::mat3x3 it);
+    /**
+     * @brief Get the Inertia Tensor
+     * @return glm::mat3x3 
+     */
     glm::mat3x3 GetInertiaTensor();
-
+    /**
+     * @brief Get the Inverse Inertia Tensor
+     * @return glm::mat3x3 
+     */
     glm::mat3x3 GetInverseInertiaTensor();
-
+    /**
+     * @brief Set the Linear Velocity
+     * @param lv 
+     */
     void SetLinearVelocity(glm::vec3 lv);
+    /**
+     * @brief Get the Linear Velocity
+     * @return glm::vec3 
+     */
     glm::vec3 GetLinearVelocity();
-
+    /**
+     * @brief Set the Angular Velocity
+     * @param av 
+     */
     void SetAngularVelocity(glm::vec3 av);
+    /**
+     * @brief Get the Angular Velocity
+     * @return glm::vec3 
+     */
     glm::vec3 GetAngularVelocity();
-
+    /**
+     * @brief Set the body static
+     * @param s 
+     */
     void SetIsStaticObject(bool s);
+    /**
+     * @brief Get is the body static
+     * @return bool 
+     */
     bool GetIsStaticObject();
-
+    /**
+     * @brief Set is Gravity Affected
+     * @param g 
+     */
     void SetGravityAffected(bool g);
+    /**
+     * @brief Get is Gravity Affected
+     * @return bool 
+     */
     bool GetGravityAffected();
-
-    void setForce(glm::dvec3 f);
-    glm::dvec3 getForce();
-
-    void setIsStaticObject(bool s);
-    bool getIsStaticObject();
-
-    void setGravityAffected(bool g);
-    bool getGravityAffected();
+    /**
+     * @brief Set the Force
+     * @param f 
+     */
+    void SetForce(glm::vec3 f);
+    /**
+     * @brief Gets the Force
+     * @return glm::vec3 
+     */
+    glm::vec3 GetForce();
+    /**
+     * @brief Set the Collision Category 
+     * @param category 
+     */
     void SetCollisionCategory(unsigned short category);
+    /**
+     * @brief Set the Collision Mask Bits
+     * 
+     * @param maskBits 
+     */
     void SetCollisionMaskBits(unsigned short maskBits);
 
-	// bad
-	glm::dvec3 m_tempLinearVelocity = {};
-	bool hasCollided = false;
-	int counter = 0;
+	bool m_hasCollided = false;
+	int m_counter = 0;
     glm::mat4 GetTransform();
     void UpdateBody();
 
   private:
     /// Shape of collider
-    ReactShape *shape;
+    ReactShape *m_shape;
     /// Owning game object ID
-    int gameObjectID = -1;
+    int m_gameObjectID = -1;
     /// React Rigid Body
     reactphysics3d::CollisionBody *m_body;
     /// React Collider
     reactphysics3d::Collider *m_collider;
-
-    // PHYSICS
-    float m_mass;
-    float m_inverseMass;
-    glm::vec3 m_centreOfMass           = {};
-    glm::mat3x3 m_inertiaTensor        = {};
-    glm::mat3x3 m_inverseInertiaTensor = {};
-
-    glm::vec3 m_linearVelocity  = {};
-    glm::vec3 m_angularVelocity = {};
-    glm::quat m_orientation     = {};
-    bool m_staticObject;
-    bool m_gravityAffected;
-
+    ///Collider Position
     glm::vec3 m_position = {};
+    ///Center of mass of Collider
+    glm::vec3 m_centreOfMass           = {};
+    ///Interia Tensor of Collider
+    glm::mat3x3 m_inertiaTensor        = {};
+    ///Inverse Interia Tensor of Collider
+    glm::mat3x3 m_inverseInertiaTensor = {};
+    ///Linear velocity of collider
+    glm::vec3 m_linearVelocity  = {};
+    ///Angular Velocity of Collider
+    glm::vec3 m_angularVelocity = {};
+    ///Orientation of Collider
+    glm::quat m_orientation     = {};
+    ///Mass of Collider
+    float m_mass;
+    ///Inverse mass of Collider
+    float m_inverseMass;
+    ///Is Collider Static
+    bool m_staticObject;
+    ///Is Collider Gravity affected
+    bool m_gravityAffected;
 };

@@ -27,13 +27,13 @@ class ReactConcaveShape : public ReactShape{
     void DeleteShape(reactphysics3d::PhysicsCommon &physicsCommon) override;
   private:
     ///vertices of concave shape
-    std::vector<std::vector<float>> vertices;
+    std::vector<std::vector<float>> m_vertices;
     ///indices of concave shape
-    std::vector<std::vector<int>> indices;
+    std::vector<std::vector<int>> m_indices;
     ///triangle arrays of concave shape
-    std::vector<rp3d::TriangleVertexArray*> triangleArrays;
+    std::vector<rp3d::TriangleVertexArray*> m_triangleArrays;
     ///triangle mesh of concave shape
-    rp3d::TriangleMesh* triangleMesh;
+    rp3d::TriangleMesh* m_triangleMesh;
     ///concave mesh
-    rp3d::ConcaveMeshShape* concaveMesh;
+    rp3d::ConcaveMeshShape* m_concaveMesh;
 };

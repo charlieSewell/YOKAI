@@ -43,10 +43,16 @@ class YOKAI_API GameObject
          * @param timeDelta 
          */
         void LateUpdate(float timeDelta);
-        
-        void Serialise(nlohmann::json &data);
-        
-        void Deserialise(const nlohmann::json &data);
+        /**
+         * @brief Serializes the GameObject
+         * @param data
+         */
+        void Serialize(nlohmann::json &data);
+        /**
+         * @brief Deserializes the GameObject
+         * @param data 
+         */
+        void Deserialize(const nlohmann::json &data);
         /**
          * @brief Draws the game Object
          */
