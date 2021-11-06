@@ -173,7 +173,7 @@ void BoxCollider::StaticSet()
     SetCollisionMaskBits(Physics::CATEGORY2);
     SetLinearVelocity(glm::dvec3(0, 0, 0));
 	SetAngularVelocity(glm::dvec3(0, 0, 0));
-	SetMass(5.0);
+	SetMass(10.0);
 	SetIsStaticObject(true);
     SetGravityAffected(false);
 	SetInertiaTensor();
