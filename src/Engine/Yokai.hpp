@@ -3,7 +3,6 @@
 #include "Renderer/Renderer.hpp"
 #include "Physics/PhysicsSystem.hpp"
 #include "Renderer/Window.hpp"
-#include "Model/SplashScreen.hpp"
 #include "Engine/Scene.hpp"
 #include <spdlog/spdlog.h>
 #include "Export.hpp"
@@ -62,7 +61,6 @@ public:
     void SwitchScene(unsigned int scene);
     /**
      * @brief Get the Model Manager
-     * 
      * @return ModelManager* 
      */
 	ModelManager* GetModelManager();

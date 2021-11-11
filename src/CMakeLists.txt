@@ -3,7 +3,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 		Model/ObjectLoading/ModelLoader.cpp
 		Model/Mesh.cpp
         Model/Model.cpp
-		Model/SplashScreen.cpp
         Model/SkeletalAnimation.cpp
 		Model/Animator.cpp
 		Model/Animator.cpp

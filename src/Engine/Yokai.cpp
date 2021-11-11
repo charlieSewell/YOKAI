@@ -190,6 +190,7 @@ bool Yokai::GetIsPaused() const
 {
     return m_isPaused;
 }
+
 ModelManager* Yokai::GetModelManager()
 {
     return &m_modelManager;

@@ -185,7 +185,7 @@ std::vector<ModelTexture> ModelLoader::LoadMaterialTextures(aiMaterial *mat, aiT
         {   // if texture hasn't been loaded already, load it
             ModelTexture texture;
             std::string fileName = m_directory +"/" + str.C_Str();
-            texture.texture = TextureManager::getInstance().loadTexture(fileName);
+            texture.texture = m_textureManager.LoadTexture(fileName);
             texture.type = typeName;
             texture.path = str.C_Str();
             textures.push_back(texture);

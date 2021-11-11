@@ -102,4 +102,6 @@ class ModelLoader
     Node m_rootAnimNode;
     ///string that stores the directory
     std::string m_directory;
+    ///Texture manager
+    TextureManager m_textureManager;
 };

@@ -1,31 +1,26 @@
 
 #include "TextureManager.hpp"
 TextureManager::TextureManager() {
-    textureCount = 0;
+    m_textureCount = 0;
 }
-TextureManager& TextureManager::getInstance()
+std::shared_ptr<Texture> TextureManager::GetTexture(unsigned int textureID)
 {
-    static TextureManager instance;
-    return instance;
+    return m_textures.at(textureID).second;
 }
-std::shared_ptr<Texture> TextureManager::getTexture(unsigned int textureID)
+std::shared_ptr<Texture> TextureManager::LoadTexture(const std::string &textureName)
 {
-    return textures.at(textureID).second;
-}
-unsigned int TextureManager::loadTexture(const std::string &textureName)
-{
-    for(auto& texture : textures)
+    for(auto& texture : m_textures)
     {
         if(texture.second.first == textureName)
         {
-            return texture.first;
+            return(m_textures.at(texture.first).second);
         }
     }
-    textures.emplace(textureCount,std::pair(textureName,Texture::Create(textureName)));
-    textureCount++;
-    return(textureCount -1);
+    m_textures.emplace(m_textureCount,std::pair(textureName,Texture::Create(textureName)));
+    m_textureCount++;
+    return(m_textures.at(m_textureCount-1).second);
 }
-void TextureManager::replaceTexture(size_t slot, const std::string &newTexturePath)
+void TextureManager::ReplaceTexture(size_t slot, const std::string &newTexturePath)
 {
-    textures.at(slot) = std::pair(newTexturePath,Texture::Create(newTexturePath));
+    m_textures.at(slot) = std::pair(newTexturePath,Texture::Create(newTexturePath));
 }

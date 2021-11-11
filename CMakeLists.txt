@@ -5,7 +5,7 @@ if(APPLE)
 endif(APPLE)
 # Set the project details.
 set(PROJECT_NAME YOKAI)
-project(${PROJECT_NAME} LANGUAGES CXX)
+project(${PROJECT_NAME} LANGUAGES C CXX)
 
 # If enabled, the post build symlink will copy instead.
 option(CopyResources "CopyResources" ON)

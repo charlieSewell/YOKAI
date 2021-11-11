@@ -3,7 +3,6 @@
 //
 #pragma once
 #include "OpenGLRenderer.hpp"
-#include "Engine/TextureManager.hpp"
 #include <glm/gtx/string_cast.hpp>
 #include <Physics/PhysicsSystem.hpp>
 void OpenGLRenderer::Init() 
@@ -333,37 +332,35 @@ void OpenGLRenderer::SetDepthTesting(bool isEnabled)
         glDisable(GL_DEPTH_TEST);
     }
 }
- const void OpenGLRenderer::DrawMesh(Shader* shader,Mesh* mesh)
- {
-     unsigned int diffuseNr = 1;
-     unsigned int specularNr = 1;
-     unsigned int normalNumber = 1;
-	 unsigned int heightNumber = 1;
-     auto& textures = mesh->getTextures();
-     for(unsigned int i = 0; i < textures.size(); i++)
-     {
-         TextureManager::getInstance().getTexture(textures[i].texture)->Bind(i);
-         std::string number;
-         std::string name = textures[i].type;
-         if(name == "texture_diffuse")
-             number = std::to_string(diffuseNr++);
+const void OpenGLRenderer::DrawMesh(Shader* shader,Mesh* mesh)
+{
+    unsigned int diffuseNr = 1;
+    unsigned int specularNr = 1;
+    unsigned int normalNumber = 1;
+	unsigned int heightNumber = 1;
+    auto& textures = mesh->getTextures();
+    for(unsigned int i = 0; i < textures.size(); i++)
+    {
+        textures[i].texture->Bind(i);
+        std::string number;
+        std::string name = textures[i].type;
+        if(name == "texture_diffuse")
+            number = std::to_string(diffuseNr++);
          else if(name == "texture_specular")
-             number = std::to_string(specularNr++);
+        	number = std::to_string(specularNr++);
          else if(name == "texture_normal")
-             number = std::to_string(normalNumber++);
+            number = std::to_string(normalNumber++);
          else if(name == "texture_height")
-             number = std::to_string(heightNumber++);
-        shader->SetInt((name + number).c_str(), i);
-     }
-
-     DrawArrays(*mesh->GetVAO(),mesh->getIndices()->size());
+            number = std::to_string(heightNumber++);
+    	shader->SetInt((name + number).c_str(), i);
+    }
+    DrawArrays(*mesh->GetVAO(),mesh->getIndices()->size());
 
     // Reset to defaults
 	for (size_t i = 0; i < textures.size(); i++) 
 	{
-		TextureManager::getInstance().getTexture(textures[i].texture)->UnBind(i);
-	}
-     
+		textures[i].texture->UnBind(i);
+	}    
 }
 void OpenGLRenderer::SubmitDraw(RENDER::DrawItem drawItem)
 {

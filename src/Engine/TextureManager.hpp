@@ -9,35 +9,30 @@
 class TextureManager{
 public:
     /**
-     * @brief returns the instance of the texture manager
-     * @return TextureManager&
+     * @brief Default private constructor
      */
-    static TextureManager &getInstance();
+    TextureManager();
     /**
      * @brief Loads a texture given a filename
      * @param textureName
      * @return textureID
      */
-    unsigned int loadTexture(const std::string& textureName);
+    std::shared_ptr<Texture> LoadTexture(const std::string& textureName);
     /**
      * @brief Gets a texture from an ID
      * @param textureID
      * @return Texture*
      */
-    std::shared_ptr<Texture> getTexture(unsigned int textureID);
+    std::shared_ptr<Texture> GetTexture(unsigned int textureID);
     /**
      * @brief Replace a texture with a new one
      * @param slot
      * @param newTexturePath
      */
-    void replaceTexture(size_t slot,const std::string& newTexturePath);
+    void ReplaceTexture(size_t slot,const std::string& newTexturePath);
 private:
-    /**
-     * @brief Default private constructor
-     */
-    TextureManager();
     ///map of textures to IDs
-    std::map<unsigned int,std::pair<std::string,std::shared_ptr<Texture>>> textures;
+    std::map<unsigned int,std::pair<std::string,std::shared_ptr<Texture>>> m_textures;
     ///texture count
-    unsigned int textureCount;
+    unsigned int m_textureCount;
 };
