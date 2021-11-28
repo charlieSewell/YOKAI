@@ -7,7 +7,6 @@
 #include <map>
 #include <array>
 #include <glm/glm.hpp>
-#include "Export.hpp"
 #include <memory>
 #include <vector>
 
@@ -15,7 +14,7 @@
  * @class ModelManager
  * @brief Responsible for managing models
  */
-class YOKAI_API ModelManager
+class ModelManager
 {
   public:
     /*!

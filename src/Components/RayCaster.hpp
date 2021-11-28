@@ -2,12 +2,11 @@
 
 #include "Physics/PhysicsSystem.hpp"
 #include "Component.hpp"
-#include "Export.hpp"
 /**
  * @class RayCaster
  * @brief Casts rays for object picking
  */
-class YOKAI_API RayCaster : public Component, public rp3d::RaycastCallback {
+class RayCaster : public Component, public rp3d::RaycastCallback {
 
 public:
     /**

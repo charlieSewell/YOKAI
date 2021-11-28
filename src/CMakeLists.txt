@@ -1,56 +1,66 @@
+set(SHADERS
+        src/Shaders/varying.def.sc
+        src/Shaders/vs_ocornut_imgui.sc
+        src/Shaders/fs_ocornut_imgui.sc
+        PARENT_SCOPE
+)
+
+
 # Add source files.
-target_sources(${PROJECT_NAME} PRIVATE
-		Model/ObjectLoading/ModelLoader.cpp
-		Model/Mesh.cpp
-        Model/Model.cpp
-        Model/SkeletalAnimation.cpp
-		Model/Animator.cpp
-		Model/Animator.cpp
+set(SOURCES
+		src/Model/ObjectLoading/ModelLoader.cpp
+		src/Model/Mesh.cpp
+        src/Model/Model.cpp
+        src/Model/SkeletalAnimation.cpp
+		src/Model/Animator.cpp
+		src/Model/Animator.cpp
 
-		Components/Transform.cpp
-		Components/DrawableEntity.cpp
-		Components/ConcaveCollider.cpp
-		Components/SphereCollider.cpp
-		Components/BoxCollider.cpp
-		Components/Camera.cpp
-		Components/RayCaster.cpp
-		Components/AutomatedBehaviours.cpp
-		Components/InputComponent.cpp
+		src/Components/Transform.cpp
+		src/Components/DrawableEntity.cpp
+		src/Components/ConcaveCollider.cpp
+		src/Components/SphereCollider.cpp
+		src/Components/BoxCollider.cpp
+		src/Components/Camera.cpp
+		src/Components/RayCaster.cpp
+		src/Components/AutomatedBehaviours.cpp
+		src/Components/InputComponent.cpp
 
-        Renderer/Shader.cpp
-        Renderer/DataTypes.cpp
-        Renderer/Renderer.cpp
-        Renderer/RenderAPI.cpp
-        Renderer/Window.cpp
-        Renderer/OpenGL/OpenGLRenderer.cpp
-        Renderer/OpenGL/OpenGLDataTypes.cpp
-        Renderer/OpenGL/FileIO.cpp
-		Renderer/LightManager.cpp
+        src/Renderer/Shader.cpp
+        src/Renderer/DataTypes.cpp
+        src/Renderer/Renderer.cpp
+        src/Renderer/RenderAPI.cpp
+        src/Renderer/Window.cpp
+        src/Renderer/OpenGL/OpenGLRenderer.cpp
+        src/Renderer/OpenGL/OpenGLDataTypes.cpp
+        src/Renderer/OpenGL/FileIO.cpp
+		src/Renderer/LightManager.cpp
+		src/Renderer/bgfx/bgfxutil.cpp
+		src/Renderer/bgfx/bgfxDataTypes.cpp
+		src/Renderer/bgfx/bgfxShader.cpp
 
-		Engine/GameObject.cpp
-		Engine/Yokai.cpp
-		Engine/ModelManager.cpp
-		Engine/EventManager.cpp
-		Engine/InputManagerGLFW.cpp
-		Engine/GameObjectManager.cpp
-		Engine/TextureManager.cpp
-		Engine/JSONHelper.cpp
-		Engine/JSONTypes.cpp
-		Engine/Scene.cpp
+		src/Engine/GameObject.cpp
+		src/Engine/Yokai.cpp
+		src/Engine/ModelManager.cpp
+		src/Engine/EventManager.cpp
+		src/Engine/InputManagerGLFW.cpp
+		src/Engine/GameObjectManager.cpp
+		src/Engine/TextureManager.cpp
+		src/Engine/JSONHelper.cpp
+		src/Engine/JSONTypes.cpp
+		src/Engine/Scene.cpp
 
-        Physics/Shapes/ReactTerrainShape.cpp
-        Physics/PhysicsSystem.cpp
-        Physics/ReactMath.cpp
-        Physics/CollisionBody.cpp
-		Physics/RigidBody.cpp
-        Physics/Shapes/ReactBoxShape.cpp
-        Physics/Shapes/ReactShape.cpp
-        Physics/Shapes/ReactSphereShape.cpp
-        Physics/Shapes/ReactTerrainShape.cpp
-        Physics/Shapes/ReactConcaveShape.cpp
-		Physics/ResolutionFunctions.cpp
-		Physics/PhysicsResolution.cpp
+        src/Physics/Shapes/ReactTerrainShape.cpp
+        src/Physics/PhysicsSystem.cpp
+        src/Physics/ReactMath.cpp
+        src/Physics/CollisionBody.cpp
+		src/Physics/RigidBody.cpp
+        src/Physics/Shapes/ReactBoxShape.cpp
+        src/Physics/Shapes/ReactShape.cpp
+        src/Physics/Shapes/ReactSphereShape.cpp
+        src/Physics/Shapes/ReactTerrainShape.cpp
+        src/Physics/Shapes/ReactConcaveShape.cpp
+		src/Physics/ResolutionFunctions.cpp
+		src/Physics/PhysicsResolution.cpp
+        PARENT_SCOPE
         )
 
-# Include project header files.
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

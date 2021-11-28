@@ -3,14 +3,13 @@
 #include "Transform.hpp"
 #include "Components/RayCaster.hpp"
 #include "Component.hpp"
-#include "Export.hpp"
 #include <glm/gtc/random.hpp>
 
 /**
  * @class AutomatedBehaviours
  * @brief Behaviours for AI
  */
-class YOKAI_API AutomatedBehaviours : public Component
+class AutomatedBehaviours : public Component
 {
 public:
 	

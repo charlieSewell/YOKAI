@@ -4,12 +4,11 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include "Component.hpp"
-#include "Export.hpp"
 /**
  * @class Transform
  * @brief Class that encapsulates glm mat4
  */
-class YOKAI_API Transform : public Component
+class Transform : public Component
 {
 public:
 

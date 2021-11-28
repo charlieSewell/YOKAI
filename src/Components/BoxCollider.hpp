@@ -2,7 +2,6 @@
 #include "Transform.hpp"
 #include "Engine/GameObject.hpp"
 #include "Component.hpp"
-#include "Export.hpp"
 #include "Physics/PhysicsSystem.hpp"
 #include "Physics/CollisionBody.hpp"
 #include "Physics/ResolutionFunctions.hpp"
@@ -10,7 +9,7 @@
  * @class BoxCollider
  * @brief Box collider component
  */
-class YOKAI_API BoxCollider : public Component {
+class BoxCollider : public Component {
 public:
     /**
      * @brief Construct a new Box Collider object

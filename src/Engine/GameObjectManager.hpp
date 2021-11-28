@@ -1,13 +1,12 @@
 #pragma once
 #include <map>
 #include "GameObject.hpp"
-#include "Export.hpp"
 #include "imgui/imgui.h"
 /**
  * @class GameObjectManager
  * @brief Responsible for the management of all game objects created
  */
-class YOKAI_API GameObjectManager
+class GameObjectManager
 {
   public:
     /**

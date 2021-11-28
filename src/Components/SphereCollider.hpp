@@ -3,14 +3,13 @@
 #include "Transform.hpp"
 #include "Engine/GameObject.hpp"
 #include "Component.hpp"
-#include "Export.hpp"
 #include "Physics/PhysicsSystem.hpp"
 #include "Physics/ResolutionFunctions.hpp"
 /**
  * @class Sphere Collider
  * @brief Sphere Collider Components
  */
-class YOKAI_API SphereCollider : public Component {
+class SphereCollider : public Component {
 public:
     /**
      * @brief Construct a new Sphere Collider object

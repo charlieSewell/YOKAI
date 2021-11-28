@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Components/Component.hpp"
-#include "Export.hpp"
 #include <vector>
 #include <memory>
 #include <string>
@@ -11,7 +10,7 @@
  * @Class GameObject
  * @brief Generic game object type that holds components
  */
-class YOKAI_API GameObject
+class GameObject
 {
     public:
         /**

@@ -5,13 +5,12 @@
 #include "DrawableEntity.hpp"
 #include "Engine/GameObject.hpp"
 #include "Component.hpp"
-#include "Export.hpp"
 #include "Physics/PhysicsSystem.hpp"
 /**
  * @class ConcaveCollider
  * @brief A concave bounding volume 
  */
-class YOKAI_API ConcaveCollider : public Component {
+class ConcaveCollider : public Component {
     public: 
         /**
          * @brief Construct a new Concave Collider object

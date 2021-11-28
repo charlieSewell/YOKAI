@@ -5,14 +5,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Component.hpp"
 #include "Engine/GameObject.hpp"
-#include "Export.hpp"
 #include "Transform.hpp"
 
 /**
  * @class Camera
  * @brief Camera component to attach to game object
  */
-class YOKAI_API Camera : public Component
+class Camera : public Component
 {
     public:
         /**

@@ -1,7 +1,7 @@
 #include "ResolutionFunctions.hpp"
 
 
-glm::mat3x3 YokaiPhysics::RectangleInertiaTensor(glm::dvec3 ext, double mass) 
+glm::mat3x3 YokaiPhysics::RectangleInertiaTensor(glm::dvec3 ext, float mass) 
 {
     //Rectangular cylinder: Ixx = (1/12) m(a2 + l2); Iyy = (1/12) m(b2 + l2); Izz = (1/12) m(a2 + b2)
     glm::mat3x3 inertia(0.0);
@@ -21,7 +21,7 @@ glm::mat3x3 YokaiPhysics::RectangleInertiaTensor(glm::dvec3 ext, double mass)
     return inertia;
 }
 
-glm::mat3x3 YokaiPhysics::SphereInertiaTensor(double radius, double mass) 
+glm::mat3x3 YokaiPhysics::SphereInertiaTensor(float radius, float mass) 
 {
     // Sphere: Ixx = Iyy = Izz = (2/5) mr2
     glm::dmat3x3 inertia{};
@@ -33,12 +33,12 @@ glm::mat3x3 YokaiPhysics::SphereInertiaTensor(double radius, double mass)
     return inertia;
 }
 
-double YokaiPhysics::DegreesToRadians(double degrees) 
+float YokaiPhysics::DegreesToRadians(float degrees) 
 {
     return (degrees * (PI / 180));
 }
 
-double YokaiPhysics::RadiansToDegrees(double radians) 
+float YokaiPhysics::RadiansToDegrees(float radians) 
 {
     return (radians * (180 / PI));
 }

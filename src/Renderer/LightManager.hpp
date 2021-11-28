@@ -1,10 +1,9 @@
 #pragma once
 #include "DataTypes.hpp"
 #include "Renderer/Renderer.hpp"
-#include "Export.hpp"
 #include <Imgui/imgui.h>
 #include "Engine/JSONTypes.hpp"
-class YOKAI_API LightManager
+class LightManager
 {
     public:
         /**

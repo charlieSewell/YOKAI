@@ -5,7 +5,6 @@
 #include <wctype.h>
 #include "Engine/GameObject.hpp"
 #include "Component.hpp"
-#include "Export.hpp"
 #include "Engine/InputManagerGLFW.hpp"
 #include <map>
 
@@ -13,7 +12,7 @@
  * @class InputManagerGLFW
  * @brief Manages the GLFW input
  */
-class YOKAI_API Input : public Component
+class Input : public Component
 {
   public:
   	Input();

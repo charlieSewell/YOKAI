@@ -4,32 +4,30 @@
 
 void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &callbackData) 
 {   
-    for (int p = 0; p < callbackData.getNbContactPairs(); p++) 
+    for (unsigned int p = 0; p < callbackData.getNbContactPairs(); p++) 
     {
         CollisionCallback::ContactPair contactPair = callbackData.getContactPair(p);
 
         int body1 = contactPair.getCollider1()->getEntity().id;
         int body2 = contactPair.getCollider2()->getEntity().id;
 
-        CollisionCallback::ContactPair::EventType eventType = contactPair.getEventType();
-
         if ((!PhysicsSystem::getInstance().GetPhysicsBody(body1)->GetIsStaticObject() || !PhysicsSystem::getInstance().GetPhysicsBody(body2)->GetIsStaticObject())) 
         {
-            for (int c = 0; c < contactPair.getNbContactPoints(); c++) 
+            for (unsigned int c = 0; c < contactPair.getNbContactPoints(); c++) 
             {
                 CollisionCallback::ContactPoint contactPoint = contactPair.getContactPoint(c);
                 float penetration = contactPoint.getPenetrationDepth();
-                glm::dvec3 contactNormal = ReactMath::rp3dVecToGlm(const_cast<rp3d::Vector3&>(contactPoint.getWorldNormal()));
+                glm::vec3 contactNormal = ReactMath::rp3dVecToGlm(const_cast<rp3d::Vector3&>(contactPoint.getWorldNormal()));
 
                 // Get the contact point on the first collider and convert it in world-space
-                glm::dvec3 body1ContactPoint = ReactMath::rp3dVecToGlm(contactPair.getCollider1()->getLocalToWorldTransform() * contactPoint.getLocalPointOnCollider1());
-                glm::dvec3 body2ContactPoint = ReactMath::rp3dVecToGlm(contactPair.getCollider1()->getLocalToWorldTransform() * contactPoint.getLocalPointOnCollider2());
+                glm::vec3 body1ContactPoint = ReactMath::rp3dVecToGlm(contactPair.getCollider1()->getLocalToWorldTransform() * contactPoint.getLocalPointOnCollider1());
+                glm::vec3 body2ContactPoint = ReactMath::rp3dVecToGlm(contactPair.getCollider1()->getLocalToWorldTransform() * contactPoint.getLocalPointOnCollider2());
 
                 //std::cout << "b1 col - (" << body1ContactPoint.x << ", " << body1ContactPoint.y << ", " << body1ContactPoint.z << ")" << std::endl;
                 //std::cout << "b2 col - (" << body2ContactPoint.x << ", " << body2ContactPoint.y << ", " << body2ContactPoint.z << ")" << std::endl;
 
                 ResolvePenetration(body1, body2, penetration, contactNormal);
-                CollisionResolution(body1, body2, penetration, contactNormal, body1ContactPoint, body2ContactPoint, eventType);
+                CollisionResolution(body1, body2, contactNormal, body1ContactPoint, body2ContactPoint);
             }
         }
     }
@@ -49,10 +47,10 @@ void PhysicsResolution::ResolvePenetration(int body1, int body2, float penetrati
     }
 }
 
-void PhysicsResolution::CollisionResolution(int body1, int body2, float penetration, glm::vec3 contactNormal, glm::vec3 body1ContactPoint, glm::vec3 body2ContactPoint, CollisionCallback::ContactPair::EventType eventType) 
+void PhysicsResolution::CollisionResolution(int body1, int body2, glm::vec3 contactNormal, glm::vec3 body1ContactPoint, glm::vec3 body2ContactPoint) 
 {
     //Coefficient of restitution (Changes elasticity of collisions)
-    float coefficientOfRestitution = 0.6;
+    float coefficientOfRestitution = 0.6f;
 
     //Pointers to collision bodies
     CollisionBody* body1Ptr = PhysicsSystem::getInstance().GetPhysicsBody(body1);
@@ -70,7 +68,7 @@ void PhysicsResolution::CollisionResolution(int body1, int body2, float penetrat
     glm::vec3 r2 = body2ContactPoint - (body2Ptr->GetPosition());
 
     //Restitution numerator value
-    float restitution = -(1.0 + coefficientOfRestitution);
+    float restitution = -(1.0f + coefficientOfRestitution);
     //Relative linear velocity between the two objects
     glm::vec3 relativeVelocity = linearVelocity1 - linearVelocity2;
     //Sum of the inverse mass for both bodies

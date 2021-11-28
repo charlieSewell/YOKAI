@@ -20,7 +20,7 @@ std::shared_ptr<VertexArrayBuffer> VertexArrayBuffer::Create(std::vector<Vertex>
     return std::make_shared<OpenGLVertexArrayBuffer>(vertices,indices);
 }
 
-std::shared_ptr<Texture> Texture::Create(const std::string& fileName)
+std::shared_ptr<Texture> Texture::Create(const std::string fileName)
 {
     return std::make_shared<OpenGLTexture>(fileName);
 }

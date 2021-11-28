@@ -27,6 +27,10 @@ option(GLFW_BUILD_EXAMPLES OFF)
 add_subdirectory(glfw)
 add_subdirectory(spdlog)
 
+add_definitions(-DBGFX_CONFIG_RENDERER_OPENGL_MIN_VERSION=43)
+add_definitions(-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS)
+add_subdirectory( bgfx.cmake )
+
 set_target_properties(reactphysics3d PROPERTIES ENABLE_EXPORTS ON)
 set_target_properties(reactphysics3d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
@@ -35,6 +39,11 @@ set_target_properties(assimp PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(glfw PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(glew PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(reactphysics3d PROPERTIES DEBUG_POSTFIX "")
+
+#Need Alloca for msvc
+if(MSVC)
+        target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC bgfx.cmake/bx/include/compat/msvc)
+endif()
 
 # Ignore warnings from library headers.
 target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
@@ -49,4 +58,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
 	ImGuizmo/include
         spdlog/include
         glm
+        bgfx.cmake/bgfx/include
+        bgfx.cmake/bx/include
+        bgfx.cmake/bimg/include
 )

@@ -21,7 +21,7 @@ class OpenGLTexture : public Texture
      * @brief Constructor for OpenGLTexture
      * @param string - fileName
      */
-    OpenGLTexture(const std::string& fileName);
+    OpenGLTexture(const std::string fileName);
     /**
      * @brief Binds the texture
      * @param size_t - slot

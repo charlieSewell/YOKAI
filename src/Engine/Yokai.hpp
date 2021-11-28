@@ -5,7 +5,6 @@
 #include "Renderer/Window.hpp"
 #include "Engine/Scene.hpp"
 #include <spdlog/spdlog.h>
-#include "Export.hpp"
 #include "ModelManager.hpp"
 #include "Physics/PhysicsResolution.hpp"
 //workaround to allow vector of layer pointers
@@ -16,7 +15,7 @@ class PhysicsResolution;
  * @class Yokai
  * @brief A class which ties together all game engine components
  */
-class YOKAI_API Yokai 
+class Yokai 
 {
 public:
     /**

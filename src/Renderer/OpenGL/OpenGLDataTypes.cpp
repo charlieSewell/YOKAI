@@ -7,7 +7,7 @@
 #include "Renderer/OpenGL/FileIO.hpp"
 #include <spdlog/spdlog.h>
 
-OpenGLTexture::OpenGLTexture(const std::string& path)
+OpenGLTexture::OpenGLTexture(const std::string path)
 {
     std::string filename = std::string(path);
     glGenTextures(1, &m_textureID);

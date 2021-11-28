@@ -13,20 +13,20 @@
  */
 struct Vertex
 {
-    ///position of vertex
-    glm::vec3 position = {};
-    ///normal of vertex
-    glm::vec3 normal = {};
-    ///texture coordinates of vertex
-    glm::vec2 textureCoords = {};
-    ///tangent of vertex
-    glm::vec3 tangent = {};
-    ///biTangent of vertex
-    glm::vec3 biTangent = {};
-    ///bone IDs
-    glm::ivec4 boneIDs = {};
-    ///bone weights
-    glm::vec4 boneWeights = {};
+  ///position of vertex
+  glm::vec3 position = {};
+  ///normal of vertex
+  glm::vec3 normal = {};
+  ///texture coordinates of vertex
+  glm::vec2 textureCoords = {};
+  ///tangent of vertex
+  glm::vec3 tangent = {};
+  ///biTangent of vertex
+  glm::vec3 biTangent = {};
+  ///bone IDs
+  glm::ivec4 boneIDs = {};
+  ///bone weights
+  glm::vec4 boneWeights = {};
 };
 /**
  * @class Texture
@@ -58,7 +58,7 @@ class Texture
      * @param fileName
      * @return shared_ptr<Texture>
      */
-    static std::shared_ptr<Texture> Create(const std::string& fileName);
+    static std::shared_ptr<Texture> Create(const std::string fileName);
 };
 /**
  * @struct ModelTexture

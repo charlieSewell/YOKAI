@@ -79,7 +79,7 @@ class Model
      * @brief Gets the size of the bones array
      * @return
      */
-    int GetBonesSize(){return m_bones.size();}
+    size_t GetBonesSize(){return m_bones.size();}
     /**
      * @brief Gets the root node of the model
      * @return

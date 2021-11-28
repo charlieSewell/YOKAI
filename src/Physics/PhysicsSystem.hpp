@@ -8,12 +8,11 @@
 #include "Physics/Shapes/ReactSphereShape.hpp"
 #include "Physics/Shapes/ReactBoxShape.hpp"
 #include "Physics/Shapes/ReactConcaveShape.hpp"
-#include "Export.hpp"
 /**
  * @class PhysicsSystem
  * @brief Singleton that Manages physics
  */
-class YOKAI_API PhysicsSystem
+class PhysicsSystem
 {
 public:
     /**
@@ -119,7 +118,7 @@ private:
     ///object to create physics shapes
     reactphysics3d::PhysicsCommon m_physicsCommon;
     ///physics world for simulation
-    reactphysics3d::PhysicsWorld* m_physicsWorld;
+    reactphysics3d::PhysicsWorld* m_physicsWorld = nullptr;
     bool m_isDebugEnabled = false;
     ///path of vertex shader
     std::string m_vertexPath;

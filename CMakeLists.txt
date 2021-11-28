@@ -39,13 +39,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG    ${CMAKE_BINARY_DIR})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG    ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG    ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE  ${CMAKE_BINARY_DIR}/lib)
-
 # CppUTest
 include(FetchContent)
 FetchContent_Declare(
@@ -66,13 +59,21 @@ if(NOT json_POPULATED)
   FetchContent_Populate(json)
   add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
+# Define source files.
+add_subdirectory(src)
 
-# Define the Library.
-add_library(${PROJECT_NAME} SHARED)
+add_library(${PROJECT_NAME} STATIC ${SOURCES} ${SHADERS})
+# Build 3rd Party Libraries
+add_subdirectory(lib)
 
-# Define the executable.
-add_executable(run_tests tests/main_tests.cpp)
+# Include project header files.
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
+# Define the Tests Executab;e
+add_executable(run_tests tests/main_tests.cpp )
+
+# Define Tests
+add_subdirectory(tests)
 
 # Set C++ standard.
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -85,14 +86,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Find dependencies.
 # find_package(OpenGLRenderer REQUIRED COMPONENTS OpenGLRenderer)
 find_package(OpenGL REQUIRED)
-# Build 3rd Party Libraries
-add_subdirectory(lib)
-
-# Define source files.
-add_subdirectory(src)
-
-# Define Tests
-add_subdirectory(tests)
 
 # Remove the default warning level from MSVC.
 if (MSVC)
@@ -122,15 +115,65 @@ target_compile_options(${PROJECT_NAME} PUBLIC
         # Enable the clang sanitizer.
         $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>
         )
-
 # Link against the clang sanitizer.
 target_link_options(${PROJECT_NAME} PUBLIC
         $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>
         )
-set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE 1)
 # Include and link against dependencies.
-target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glew assimp glm reactphysics3d spdlog::spdlog imgui imguizmo nlohmann_json::nlohmann_json${CMAKE_DL_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glew bgfx assimp glm reactphysics3d spdlog::spdlog imgui imguizmo nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})
 
 target_link_libraries(run_tests PUBLIC YOKAI CppUTest CppUTestExt ${CMAKE_DL_LIBS})
 
 target_include_directories(run_tests PUBLIC ${CppUTest_SOURCE_DIR}/include)
+
+set(SHADER_DIR ${CMAKE_BINARY_DIR}/shaders)
+# target to force all shaders to recompile on the next build
+# sometimes handy after changing included header files (.sh)
+# since add_shader doesn't take those dependencies into account
+add_custom_target(invalidate_shaders)
+
+foreach(SHADER ${SHADERS})
+    get_filename_component(SHADER_NAME ${SHADER} NAME)
+    get_filename_component(SHADER_FILE ${SHADER} ABSOLUTE)
+    # add_shader defaults to GLSL 120, 430 for compute
+    # GLSL 1.30 is needed for switch statements but shaderc produces shader
+    # binaries without any #version directive unless we request 4.00 or higher
+    # this makes shader compilation fail with no error message
+    # just use 4.30 for all shaders
+    # default DX11 model is 5_0
+    set(GLSL_VERSION 430)
+    set(GLSL_COMPUTE_VERSION 430)
+    set(DX_MODEL 5_0)
+
+    # DX9/11 shaders can only be compiled on Windows
+    set(SHADER_PLATFORMS glsl spirv)
+    if(WIN32)
+        set(SHADER_PLATFORMS ${SHADER_PLATFORMS} dx11)
+    endif()
+
+    if(SHADER_NAME MATCHES "^vs_")
+        add_shader(${SHADER_FILE} VERTEX
+            OUTPUT ${SHADER_DIR}
+            GLSL_VERSION ${GLSL_VERSION}
+            DX11_MODEL ${DX_MODEL}
+            PLATFORMS ${SHADER_PLATFORMS})
+    elseif(SHADER_NAME MATCHES "^fs_")
+        add_shader(${SHADER_FILE} FRAGMENT
+            OUTPUT ${SHADER_DIR}
+            GLSL_VERSION ${GLSL_VERSION}
+            DX11_MODEL ${DX_MODEL}
+            PLATFORMS ${SHADER_PLATFORMS})
+    elseif(SHADER_NAME MATCHES ^cs_)
+        add_shader(${SHADER_FILE} COMPUTE
+            OUTPUT ${SHADER_DIR}
+            GLSL_VERSION ${GLSL_COMPUTE_VERSION}
+            DX11_MODEL ${DX_MODEL}
+            PLATFORMS ${SHADER_PLATFORMS})
+    endif()
+    add_custom_command(TARGET invalidate_shaders PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E touch ${SHADER_FILE})
+endforeach()
+
+# add_shader does this, do it manually for includes/varying.def.sc
+source_group("Shader Files" FILES ${SHADERS})
+install(DIRECTORY ${SHADER_DIR} DESTINATION build)

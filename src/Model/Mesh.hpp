@@ -67,13 +67,13 @@ class Mesh
     std::shared_ptr<VertexArrayBuffer> GetVAO(){return VAO;}
   private:
     ///Pointer to the Mesh vertex array
-    std::shared_ptr<VertexArrayBuffer> VAO;
+    std::shared_ptr<VertexArrayBuffer> VAO = nullptr;
     ///mesh vertices
-    std::vector<Vertex> vertices;
+    std::vector<Vertex> vertices = {};
     ///mesh indices
-    std::vector<unsigned int> indices;
+    std::vector<unsigned int> indices = {};
     ///mesh textures
-    std::vector<ModelTexture> textures;
+    std::vector<ModelTexture> textures = {};
     ///mesh transform
-    glm::mat4 transform;
+    glm::mat4 transform = {};
 };

@@ -38,7 +38,7 @@ void OpenGLRenderer::Init()
 	lightAccumulationShader->SetFloat("zFar",zFar);
 	
 	hdr->UseShader();
-	hdr->SetFloat("exposure", 0.5f);
+	hdr->SetFloat("exposure", 5.0f);
     SPDLOG_INFO("OpenGL version: {}",glGetString(GL_VERSION));
 	SPDLOG_INFO("GLSL version: {}",glGetString(GL_SHADING_LANGUAGE_VERSION));
 	SPDLOG_INFO("Vendor: {}",glGetString(GL_VENDOR));
