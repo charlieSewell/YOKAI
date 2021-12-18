@@ -29,7 +29,10 @@ add_subdirectory(spdlog)
 
 add_definitions(-DBGFX_CONFIG_RENDERER_OPENGL_MIN_VERSION=43)
 add_definitions(-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS)
-add_subdirectory( bgfx.cmake )
+
+set(BGFX_LIBRARY_TYPE "STATIC")
+
+add_subdirectory(bgfx.cmake)
 
 set_target_properties(reactphysics3d PROPERTIES ENABLE_EXPORTS ON)
 set_target_properties(reactphysics3d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)

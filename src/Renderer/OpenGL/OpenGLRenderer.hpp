@@ -10,7 +10,6 @@
 #include <backends/imgui_impl_opengl3.h>
 #include "Renderer/RenderAPI.hpp"
 #include "Renderer/DataTypes.hpp"
-#include "GLFW/glfw3.h"
 #include "Engine/EventManager.hpp"
 /**
  * @class OpenGLRenderer
@@ -58,7 +57,7 @@ class OpenGLRenderer : public RenderAPI
      * @param bool - isEnabled
      */
     void SetDepthTesting(bool isEnabled) override;
-    void DrawScene() override;
+    void DrawScene(float dt) override;
     void SubmitDraw(RENDER::DrawItem drawItem) override; 
     void UpdateLights(std::vector<PointLight> &lightsArray);
     void ResetLightsBuffer();

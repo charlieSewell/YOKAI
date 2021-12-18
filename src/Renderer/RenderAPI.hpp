@@ -3,10 +3,13 @@
 //
 
 #pragma once
+#include <GLFW/glfw3.h>
+#include <vector>
 #include "Renderer/DataTypes.hpp"
 #include "Renderer/Shader.hpp"
-#include <vector>
+
 #include "DrawItem.hpp"
+
 
 struct VolumeTileAABB{
     glm::vec4 minPoint = {};
@@ -83,7 +86,7 @@ class RenderAPI
     /**
      * @brief Draws the Scene
      */
-    virtual void DrawScene() = 0;
+    virtual void DrawScene(float dt) = 0;
     /**
      * @brief Adds a mesh to be Drawn
      * @param drawItem 
@@ -94,6 +97,7 @@ class RenderAPI
      * @return shared_ptr<RenderAPI> - renderAPI
      */
     static std::shared_ptr<RenderAPI> Create();
-    
+  protected:
+    GLFWwindow* m_window;
 };
 

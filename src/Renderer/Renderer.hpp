@@ -72,7 +72,7 @@ class Renderer
     /**
      * @brief Draws the Current Scene
      */
-    void DrawScene();
+    void DrawScene(float dt);
   private:
     ///Default constructor for Renderer
     Renderer() = default;

@@ -1,7 +1,12 @@
 set(SHADERS
+		src/Shaders/common.sh
+		src/Shaders/shaderlib.sh
         src/Shaders/varying.def.sc
-        src/Shaders/vs_ocornut_imgui.sc
-        src/Shaders/fs_ocornut_imgui.sc
+		src/Shaders/imgui/varying.def.sc
+        src/Shaders/vs_shader.sc
+        src/Shaders/fs_shader.sc
+		src/Shaders/imgui/vs_ocornut_imgui.sc
+        src/Shaders/imgui/fs_ocornut_imgui.sc
         PARENT_SCOPE
 )
 
@@ -37,6 +42,8 @@ set(SOURCES
 		src/Renderer/bgfx/bgfxutil.cpp
 		src/Renderer/bgfx/bgfxDataTypes.cpp
 		src/Renderer/bgfx/bgfxShader.cpp
+		src/Renderer/bgfx/bgfximgui.hpp
+		src/Renderer/bgfx/bgfxRenderer.cpp
 
 		src/Engine/GameObject.cpp
 		src/Engine/Yokai.cpp

@@ -257,7 +257,7 @@ void OpenGLRenderer::DrawArrays(VertexArrayBuffer& VAO, size_t indicesSize)
 
 }
 
-void OpenGLRenderer::DrawScene()
+void OpenGLRenderer::DrawScene(float dt)
 {
     glm::mat4 view = EMS::getInstance().fire(ReturnMat4Event::getViewMatrix);
     glm::mat4 inverseview = glm::inverse(view);

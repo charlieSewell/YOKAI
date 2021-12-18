@@ -14,14 +14,33 @@ const bgfx::Memory* loadMemory( const char* filename )
 	return nullptr;
 }
 
-bgfx::ShaderHandle loadShader( const char* shader )
+bgfx::ShaderHandle loadShader( std::string shader )
 {
-	return bgfx::createShader( loadMemory( shader ) );
+	return bgfx::createShader(loadMemory( shader.c_str()));
 }
 
-bgfx::ProgramHandle loadProgram( const char* vsName, const char* fsName )
+bgfx::ProgramHandle loadProgram( std::string vsName, std::string fsName )
 {
-	bgfx::ShaderHandle vs = loadShader( vsName );
-	bgfx::ShaderHandle fs = loadShader( fsName );
+	bgfx::ShaderHandle vs;
+	bgfx::ShaderHandle fs;
+	switch(bgfx::getRendererType())
+	{
+		case bgfx::RendererType::OpenGL:
+			vs = loadShader( "Shaders/glsl/"+ vsName );
+			fs = loadShader( "Shaders/glsl/"+ fsName );
+			break;
+		case bgfx::RendererType::Direct3D11:
+			vs = loadShader( "Shaders/dx11/"+ vsName );
+			fs = loadShader( "Shaders/dx11/"+ fsName );
+			break;
+		case bgfx::RendererType::Vulkan:
+			vs = loadShader( "Shaders/spirv/"+ vsName );
+			fs = loadShader( "Shaders/spirv/"+ fsName );
+			break;
+		default:
+			vs = loadShader( "Shaders/glsl/"+ vsName );
+			fs = loadShader( "Shaders/glsl/"+ fsName );
+			break;
+	}
 	return bgfx::createProgram( vs, fs, true );
 }

@@ -21,9 +21,9 @@ void Renderer::DrawArrays(VertexArrayBuffer& VAO,size_t indiceSize)
 {
     m_renderAPI->DrawArrays(VAO,indiceSize);
 }
-void Renderer::DrawScene()
+void Renderer::DrawScene(float dt)
 {
-	m_renderAPI->DrawScene();
+	m_renderAPI->DrawScene(dt);
 }
 void Renderer::DrawGui() 
 {
