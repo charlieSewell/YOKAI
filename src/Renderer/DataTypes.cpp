@@ -3,24 +3,24 @@
 //
 #include "DataTypes.hpp"
 #include <utility>
-#include "Renderer/OpenGL/OpenGLDataTypes.hpp"
+#include "bgfx/bgfxDataTypes.hpp"
 
 std::shared_ptr<VertexBuffer> VertexBuffer::Create(std::vector<Vertex> &vertices)
 {
-    return std::make_shared<OpenGLVertexBuffer>(vertices);
+    return std::make_shared<bgfxVertexBuffer>(vertices);
 }
 
 std::shared_ptr<IndexBuffer> IndexBuffer::Create(std::vector<unsigned int> &indices)
 {
-    return std::make_shared<OpenGLIndexBuffer>(indices);
+    return std::make_shared<bgfxIndexBuffer>(indices);
 }
 
 std::shared_ptr<VertexArrayBuffer> VertexArrayBuffer::Create(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
 {
-    return std::make_shared<OpenGLVertexArrayBuffer>(vertices,indices);
+    return std::make_shared<bgfxVertexArrayBuffer>(vertices,indices);
 }
 
 std::shared_ptr<Texture> Texture::Create(const std::string fileName)
 {
-    return std::make_shared<OpenGLTexture>(fileName);
+    return std::make_shared<bgfxTexture>(fileName);
 }

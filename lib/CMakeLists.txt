@@ -1,5 +1,11 @@
+function(target_ignore_header_warnings target scope)
+    get_target_property(lib_include_dirs ${target} INTERFACE_INCLUDE_DIRECTORIES)
+    target_include_directories(${target} SYSTEM ${scope} ${lib_include_dirs})
+endfunction()
+
 # Library build options.
 option(ASSIMP_BUILD_TESTS OFF)
+option(ASSIMP_BUILD_SAMPLES OFF)
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 option(OPTION_BUILD_TESTS OFF)
 
@@ -15,6 +21,7 @@ add_compile_options(
     # Visual Studio
     $<$<CXX_COMPILER_ID:MSVC>:/W0>
 )
+add_subdirectory(bgfx.cmake)
 add_subdirectory(glm)
 add_subdirectory(assimp)
 add_subdirectory(glew)
@@ -32,36 +39,24 @@ add_definitions(-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS)
 
 set(BGFX_LIBRARY_TYPE "STATIC")
 
-add_subdirectory(bgfx.cmake)
-
 set_target_properties(reactphysics3d PROPERTIES ENABLE_EXPORTS ON)
 set_target_properties(reactphysics3d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
 # Puts a stop to the endlessly irritating practise postfixing 'd' onto debug libraries.
 set_target_properties(assimp PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(glfw PROPERTIES DEBUG_POSTFIX "")
-set_target_properties(glew PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(reactphysics3d PROPERTIES DEBUG_POSTFIX "")
 
-#Need Alloca for msvc
-if(MSVC)
-        target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC bgfx.cmake/bx/include/compat/msvc)
-endif()
-
 # Ignore warnings from library headers.
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
-        glfw/include
-        glfw/src
-        glew/include
-        glew/src
-        assimp/include
-        reactphysics3d/include
-        imgui/imgui
-        imgui/imgui/backends
-	ImGuizmo/include
-        spdlog/include
-        glm
-        bgfx.cmake/bgfx/include
-        bgfx.cmake/bx/include
-        bgfx.cmake/bimg/include
-)
+target_ignore_header_warnings(assimp INTERFACE)
+target_ignore_header_warnings(reactphysics3d INTERFACE)
+target_ignore_header_warnings(glm INTERFACE)
+target_ignore_header_warnings(glfw INTERFACE)
+target_ignore_header_warnings(imgui INTERFACE)
+target_ignore_header_warnings(glew INTERFACE)
+target_ignore_header_warnings(imguizmo INTERFACE)
+target_ignore_header_warnings(bimg INTERFACE)
+target_ignore_header_warnings(spdlog INTERFACE)
+target_ignore_header_warnings(bgfx INTERFACE)
+target_ignore_header_warnings(bx INTERFACE)
+target_ignore_header_warnings(bimg INTERFACE)
+#Need Alloca for msvc

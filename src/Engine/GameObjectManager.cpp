@@ -62,7 +62,6 @@ std::shared_ptr<GameObject> GameObjectManager::GetObject(unsigned int id)
 void GameObjectManager::RenderGUI()
 {
     ImGui::Begin("GameObject Manager");
-    int selectedObject = 0;
     for(auto& object : m_gameObjects)
     {
         ImGui::PushID(object.second->GetObjectID());

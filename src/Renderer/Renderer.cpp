@@ -1,15 +1,15 @@
-#include "Renderer/Renderer.hpp"
+#include "Renderer.hpp"
 
 Renderer& Renderer::getInstance()
 {
     static Renderer instance;
     return instance;
 }
-void Renderer::Init() 
+void Renderer::Init(GLFWwindow* window) 
 {
     try
     {
-        m_renderAPI = RenderAPI::Create();
+        m_renderAPI = RenderAPI::Create(window);
     } catch (const std::exception& e) {
         std::cout << "Exception: "<<e.what() << std::endl;
     }
@@ -42,7 +42,7 @@ void Renderer::registerToggleWireframe()
 		if (wireFrameActive)
 			wireFrameActive = false;
 	};
-	EMS::getInstance().add(NoReturnEvent::toggleWireFrameReleased, toggleWireFrameReleased);
+	//EMS::getInstance().add(NoReturnEvent::toggleWireFrameReleased, toggleWireFrameReleased);
 
 	auto toggleWireFramePressed = [&]()
 	{
@@ -52,7 +52,7 @@ void Renderer::registerToggleWireframe()
 			wireFrameActive = true;
 		}
 	};
-	EMS::getInstance().add(NoReturnEvent::toggleWireFramePressed, toggleWireFramePressed);
+	//EMS::getInstance().add(NoReturnEvent::toggleWireFramePressed, toggleWireFramePressed);
 }
 
 void Renderer::Clear() 

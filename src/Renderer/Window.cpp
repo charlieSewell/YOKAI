@@ -8,11 +8,66 @@ void error_callback(int error, const char* description)
 {
     SPDLOG_ERROR("Error: {} {}",error, description);
 }
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void keyCallback( GLFWwindow* window, int key, int scancode, int action, int mods )
 {
-    glViewport(0, 0, width, height);
+	ImGuiIO& io = ImGui::GetIO();
+	if ( key >= 0 && key < IM_ARRAYSIZE( io.KeysDown ) )
+	{
+		if ( action == GLFW_PRESS )
+		{
+			io.KeysDown[ key ] = true;
+		}
+		else if ( action == GLFW_RELEASE )
+		{
+			io.KeysDown[ key ] = false;
+		}
+	}
+
+	io.KeyCtrl = io.KeysDown[ GLFW_KEY_LEFT_CONTROL ] || io.KeysDown[ GLFW_KEY_RIGHT_CONTROL ];
+	io.KeyShift = io.KeysDown[ GLFW_KEY_LEFT_SHIFT ] || io.KeysDown[ GLFW_KEY_RIGHT_SHIFT ];
+	io.KeyAlt = io.KeysDown[ GLFW_KEY_LEFT_ALT ] || io.KeysDown[ GLFW_KEY_RIGHT_ALT ];
+	io.KeySuper = io.KeysDown[ GLFW_KEY_LEFT_SUPER ] || io.KeysDown[ GLFW_KEY_RIGHT_SUPER ];
 }
+
+void charCallback( GLFWwindow* window, unsigned int codepoint )
+{
+	ImGuiIO& io = ImGui::GetIO();
+	io.AddInputCharacter( codepoint );
+}
+void mouseButtonCallback( GLFWwindow* window, int button, int action, int mods )
+{
+	ImGuiIO& io = ImGui::GetIO();
+	if ( button >= 0 && button < IM_ARRAYSIZE( io.MouseDown ) )
+	{
+		if ( action == GLFW_PRESS )
+		{
+			io.MouseDown[ button ] = true;
+		}
+		else if ( action == GLFW_RELEASE )
+		{
+			io.MouseDown[ button ] = false;
+		}
+	}
+}
+
+void scrollCallback( GLFWwindow* window, double xoffset, double yoffset )
+{
+	ImGuiIO& io = ImGui::GetIO();
+	io.MouseWheelH += ( float )xoffset;
+	io.MouseWheel += ( float )yoffset;
+}
+
+void windowSizeCallback( GLFWwindow* window, int width, int height )
+{
+    /*
+	bigg::Application* app = ( bigg::Application* )glfwGetWindowUserPointer( window );
+	app->mWidth = width;
+	app->mHeight = height;
+	app->reset( app->mReset );
+	app->onWindowSize( width, height );
+    */
+}
+
 bool Window::Init()
 {
     glfwSetErrorCallback(error_callback);
@@ -21,54 +76,30 @@ bool Window::Init()
         SPDLOG_ERROR("GLFW Failed to Initialise");
         return false;
     }
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-	glfwWindowHint(GLFW_SAMPLES, 4);
-
+    glfwWindowHint( GLFW_CLIENT_API, GLFW_NO_API);
 
     m_window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", NULL, NULL);
     //window = glfwCreateWindow(1920, 1080, "YOKAI Game Engine", glfwGetPrimaryMonitor(), nullptr);
 
     if (!m_window)
     {
+        glfwTerminate();
         spdlog::error("Failed to initialise the window");
         return false;
-    }
-
-    glfwMakeContextCurrent(m_window);
-    
-    glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
-
+    }  
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+    glfwSetKeyCallback( m_window, keyCallback );
+	glfwSetCharCallback( m_window, charCallback );
+	glfwSetMouseButtonCallback( m_window, mouseButtonCallback );
+	glfwSetScrollCallback( m_window, scrollCallback );
+	glfwSetWindowSizeCallback( m_window, windowSizeCallback );
+
     SPDLOG_INFO("Window Initialised");
     return true;
 }
-bool Window::ImguiInit()
-{
-    try{
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-        ImGui::StyleColorsDark();
-
-        ImGui_ImplGlfw_InitForOpenGL(m_window, true);
-        ImGui_ImplOpenGL3_Init("#version 130");
-        SPDLOG_INFO("Imgui Initialised");
-        return true;
-    }catch(std::exception &e)
-    {
-        SPDLOG_ERROR("{}",e.what());
-    }
-    return false;
-}
 void Window::DeInit()
 {
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
@@ -79,13 +110,10 @@ GLFWwindow* Window::GetWindow()
 void Window::StartFrame()
 {
     glfwPollEvents();
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
 }
 void Window::EndFrame()
 {
-    glfwSwapBuffers(m_window);
+    //glfwSwapBuffers(m_window);
 }
 glm::vec2 Window::GetWindowSize()
 {

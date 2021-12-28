@@ -1,6 +1,6 @@
 #pragma once
 #include "DataTypes.hpp"
-#include "Renderer/Renderer.hpp"
+#include "Renderer.hpp"
 #include <Imgui/imgui.h>
 #include "Engine/JSONTypes.hpp"
 class LightManager

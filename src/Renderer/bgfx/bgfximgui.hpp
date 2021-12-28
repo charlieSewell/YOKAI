@@ -19,7 +19,7 @@
 #include <imgui.h>
 #include "bgfxutil.hpp"
 #include <GLFW/glfw3native.h>
-
+#include <spdlog/spdlog.h>
 
 static bgfx::VertexLayout  imguiVertexLayout;
 static bgfx::TextureHandle imguiFontTexture;
@@ -55,9 +55,9 @@ static void imguiInit( GLFWwindow* window )
 	io.Fonts->GetTexDataAsRGBA32( &data, &width, &height );
 	imguiFontTexture = bgfx::createTexture2D( ( uint16_t )width, ( uint16_t )height, false, 1, bgfx::TextureFormat::BGRA8, 0, bgfx::copy( data, width*height * 4 ) );
 	imguiFontUniform = bgfx::createUniform( "s_tex", bgfx::UniformType::Sampler );
-
-	imguiProgram = loadProgram("vs_ocurnut_imgui.bin","fs_ocurnut_imgui.bin");
-
+	
+	imguiProgram = loadProgram("vs_ocornut_imgui.bin","fs_ocornut_imgui.bin");
+	SPDLOG_INFO("Renderer Initialised");	
 	// Setup back-end capabilities flags
 	io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 	io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;

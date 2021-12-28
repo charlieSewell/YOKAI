@@ -6,7 +6,8 @@
 #include "bgfximgui.hpp"
 #include "Renderer/RenderAPI.hpp"
 #include "Renderer/DataTypes.hpp"
-
+#include "Renderer/bgfx/bgfxDataTypes.hpp"
+#include "Renderer/bgfx/bgfxShader.hpp"
 /**
  * @class bgfxRenderer
  * @brief bgfx rendering api implementation
@@ -17,7 +18,7 @@ class bgfxRenderer : public RenderAPI
     /**
      * @brief Constructor for bgfxRenderer
      */
-    bgfxRenderer() = default;
+    bgfxRenderer(GLFWwindow* window);
     /**
      * @brief Destructor for bgfxRenderer
      */
@@ -55,7 +56,22 @@ class bgfxRenderer : public RenderAPI
     void SetDepthTesting(bool isEnabled) override;
     void DrawScene(float dt) override;
     void SubmitDraw(RENDER::DrawItem drawItem) override; 
+    /**
+     * @brief Updates the GPU light array
+     * @param lightsArray 
+     */
+    void UpdateLights(std::vector<PointLight> &lightsArray) override;
+    /**
+     * @brief Resets the GPU Lights Buffer
+     */
+    void ResetLightsBuffer() override;
   private:
-    void DrawMesh();
-    const void DrawMesh(Shader* shader, Mesh* mesh);
+    const void DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state);
+    void setViewProjection(bgfx::ViewId view);
+    GLFWwindow* m_window;
+    std::vector<RENDER::DrawItem> m_drawQueue;
+    bgfxShader* m_program;
+    bgfx::ViewId m_vDefault = 0;
+    glm::mat4 m_projMat = glm::mat4(1.0);
+    glm::mat4 m_viewMat = glm::mat4(1.0);
 };

@@ -3,7 +3,6 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include "EventManager.hpp"
-#include "Components/Camera.hpp"
 #include <map>
 #include <vector>
 

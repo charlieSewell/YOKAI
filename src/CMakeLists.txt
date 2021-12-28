@@ -1,3 +1,5 @@
+add_subdirectory(Renderer)
+
 set(SHADERS
 		src/Shaders/common.sh
 		src/Shaders/shaderlib.sh
@@ -14,7 +16,7 @@ set(SHADERS
 # Add source files.
 set(SOURCES
 		src/Model/ObjectLoading/ModelLoader.cpp
-		src/Model/Mesh.cpp
+		src/Renderer/Mesh.cpp
         src/Model/Model.cpp
         src/Model/SkeletalAnimation.cpp
 		src/Model/Animator.cpp
@@ -30,14 +32,10 @@ set(SOURCES
 		src/Components/AutomatedBehaviours.cpp
 		src/Components/InputComponent.cpp
 
-        src/Renderer/Shader.cpp
         src/Renderer/DataTypes.cpp
         src/Renderer/Renderer.cpp
         src/Renderer/RenderAPI.cpp
         src/Renderer/Window.cpp
-        src/Renderer/OpenGL/OpenGLRenderer.cpp
-        src/Renderer/OpenGL/OpenGLDataTypes.cpp
-        src/Renderer/OpenGL/FileIO.cpp
 		src/Renderer/LightManager.cpp
 		src/Renderer/bgfx/bgfxutil.cpp
 		src/Renderer/bgfx/bgfxDataTypes.cpp

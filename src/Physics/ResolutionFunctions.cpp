@@ -33,12 +33,12 @@ glm::mat3x3 YokaiPhysics::SphereInertiaTensor(float radius, float mass)
     return inertia;
 }
 
-float YokaiPhysics::DegreesToRadians(float degrees) 
+double YokaiPhysics::DegreesToRadians(double degrees) 
 {
-    return (degrees * (PI / 180));
+    return (degrees * (PI / 180.0));
 }
 
-float YokaiPhysics::RadiansToDegrees(float radians) 
+double YokaiPhysics::RadiansToDegrees(double radians) 
 {
-    return (radians * (180 / PI));
+    return (radians * (180.0 / PI));
 }

@@ -3,9 +3,8 @@
 //
 #pragma once
 
-#include "Renderer/RenderAPI.hpp"
+#include "RenderAPI.hpp"
 #include "Engine/EventManager.hpp"
-#include "Components/Transform.hpp"
 #include <memory>
 
 /**
@@ -19,7 +18,7 @@ class Renderer
     /**
      * @brief Initialises the Renderer
      */
-    void Init();
+    void Init(GLFWwindow* window);
     /**
      * @brief Deinitialises the renderer
      */

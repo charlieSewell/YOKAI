@@ -1,11 +1,12 @@
 #pragma once
+#pragma warning (disable : 4100)
 #include <bgfx/bgfx.h>
 #include <bx/allocator.h>
 #include <iostream>
 #include <fstream>
 const bgfx::Memory* loadMemory( const char* filename );
-bgfx::ShaderHandle loadShader( const char* shader );
-bgfx::ProgramHandle loadProgram( const char* vsName, const char* fsName );
+bgfx::ShaderHandle loadShader( std::string vsName );
+bgfx::ProgramHandle loadProgram( std::string vsName, std::string fsName );
 
 // allocator
 class Allocator : public bx::AllocatorI

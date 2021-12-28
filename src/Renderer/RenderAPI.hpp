@@ -5,9 +5,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <vector>
-#include "Renderer/DataTypes.hpp"
-#include "Renderer/Shader.hpp"
-
+#include "DataTypes.hpp"
 #include "DrawItem.hpp"
 
 
@@ -96,8 +94,6 @@ class RenderAPI
      * @brief Creates a specific rendering API
      * @return shared_ptr<RenderAPI> - renderAPI
      */
-    static std::shared_ptr<RenderAPI> Create();
-  protected:
-    GLFWwindow* m_window;
+    static std::shared_ptr<RenderAPI> Create(GLFWwindow* window);
 };
 

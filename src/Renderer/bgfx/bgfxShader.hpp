@@ -1,7 +1,6 @@
 #pragma once
 
 #include <bgfx/bgfx.h>
-
 #include <cstdint>
 #include <map>
 #include <string>
@@ -20,7 +19,7 @@ class bgfxShader
         bgfxShader(const std::string& name, const std::string& vertexShader, const std::string& fragmentShader);
         ~bgfxShader();
 
-        void SetTexture(const char* samplerName, uint8_t slot, Texture& texture) const;
+        void SetTexture(const char* samplerName, uint8_t slot, std::shared_ptr<Texture> texture) const;
         void SetUniform(const char* uniformName, const void* value) const;
 
         [[nodiscard]] bgfx::ProgramHandle GetRawHandle() const { return m_program; }

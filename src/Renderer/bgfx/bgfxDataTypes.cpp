@@ -71,6 +71,7 @@ bgfxTexture::~bgfxTexture()
     if(bgfx::isValid(m_textureID))
     {
         bgfx::destroy(m_textureID);
+        m_textureID = BGFX_INVALID_HANDLE;
     }
 }
 
@@ -105,6 +106,7 @@ bgfxVertexBuffer::~bgfxVertexBuffer()
     if(bgfx::isValid(m_vbo))
     {
         bgfx::destroy(m_vbo);
+        m_vbo = BGFX_INVALID_HANDLE;
     }
 }
 void bgfxVertexBuffer::Bind()
@@ -131,6 +133,7 @@ bgfxIndexBuffer::~bgfxIndexBuffer()
     if(bgfx::isValid(m_ibo))
     {
         bgfx::destroy(m_ibo);
+        m_ibo = BGFX_INVALID_HANDLE;
     }
 }
 void bgfxIndexBuffer::Bind()
@@ -140,4 +143,27 @@ void bgfxIndexBuffer::Bind()
 void bgfxIndexBuffer::UnBind()
 {
     bgfx::setIndexBuffer(0);
+}
+
+bgfxVertexArrayBuffer::~bgfxVertexArrayBuffer()
+{
+
+}
+    
+bgfxVertexArrayBuffer::bgfxVertexArrayBuffer(std::vector<Vertex>& vertices,std::vector<unsigned int>& indices)
+{
+    m_vertexBuffer = std::make_shared<bgfxVertexBuffer>(vertices);
+    m_indexBuffer = std::make_shared<bgfxIndexBuffer>(indices);
+}
+    
+void bgfxVertexArrayBuffer::Bind()
+{
+    m_vertexBuffer->Bind();
+    m_indexBuffer->Bind();
+}
+    
+void bgfxVertexArrayBuffer::UnBind()
+{
+    m_vertexBuffer->UnBind();
+    m_indexBuffer->UnBind();
 }

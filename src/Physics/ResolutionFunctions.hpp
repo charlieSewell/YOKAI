@@ -24,11 +24,11 @@ namespace YokaiPhysics
      * @param degrees 
      * @return double 
      */
-    float DegreesToRadians(float degrees);
+    double DegreesToRadians(double degrees);
     /**
      * @brief Radians to Degrees
      * @param radians 
      * @return double 
      */
-    float RadiansToDegrees(float radians);
+    double RadiansToDegrees(double radians);
 }

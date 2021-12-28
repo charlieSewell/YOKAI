@@ -1,5 +1,5 @@
 #include "bgfxutil.hpp"
-
+#include <spdlog/spdlog.h>
 const bgfx::Memory* loadMemory( const char* filename )
 {
 	std::ifstream file( filename, std::ios::binary | std::ios::ate );
@@ -16,31 +16,29 @@ const bgfx::Memory* loadMemory( const char* filename )
 
 bgfx::ShaderHandle loadShader( std::string shader )
 {
-	return bgfx::createShader(loadMemory( shader.c_str()));
+	switch(bgfx::getRendererType())
+	{
+		case bgfx::RendererType::OpenGL:
+			return bgfx::createShader(loadMemory(("shaders/glsl/" + shader).c_str()));
+		case bgfx::RendererType::Direct3D11:
+			return bgfx::createShader(loadMemory(("shaders/dx11/" + shader).c_str()));
+		case bgfx::RendererType::Direct3D12:
+			return bgfx::createShader(loadMemory(("shaders/dx11/" + shader).c_str()));
+		case bgfx::RendererType::Vulkan:
+			return bgfx::createShader(loadMemory(("shaders/spirv/" + shader).c_str()));
+		default:
+			return BGFX_INVALID_HANDLE;
+	}
+	return BGFX_INVALID_HANDLE;
 }
 
 bgfx::ProgramHandle loadProgram( std::string vsName, std::string fsName )
 {
 	bgfx::ShaderHandle vs;
 	bgfx::ShaderHandle fs;
-	switch(bgfx::getRendererType())
-	{
-		case bgfx::RendererType::OpenGL:
-			vs = loadShader( "Shaders/glsl/"+ vsName );
-			fs = loadShader( "Shaders/glsl/"+ fsName );
-			break;
-		case bgfx::RendererType::Direct3D11:
-			vs = loadShader( "Shaders/dx11/"+ vsName );
-			fs = loadShader( "Shaders/dx11/"+ fsName );
-			break;
-		case bgfx::RendererType::Vulkan:
-			vs = loadShader( "Shaders/spirv/"+ vsName );
-			fs = loadShader( "Shaders/spirv/"+ fsName );
-			break;
-		default:
-			vs = loadShader( "Shaders/glsl/"+ vsName );
-			fs = loadShader( "Shaders/glsl/"+ fsName );
-			break;
-	}
-	return bgfx::createProgram( vs, fs, true );
+	vs = loadShader(vsName);
+	fs = loadShader(fsName);
+	bgfx::ProgramHandle program = bgfx::createProgram( vs, fs, true );
+	SPDLOG_INFO("Loaded Shader %s %s",vsName,fsName);
+	return program;
 }

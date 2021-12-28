@@ -3,9 +3,6 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <imgui.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
-#include <GL/glew.h>
 #include <glm/glm.hpp>
 /**
  * @class Window
@@ -27,11 +24,6 @@ class Window {
      */
 
     void DeInit();
-    /**
-     * @brief Initialises ImGui
-     * @return bool
-     */
-    bool ImguiInit();
     /**
      * @brief Returns a pointer to the window
      * @return GLFWwindow*

@@ -1,0 +1,9 @@
+project(core)
+
+add_library(core STATIC
+	
+)
+
+target_compile_options(core PRIVATE -fPIC)
+target_link_libraries(core glfw glm bgfx bx bimg imgui spdlog)
+target_include_directories(core PUBLIC .)

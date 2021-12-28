@@ -130,8 +130,6 @@ private:
     unsigned int m_lineCount = 0;
     ///Triangle count for Debug Renderer
     unsigned int m_triangleCount = 0;
-    /// The shared pointer to draw react objects,
-    Shader* m_debugShader = nullptr;
     ///count of map
     int m_mapCount;
     ///map of colliders

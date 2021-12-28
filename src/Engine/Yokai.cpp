@@ -28,11 +28,7 @@ bool Yokai::Init()
     {
         return(false);
     }
-    Renderer::getInstance().Init();
-    if(!window.ImguiInit())
-    {
-        return(false);
-    }
+    Renderer::getInstance().Init(window.GetWindow());
     InputManagerGLFW::getInstance().AddWindow(window.GetWindow());
     
     m_activeLayer = 0;
@@ -154,7 +150,7 @@ void Yokai::Run()
         m_layers[m_activeLayer]->GetLightManager()->UpdateLights();
         PhysicsSystem::getInstance().RendererUpdate();
         m_layers[m_activeLayer]->Draw();
-        Renderer::getInstance().DrawScene();
+        Renderer::getInstance().DrawScene(deltaTime);
         Renderer::getInstance().DrawGui();
         window.EndFrame();
 	}

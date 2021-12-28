@@ -39,11 +39,11 @@ bgfxShader::~bgfxShader()
 	}
 }
 
-void bgfxShader::SetTexture(const char* samplerName, uint8_t bindPoint, Texture& texture) const
+void bgfxShader::SetTexture(const char* samplerName, uint8_t bindPoint, std::shared_ptr<Texture> texture) const
 {
 	auto uniform = m_uniforms.find(samplerName);
 	bgfx::TextureHandle temp;
-	temp.idx = texture.GetID();
+	temp.idx = static_cast<uint16_t>(texture->GetID());
 	
 	if (uniform != m_uniforms.cend())
 	{

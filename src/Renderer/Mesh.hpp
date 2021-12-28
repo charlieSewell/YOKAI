@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "Renderer/DataTypes.hpp"
+#include "DataTypes.hpp"
 
 /**
  * @class Mesh

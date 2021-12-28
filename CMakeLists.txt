@@ -83,10 +83,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
         VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
 
-# Find dependencies.
-# find_package(OpenGLRenderer REQUIRED COMPONENTS OpenGLRenderer)
-find_package(OpenGL REQUIRED)
-
 # Remove the default warning level from MSVC.
 if (MSVC)
     string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -120,7 +116,7 @@ target_link_options(${PROJECT_NAME} PUBLIC
         $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>
         )
 # Include and link against dependencies.
-target_link_libraries(${PROJECT_NAME} PUBLIC OpenGL::GL glfw glew bgfx assimp glm reactphysics3d spdlog::spdlog imgui imguizmo nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC glfw bgfx bx bimg assimp glm reactphysics3d spdlog::spdlog imgui imguizmo nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})
 
 target_link_libraries(run_tests PUBLIC YOKAI CppUTest CppUTestExt ${CMAKE_DL_LIBS})
 
@@ -163,7 +159,7 @@ foreach(SHADER ${SHADERS})
             GLSL_VERSION ${GLSL_VERSION}
             DX11_MODEL ${DX_MODEL}
             PLATFORMS ${SHADER_PLATFORMS})
-    elseif(SHADER_NAME MATCHES ^cs_)
+    elseif(SHADER_NAME MATCHES "^cs_")
         add_shader(${SHADER_FILE} COMPUTE
             OUTPUT ${SHADER_DIR}
             GLSL_VERSION ${GLSL_COMPUTE_VERSION}

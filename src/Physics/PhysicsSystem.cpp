@@ -26,8 +26,9 @@ void PhysicsSystem::Init()
 	debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::CONTACT_NORMAL, true);
     m_vertexPath ="content/Shaders/debugVertex.vs";
     m_fragmentPath ="content/Shaders/debugFragment.fs";
-    m_debugShader = new Shader("content/Shaders/debugVertex.vert","content/Shaders/debugFragment.frag");
+    //m_debugShader = new Shader("content/Shaders/debugVertex.vert","content/Shaders/debugFragment.frag");
 
+/*
     //Generate line buffers for test renderer
     glGenVertexArrays(1, &l_vao_);
     assert(l_vao_ != 0);
@@ -40,6 +41,7 @@ void PhysicsSystem::Init()
     assert(t_vao_ != 0);
     glGenBuffers(1, &t_vbo_);
     assert(t_vbo_ != 0);
+    */
 }
 void PhysicsSystem::DeInit()
 {
@@ -164,6 +166,7 @@ void PhysicsSystem::DeleteRigidBody(int ID)
 
 void PhysicsSystem::Draw()
  {
+     /*
      if(m_isDebugEnabled)
      {
         m_debugShader->UseShader();
@@ -207,6 +210,7 @@ void PhysicsSystem::Draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         //shader->Use();
      }
+     */
 }
 
 void PhysicsSystem::RendererUpdate() {
@@ -216,7 +220,7 @@ void PhysicsSystem::RendererUpdate() {
         debug_renderer.reset();
         debug_renderer.computeDebugRenderingPrimitives(*m_physicsWorld);
     }
-    
+    /*
     m_lineCount = debug_renderer.getNbLines();
     if (m_lineCount > 0) {
         glBindBuffer(GL_ARRAY_BUFFER, l_vbo_);
@@ -231,4 +235,5 @@ void PhysicsSystem::RendererUpdate() {
         glBufferData(GL_ARRAY_BUFFER, sizeVertices, debug_renderer.getTrianglesArray(), GL_STREAM_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+    */
 }
