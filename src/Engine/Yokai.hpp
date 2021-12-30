@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Renderer/Renderer.hpp"
-#include "Physics/PhysicsSystem.hpp"
-#include "Renderer/Window.hpp"
-#include "Engine/Scene.hpp"
 #include <spdlog/spdlog.h>
-#include "ModelManager.hpp"
+
+#include "Engine/Scene.hpp"
+#include "Model/ModelManager.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/Window.hpp"
+#include "Physics/PhysicsSystem.hpp"
 #include "Physics/PhysicsResolution.hpp"
 //workaround to allow vector of layer pointers
 class InputComponent;

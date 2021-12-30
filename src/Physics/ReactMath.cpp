@@ -54,7 +54,7 @@ glm::dvec3 ReactMath::rp3dVecToGlmD(reactphysics3d::Vector3 &vec) {
 
 glm::mat4 ReactMath::rp3dMat4ToGlm(reactphysics3d::Transform &transform) {
     
-    reactphysics3d::decimal *data;
+    reactphysics3d::decimal *data = nullptr;
     transform.getOpenGLMatrix(data);
 
     glm::mat4 newMat = {};

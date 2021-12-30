@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Engine/ModelManager.hpp"
+#include "Model/ModelManager.hpp"
 #include "Transform.hpp"
 #include "DrawableEntity.hpp"
 #include "Engine/GameObject.hpp"
-#include "Component.hpp"
+#include "Engine/Component.hpp"
 #include "Physics/PhysicsSystem.hpp"
 /**
  * @class ConcaveCollider

@@ -5,7 +5,7 @@
 #include <iostream>
 #include <reactphysics3d/reactphysics3d.h>
 #include <glm/glm.hpp>
-#include "Physics/Shapes/ReactTerrainShape.hpp"
+#include "Shapes/ReactTerrainShape.hpp"
 /**
  * @class RigidBody
  * @brief Class for a physics Rigid body

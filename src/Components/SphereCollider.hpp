@@ -2,7 +2,7 @@
 
 #include "Transform.hpp"
 #include "Engine/GameObject.hpp"
-#include "Component.hpp"
+#include "Engine/Component.hpp"
 #include "Physics/PhysicsSystem.hpp"
 #include "Physics/ResolutionFunctions.hpp"
 /**

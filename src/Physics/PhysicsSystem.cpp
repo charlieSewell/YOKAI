@@ -108,6 +108,7 @@ unsigned int PhysicsSystem::AddSphere(unsigned int ID,Transform *transform, floa
 
 unsigned int PhysicsSystem::AddConcaveShape(unsigned int ID, Transform* transform,unsigned int modelID)
 {
+    /*
     CollisionBody object;
     auto* shape = new ReactConcaveShape();
     glm::vec3 newPos = glm::vec3(transform->GetPosition().x,transform->GetPosition().y,transform->GetPosition().z);
@@ -116,7 +117,9 @@ unsigned int PhysicsSystem::AddConcaveShape(unsigned int ID, Transform* transfor
     object.AddCollisionShape(shape);
     unsigned int temp = object.GetColliderID();
     m_colliders.emplace(object.GetColliderID(),object);
-    return temp;
+    */
+    throw new std::exception("NOT IMPLIMENTED");
+    return 0;
 }
 
 unsigned int PhysicsSystem::AddTerrainShape(unsigned int ID, Transform* transform,std::vector<std::vector<float>> heightvals)
@@ -214,13 +217,14 @@ void PhysicsSystem::Draw()
 }
 
 void PhysicsSystem::RendererUpdate() {
+    /*
     reactphysics3d::DebugRenderer& debug_renderer = m_physicsWorld->getDebugRenderer();
     if(Yokai::getInstance().GetIsPaused())
     {
         debug_renderer.reset();
         debug_renderer.computeDebugRenderingPrimitives(*m_physicsWorld);
     }
-    /*
+    
     m_lineCount = debug_renderer.getNbLines();
     if (m_lineCount > 0) {
         glBindBuffer(GL_ARRAY_BUFFER, l_vbo_);

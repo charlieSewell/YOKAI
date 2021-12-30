@@ -2,12 +2,12 @@
 #include <vector>
 #include <map>
 #include "CollisionBody.hpp"
-#include "Components/Transform.hpp"
+#include "Transform.hpp"
 #include "ReactMath.hpp"
-#include "Physics/Shapes/ReactTerrainShape.hpp"
-#include "Physics/Shapes/ReactSphereShape.hpp"
-#include "Physics/Shapes/ReactBoxShape.hpp"
-#include "Physics/Shapes/ReactConcaveShape.hpp"
+#include "Shapes/ReactTerrainShape.hpp"
+#include "Shapes/ReactSphereShape.hpp"
+#include "Shapes/ReactBoxShape.hpp"
+//#include "Shapes/ReactConcaveShape.hpp"
 /**
  * @class PhysicsSystem
  * @brief Singleton that Manages physics

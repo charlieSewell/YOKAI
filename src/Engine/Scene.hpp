@@ -2,7 +2,7 @@
 #include "Engine/JSONHelper.hpp"
 #include "Engine/GameObjectManager.hpp"
 #include "Engine/InputManagerGLFW.hpp"
-#include "Renderer/LightManager.hpp"
+#include "Engine/LightManager.hpp"
 #include "Yokai.hpp"
 
 /**

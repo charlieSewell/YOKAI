@@ -2,7 +2,8 @@
 
 #include "Transform.hpp"
 #include "Components/RayCaster.hpp"
-#include "Component.hpp"
+#include "Engine/GameObject.hpp"
+#include "Engine/Component.hpp"
 #include <glm/gtc/random.hpp>
 
 /**

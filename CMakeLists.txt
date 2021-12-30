@@ -116,7 +116,7 @@ target_link_options(${PROJECT_NAME} PUBLIC
         $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>
         )
 # Include and link against dependencies.
-target_link_libraries(${PROJECT_NAME} PUBLIC glfw bgfx bx bimg assimp glm reactphysics3d spdlog::spdlog imgui imguizmo nlohmann_json::nlohmann_json ${CMAKE_DL_LIBS})
+target_link_libraries(${PROJECT_NAME} PUBLIC core graphics physics ${CMAKE_DL_LIBS})
 
 target_link_libraries(run_tests PUBLIC YOKAI CppUTest CppUTestExt ${CMAKE_DL_LIBS})
 

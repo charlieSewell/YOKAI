@@ -28,7 +28,10 @@ bool Yokai::Init()
     {
         return(false);
     }
-    Renderer::getInstance().Init(window.GetWindow());
+    if(!Renderer::getInstance().Init(window.GetWindow()))
+    {
+        return(false);
+    }
     InputManagerGLFW::getInstance().AddWindow(window.GetWindow());
     
     m_activeLayer = 0;
@@ -98,7 +101,7 @@ void Yokai::Run()
             isPhysicsPressed = false;
         }
 
-        window.StartFrame();
+        window.StartFrame(deltaTime);
 
         if (!m_isPaused)
         {

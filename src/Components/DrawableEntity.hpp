@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Engine/ModelManager.hpp"
+#include "Model/ModelManager.hpp"
 #include "Transform.hpp"
 #include "Engine/GameObject.hpp"
-#include "Component.hpp"
+#include "Engine/Component.hpp"
 #include "Engine/Yokai.hpp"
 #include "Model/Animator.hpp"
 /**

@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <wctype.h>
 #include "Engine/GameObject.hpp"
-#include "Component.hpp"
+#include "Engine/Component.hpp"
 #include "Engine/InputManagerGLFW.hpp"
 #include <map>
 

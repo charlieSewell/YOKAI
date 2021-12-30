@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Physics/PhysicsSystem.hpp"
-#include "Component.hpp"
+#include "Engine/Component.hpp"
 /**
  * @class RayCaster
  * @brief Casts rays for object picking
