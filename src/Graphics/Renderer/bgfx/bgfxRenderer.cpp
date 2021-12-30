@@ -56,18 +56,14 @@ void bgfxRenderer::DrawScene(float dt)
     // empty primitive in case nothing follows
     // this makes sure the clear happens
     bgfx::touch(0);
-    ImGui::Begin("DEBUGGGER",NULL, ImGuiWindowFlags_MenuBar);
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::End();
 	setViewProjection(m_vDefault);
     
     uint64_t state = BGFX_STATE_WRITE_RGB \
             | BGFX_STATE_WRITE_A \
             | BGFX_STATE_WRITE_Z \
             | BGFX_STATE_DEPTH_TEST_LESS \
-            | BGFX_STATE_CULL_CCW \
+            | BGFX_STATE_CULL_CW \
             | BGFX_STATE_MSAA;
-    bgfx::setState(state);
     
     for(const RENDER::DrawItem& mesh : m_drawQueue)
     {
@@ -75,7 +71,7 @@ void bgfxRenderer::DrawScene(float dt)
         DrawMesh(m_program,mesh.mesh,state);
     }
 
-    //bgfx::discard(BGFX_DISCARD_ALL);
+    bgfx::discard(BGFX_DISCARD_ALL);
 	m_drawQueue.clear();
 }
 void bgfxRenderer::DeInit()
@@ -168,7 +164,7 @@ void bgfxRenderer::setViewProjection(bgfx::ViewId view)
                 float(1920) / 1080,
                 zNear,
                 zFar,
-                bgfx::getCaps()->homogeneousDepth);
+                bgfx::getCaps()->homogeneousDepth,bx::Handness::Right);
                 
     bgfx::setViewTransform(view, glm::value_ptr(m_viewMat), glm::value_ptr(m_projMat));
     bgfx::touch(0);
