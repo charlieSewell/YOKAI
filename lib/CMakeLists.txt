@@ -21,6 +21,7 @@ add_compile_options(
     # Visual Studio
     $<$<CXX_COMPILER_ID:MSVC>:/W0>
 )
+option( BGFX_BUILD_EXAMPLES OFF)
 add_subdirectory(bgfx.cmake)
 add_subdirectory(glm)
 add_subdirectory(assimp)
@@ -38,7 +39,6 @@ add_definitions(-DBGFX_CONFIG_RENDERER_OPENGL_MIN_VERSION=43)
 add_definitions(-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS)
 
 set(BGFX_LIBRARY_TYPE "STATIC")
-
 set_target_properties(reactphysics3d PROPERTIES ENABLE_EXPORTS ON)
 set_target_properties(reactphysics3d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 # Puts a stop to the endlessly irritating practise postfixing 'd' onto debug libraries.
