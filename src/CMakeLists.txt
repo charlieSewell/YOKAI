@@ -8,8 +8,13 @@ set(SHADERS
 		src/Shaders/imgui/varying.def.sc
         src/Shaders/vs_shader.sc
         src/Shaders/fs_shader.sc
+		src/Shaders/tonemap/fs_tonemap.sc
+		src/Shaders/tonemap/vs_tonemap.sc
+		src/Shaders/tonemap/cs_avglum.sc
+		src/Shaders/tonemap/cs_histogram.sc
 		src/Shaders/imgui/vs_ocornut_imgui.sc
         src/Shaders/imgui/fs_ocornut_imgui.sc
+		
         PARENT_SCOPE
 )
 

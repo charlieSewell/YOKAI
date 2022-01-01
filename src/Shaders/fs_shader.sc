@@ -1,4 +1,4 @@
-$input v_texcoord0
+$input v_texcoord0, v_normal
 
 #include "common.sh"
 uniform vec4 u_color;

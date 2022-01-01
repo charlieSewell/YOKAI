@@ -1,6 +1,7 @@
 #include "bgfxDataTypes.hpp"
 
 bgfx::VertexLayout bgfxVertex::layout;
+bgfx::VertexLayout PosColorTexCoord0Vertex::layout;
 static bx::DefaultAllocator allocator;
 
 bgfx::TextureHandle LoadTexture(const std::string fileName)

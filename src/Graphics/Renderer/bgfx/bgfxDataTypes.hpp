@@ -22,7 +22,22 @@ struct bgfxVertex
     }
     static bgfx::VertexLayout layout;
 };
-
+struct PosColorTexCoord0Vertex
+{
+    glm::vec3 pos;
+    uint32_t rgba;
+    glm::vec2 texcood;
+    static void init()
+    {
+        layout
+            .begin()
+            .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
+            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
+            .end();
+    }
+    static bgfx::VertexLayout layout;
+};
 /**
  * @class bgfxTexture
  * @brief Holds a texture to be rendered by bgfx

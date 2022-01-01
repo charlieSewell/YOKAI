@@ -4,10 +4,11 @@
 #include <bx/allocator.h>
 #include <iostream>
 #include <fstream>
+#include "bgfxDataTypes.hpp"
 const bgfx::Memory* loadMemory( const char* filename );
 bgfx::ShaderHandle loadShader( std::string vsName );
 bgfx::ProgramHandle loadProgram( std::string vsName, std::string fsName );
-
+void screenSpaceQuad(float _textureWidth, float _textureHeight, bool _originBottomLeft = false, float _width= 1.0f , float _height= 1.0f );
 // allocator
 class Allocator : public bx::AllocatorI
 {
