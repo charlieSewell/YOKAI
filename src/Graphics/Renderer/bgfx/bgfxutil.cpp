@@ -58,12 +58,36 @@ bgfx::ProgramHandle loadProgram( std::string vsName, std::string fsName )
 	return program;
 }
 
+bgfx::TextureFormat::Enum findDepthFormat(uint64_t textureFlags, bool stencil)
+{
+    const bgfx::TextureFormat::Enum depthFormats[] = { bgfx::TextureFormat::D16, bgfx::TextureFormat::D32 };
+
+    const bgfx::TextureFormat::Enum depthStencilFormats[] = { bgfx::TextureFormat::D24S8 };
+
+    const bgfx::TextureFormat::Enum* formats = stencil ? depthStencilFormats : depthFormats;
+    size_t count = stencil ? BX_COUNTOF(depthStencilFormats) : BX_COUNTOF(depthFormats);
+
+    bgfx::TextureFormat::Enum depthFormat = bgfx::TextureFormat::Count;
+    for(size_t i = 0; i < count; i++)
+    {
+        if(bgfx::isTextureValid(0, false, 1, formats[i], textureFlags))
+        {
+            depthFormat = formats[i];
+            break;
+        }
+    }
+
+    assert(depthFormat != bgfx::TextureFormat::Enum::Count);
+
+    return depthFormat;
+}
 
 
     
 
 void screenSpaceQuad(float _textureWidth, float _textureHeight, bool _originBottomLeft, float _width, float _height)
 {
+	/*
     if (3 == bgfx::getAvailTransientVertexBuffer(3, PosColorTexCoord0Vertex::layout))
     {
 		float s_texelHalf = 0.0f;
@@ -109,4 +133,5 @@ void screenSpaceQuad(float _textureWidth, float _textureHeight, bool _originBott
         vertex[2].texcood.y = maxv;
         bgfx::setVertexBuffer(0, &vb);
     }
+	*/
 }

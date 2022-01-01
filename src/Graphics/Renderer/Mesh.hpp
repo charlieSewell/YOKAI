@@ -28,7 +28,7 @@ class Mesh
      * @param const vector<ModelTexture>& - textures
      * @param mat4& - transform
      */
-    Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<ModelTexture> &textures,glm::mat4 &transform);
+    Mesh(const std::vector<Vertex> &vertices, const std::vector<uint16_t> &indices, const std::vector<ModelTexture> &textures,glm::mat4 &transform);
     /**
      * @brief returns a list of vertices
      * @return vector<Vertex>
@@ -38,7 +38,7 @@ class Mesh
      * @brief returns a list of indices
      * @return vector<unsigned int>
      */
-    std::vector<unsigned int>* getIndices(){return &indices;}
+    std::vector<uint16_t>* getIndices(){return &indices;}
     /**
      * @brief returns a list of textures
      * @return vector<ModelTexture>
@@ -71,7 +71,7 @@ class Mesh
     ///mesh vertices
     std::vector<Vertex> vertices = {};
     ///mesh indices
-    std::vector<unsigned int> indices = {};
+    std::vector<uint16_t> indices = {};
     ///mesh textures
     std::vector<ModelTexture> textures = {};
     ///mesh transform

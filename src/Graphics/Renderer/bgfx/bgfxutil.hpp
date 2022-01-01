@@ -9,6 +9,7 @@ const bgfx::Memory* loadMemory( const char* filename );
 bgfx::ShaderHandle loadShader( std::string vsName );
 bgfx::ProgramHandle loadProgram( std::string vsName, std::string fsName );
 void screenSpaceQuad(float _textureWidth, float _textureHeight, bool _originBottomLeft = false, float _width= 1.0f , float _height= 1.0f );
+bgfx::TextureFormat::Enum findDepthFormat(uint64_t textureFlags, bool stencil);
 // allocator
 class Allocator : public bx::AllocatorI
 {

@@ -75,10 +75,10 @@ class bgfxRenderer : public RenderAPI
     glm::mat4 m_viewMat = glm::mat4(1.0);
     int m_width = 0;
     int m_height = 0;
-    bool m_reset = true;
+    uint32_t m_reset = true;
     int m_oldWidth = m_width;
     int m_oldHeight = m_height;
-    bool m_oldReset = false;
+    uint32_t m_oldReset = false;
     
     std::vector<RENDER::DrawItem> m_drawQueue;
     
@@ -90,7 +90,7 @@ class bgfxRenderer : public RenderAPI
     bgfx::ViewId m_vDefault = 0;
     bgfx::ViewId m_vHistogramPass = 2;
     bgfx::ViewId m_vAveragingPass = 3;
-    bgfx::ViewId m_vToneMapPass = 4;
+    bgfx::ViewId m_vToneMapPass = 220;
 
     bgfx::UniformHandle s_texColor;
     bgfx::UniformHandle s_texAvgLum;
@@ -104,7 +104,7 @@ class bgfxRenderer : public RenderAPI
     bgfx::FrameBufferHandle m_fbh;
 
     bx::DefaultAllocator mAllocator;
-
+    bgfx::VertexBufferHandle m_blitTriangleBuffer;
     float m_speed = 0.37f;
     float m_white = 3.0f;
     float m_threshold = 1.5f;

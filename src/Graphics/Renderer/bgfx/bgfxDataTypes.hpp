@@ -24,16 +24,14 @@ struct bgfxVertex
 };
 struct PosColorTexCoord0Vertex
 {
-    glm::vec3 pos;
-    uint32_t rgba;
-    glm::vec2 texcood;
+    float x;
+    float y;
+    float z;
     static void init()
     {
         layout
             .begin()
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Color0, 4, bgfx::AttribType::Uint8, true)
-            .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
             .end();
     }
     static bgfx::VertexLayout layout;
@@ -115,9 +113,9 @@ class bgfxIndexBuffer : public IndexBuffer
     ~bgfxIndexBuffer() override;
     /**
      * @brief Constructor for bgfxIndexBuffer
-     * @param indices<unsigned int> - indices
+     * @param indices<uint16_t> - indices
      */
-    bgfxIndexBuffer(std::vector<unsigned int> &indices);
+    bgfxIndexBuffer(std::vector<uint16_t> &indices);
     /**
      * @brief Binds the IndexBuffer
      */
@@ -143,7 +141,7 @@ class bgfxVertexArrayBuffer : public VertexArrayBuffer
      * @param vector<Vertex> - vertices
      * @param vector<unisigned int> - indices
      */
-    bgfxVertexArrayBuffer(std::vector<Vertex>& vertices,std::vector<unsigned int>& indices);
+    bgfxVertexArrayBuffer(std::vector<Vertex>& vertices,std::vector<uint16_t>& indices);
     /**
      * @brief Binds the VertexArrayBuffer
      */

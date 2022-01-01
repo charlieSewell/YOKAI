@@ -67,7 +67,7 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
 {
     // data to fill
     std::vector<Vertex> vertices;
-    std::vector<unsigned int> indices;
+    std::vector<uint16_t> indices;
     std::vector<ModelTexture> textures;
 
     // walk through each of the mesh's vertices

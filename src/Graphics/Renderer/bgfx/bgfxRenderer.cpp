@@ -48,75 +48,62 @@ int bgfxRenderer::Init()
 	ImGui_Implbgfx_Init(255);
 	//bgfx::setDebug(BGFX_DEBUG_TEXT);
 
-    s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
     s_texAvgLum = bgfx::createUniform("s_texAvgLum", bgfx::UniformType::Sampler);
+    s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
     u_tonemap = bgfx::createUniform("u_tonemap", bgfx::UniformType::Vec4);
     u_histogramParams = bgfx::createUniform("u_params", bgfx::UniformType::Vec4);
-
-    m_histogramProgram = loadProgram("cs_histogram.bin","");
-    m_averagingProgram = loadProgram("cs_avglum.bin","");
-    m_tonemapProgram = new bgfxShader("ToneMapping Shader","vs_tonemap.bin", "fs_tonemap.bin");
-    m_program = new bgfxShader("Forward Shader","vs_shader.bin","fs_shader.bin");
     
-    m_fbh.idx = bgfx::kInvalidHandle;
+    m_histogramProgram = loadProgram("cs_histogram.bin", "");
+    m_averagingProgram = loadProgram("cs_avglum.bin", "");
+    m_program = new bgfxShader("Forward Shader","vs_shader.bin","fs_shader.bin");
+    m_tonemapProgram = new bgfxShader("ToneMapping Shader","vs_tonemap.bin", "fs_tonemap.bin");
+    
     m_histogramBuffer = bgfx::createDynamicIndexBuffer(256, BGFX_BUFFER_COMPUTE_READ_WRITE | BGFX_BUFFER_INDEX32);
+    
+
+    // triangle used for blitting
+    constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
+    const PosColorTexCoord0Vertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
+    m_blitTriangleBuffer = bgfx::createVertexBuffer(bgfx::copy(&vertices, sizeof(vertices)), PosColorTexCoord0Vertex::layout);
+    
+    //FrameBuffer
+    m_fbh.idx = bgfx::kInvalidHandle;
+    CreateToneMapFrameBuffer();
+
+    bgfx::setViewName(m_vHistogramPass, "Luminence Histogram");
+    bgfx::setViewName(m_vAveragingPass, "Avergaing the Luminence Histogram");
+    bgfx::setViewName(m_vDefault, "Forward render pass");
+    bgfx::setViewName(m_vToneMapPass, "Tonemapping");
 
     bgfx::reset(m_width,m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X4);
-    CreateToneMapFrameBuffer();
+    bgfx::frame();
     return true;
 
 }
 void bgfxRenderer::DrawScene(float dt)
 {
     m_caps = bgfx::getCaps();
-    if (!bgfx::isValid(m_fbh)
-        || m_oldWidth != m_width
-        || m_oldHeight != m_height
-        || m_oldReset != m_reset)
-    {
-        m_reset = false;
-        // Recreate variable size render targets when resolution changes.
-        m_oldWidth = m_width;
-        m_oldHeight = m_height;
-        m_oldReset = m_reset;
-        CreateToneMapFrameBuffer();
-           
-    }
-
-
-    bgfx::setViewName(m_vDefault, "Mesh");
-    bgfx::setViewClear(m_vDefault, BGFX_CLEAR_COLOR | BGFX_CLEAR_DISCARD_DEPTH | BGFX_CLEAR_DISCARD_STENCIL);
-    bgfx::setViewRect(m_vDefault, 0, 0, bgfx::BackbufferRatio::Equal);
-    bgfx::setViewFrameBuffer(m_vDefault, m_fbh);
     
-    bgfx::setViewName(m_vHistogramPass, "Luminence Histogram");
-
-    bgfx::setViewName(m_vAveragingPass, "Avergaing the Luminence Histogram");
-
-    bgfx::setViewName(m_vToneMapPass, "Tonemap");
-    bgfx::setViewRect(m_vToneMapPass, 0, 0, bgfx::BackbufferRatio::Equal);
-    bgfx::FrameBufferHandle invalid = BGFX_INVALID_HANDLE;
-    bgfx::setViewFrameBuffer(m_vToneMapPass, invalid);
-
+    bgfx::setViewClear(m_vDefault, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030FF, 1.0f, 0);
+    bgfx::setViewRect(m_vDefault, 0, 0, m_width, m_height);
+    bgfx::setViewFrameBuffer(m_vDefault, m_fbh);
     // empty primitive in case nothing follows
     // this makes sure the clear happens
     bgfx::touch(0);
 	setViewProjection(m_vDefault);
 
-    
-    uint64_t state = BGFX_STATE_WRITE_RGB \
-            | BGFX_STATE_WRITE_A;
+    uint64_t state = BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK;
     
     for(const RENDER::DrawItem& mesh : m_drawQueue)
     {
         bgfx::setTransform(glm::value_ptr(mesh.transform));
         DrawMesh(m_program,mesh.mesh,state);
     }
+    bgfx::discard(BGFX_DISCARD_ALL);
 
-    
-    float proj[16];
-    bx::mtxOrtho(proj, 0.0f, 1.0f, 1.0f, 0.0f, 0.1f, 100.0f, 0.0f, m_caps->homogeneousDepth);
-    bgfx::setViewTransform(m_vToneMapPass, NULL, proj);
+
+
+    m_drawQueue.clear();
 
     float minLogLum = -8.0f;
     float maxLogLum = 3.5f;
@@ -147,13 +134,17 @@ void bgfxRenderer::DrawScene(float dt)
     bgfx::dispatch(m_vAveragingPass, m_averagingProgram, 1, 1, 1);
 
     float tonemap[4] = { bx::square(m_white), 0.0f, m_threshold, m_time };
-    bgfx::setTexture(0, s_texColor, m_fbtextures[0]);
+    bgfx::setViewClear(m_vToneMapPass, BGFX_CLEAR_NONE);
+    bgfx::setViewRect(m_vToneMapPass, 0, 0, m_width, m_height);
+    bgfx::setViewFrameBuffer(m_vToneMapPass, BGFX_INVALID_HANDLE);
+    bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_CULL_CW);
+    bgfx::TextureHandle frameBufferTexture = bgfx::getTexture(m_fbh, 0);
+    bgfx::setTexture(0, s_texColor, frameBufferTexture);
     bgfx::setTexture(1, s_texAvgLum, m_lumAvgTarget, BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
     bgfx::setUniform(u_tonemap, tonemap);
-    bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
-    screenSpaceQuad((float)m_width, (float)m_height, m_caps->originBottomLeft);
+    bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
     bgfx::submit(m_vToneMapPass, m_tonemapProgram->GetRawHandle());
-	m_drawQueue.clear();
+
 }
 void bgfxRenderer::DeInit()
 {
@@ -162,14 +153,8 @@ void bgfxRenderer::DeInit()
         bgfx::destroy(m_fbh);
     }
     delete m_tonemapProgram;
-    bgfx::destroy(m_histogramProgram);
-    bgfx::destroy(m_averagingProgram);
-    bgfx::destroy(m_histogramBuffer);
-    bgfx::destroy(m_lumAvgTarget);
+    delete m_program;
     bgfx::destroy(s_texColor);
-    bgfx::destroy(s_texAvgLum);
-    bgfx::destroy(u_tonemap);
-    bgfx::destroy(u_histogramParams);
 
 	ImGui_Implbgfx_Shutdown();
 	bgfx::shutdown();
@@ -256,52 +241,35 @@ void bgfxRenderer::setViewProjection(bgfx::ViewId view)
     // projection matrix
     bx::mtxProj(glm::value_ptr(m_projMat),
                 60.0f,
-                float(1920) / 1080,
+                float(1920) / float(1080),
                 zNear,
                 zFar,
                 bgfx::getCaps()->homogeneousDepth,bx::Handness::Right);
                 
     bgfx::setViewTransform(view, glm::value_ptr(m_viewMat), glm::value_ptr(m_projMat));
-    bgfx::touch(0);
 }
 
 void bgfxRenderer::CreateToneMapFrameBuffer()
 {
-    uint32_t msaa = (m_reset & BGFX_RESET_MSAA_MASK) >> BGFX_RESET_MSAA_SHIFT;
+    const uint64_t samplerFlags = BGFX_SAMPLER_MIN_POINT | BGFX_SAMPLER_MAG_POINT | BGFX_SAMPLER_MIP_POINT |
+                                  BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP;
 
-    if (bgfx::isValid(m_fbh))
-    {
-        bgfx::destroy(m_fbh);
-    }
+    bgfx::TextureFormat::Enum format = bgfx::TextureFormat::BGRA8; // BGRA is often faster (internal GPU format)
+    assert(bgfx::isTextureValid(0, false, 1, format, BGFX_TEXTURE_RT | samplerFlags));
+    m_fbtextures[0] =
+        bgfx::createTexture2D(bgfx::BackbufferRatio::Equal, false, 1, format, BGFX_TEXTURE_RT | samplerFlags);
 
-    m_fbtextures[0] = bgfx::createTexture2D(
-        uint16_t(m_width)
-        , uint16_t(m_height)
-        , false
-        , 1
-        , bgfx::TextureFormat::RGBA16F
-        , (uint64_t(msaa + 1) << BGFX_TEXTURE_RT_MSAA_SHIFT) | BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP
-    );
-
-    const uint64_t textureFlags = BGFX_TEXTURE_RT_WRITE_ONLY | (uint64_t(msaa + 1) << BGFX_TEXTURE_RT_MSAA_SHIFT);
-
-    bgfx::TextureFormat::Enum depthFormat =
-        bgfx::isTextureValid(0, false, 1, bgfx::TextureFormat::D16, textureFlags) ? bgfx::TextureFormat::D16
-        : bgfx::isTextureValid(0, false, 1, bgfx::TextureFormat::D24S8, textureFlags) ? bgfx::TextureFormat::D24S8
-        : bgfx::TextureFormat::D32
-        ;
-
+    bgfx::TextureFormat::Enum depthFormat = findDepthFormat(BGFX_TEXTURE_RT_WRITE_ONLY | samplerFlags,false);
+    assert(depthFormat != bgfx::TextureFormat::Enum::Count);
     m_fbtextures[1] = bgfx::createTexture2D(
-        uint16_t(m_width)
-        , uint16_t(m_height)
-        , false
-        , 1
-        , depthFormat
-        , textureFlags
-    );
+    bgfx::BackbufferRatio::Equal, false, 1, bgfx::TextureFormat::Enum::D32, BGFX_TEXTURE_RT_WRITE_ONLY | samplerFlags);
 
-    m_fbh = bgfx::createFrameBuffer(BX_COUNTOF(m_fbtextures), m_fbtextures, true);
+    m_fbh = bgfx::createFrameBuffer(2, m_fbtextures, true);
 
+    if(!bgfx::isValid(m_fbh))
+        SPDLOG_WARN("Failed to create tonemap framebuffer");
+
+    bgfx::setName(m_fbh, "Render framebuffer (pre-postprocessing)");
     uint64_t lumAvgFlags = BGFX_TEXTURE_COMPUTE_WRITE | BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP;
     m_lumAvgTarget = bgfx::createTexture2D(1, 1, false, 1, bgfx::TextureFormat::R16F, lumAvgFlags);
     bgfx::setName(m_lumAvgTarget, "LumAvgTarget");
