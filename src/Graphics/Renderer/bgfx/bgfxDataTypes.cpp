@@ -119,9 +119,9 @@ void bgfxVertexBuffer::UnBind()
     bgfx::setVertexBuffer(0, 0);
 }
 
-bgfxIndexBuffer::bgfxIndexBuffer(std::vector<unsigned int> &indices)
+bgfxIndexBuffer::bgfxIndexBuffer(std::vector<uint16_t> &indices)
 {
-    const bgfx::Memory* iMem = bgfx::alloc(indices.size() * 3 * sizeof(uint16_t));
+    const bgfx::Memory* iMem = bgfx::alloc(indices.size() * sizeof(uint16_t));
     uint16_t* indicesMem = (uint16_t*)iMem->data;
     for(unsigned int i = 0; i < indices.size(); i++)
     {
@@ -151,7 +151,7 @@ bgfxVertexArrayBuffer::~bgfxVertexArrayBuffer()
 
 }
     
-bgfxVertexArrayBuffer::bgfxVertexArrayBuffer(std::vector<Vertex>& vertices,std::vector<unsigned int>& indices)
+bgfxVertexArrayBuffer::bgfxVertexArrayBuffer(std::vector<Vertex>& vertices,std::vector<uint16_t>& indices)
 {
     m_vertexBuffer = std::make_shared<bgfxVertexBuffer>(vertices);
     m_indexBuffer = std::make_shared<bgfxIndexBuffer>(indices);

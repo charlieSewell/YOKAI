@@ -10,12 +10,12 @@ std::shared_ptr<VertexBuffer> VertexBuffer::Create(std::vector<Vertex> &vertices
     return std::make_shared<bgfxVertexBuffer>(vertices);
 }
 
-std::shared_ptr<IndexBuffer> IndexBuffer::Create(std::vector<unsigned int> &indices)
+std::shared_ptr<IndexBuffer> IndexBuffer::Create(std::vector<uint16_t> &indices)
 {
     return std::make_shared<bgfxIndexBuffer>(indices);
 }
 
-std::shared_ptr<VertexArrayBuffer> VertexArrayBuffer::Create(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+std::shared_ptr<VertexArrayBuffer> VertexArrayBuffer::Create(std::vector<Vertex>& vertices, std::vector<uint16_t>& indices)
 {
     return std::make_shared<bgfxVertexArrayBuffer>(vertices,indices);
 }

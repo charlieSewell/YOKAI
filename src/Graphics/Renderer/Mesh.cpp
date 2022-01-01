@@ -3,7 +3,7 @@
 //
 #include "Mesh.hpp"
 #include <glm/gtx/string_cast.hpp>
-Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<unsigned int> &indices, const std::vector<ModelTexture> &textures, glm::mat4 &transform)
+Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint16_t> &indices, const std::vector<ModelTexture> &textures, glm::mat4 &transform)
 {
     this->vertices = vertices;
     this->indices = indices;

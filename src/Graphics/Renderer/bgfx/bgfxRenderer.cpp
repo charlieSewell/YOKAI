@@ -65,13 +65,14 @@ void bgfxRenderer::DrawScene(float dt)
             | BGFX_STATE_CULL_CW \
             | BGFX_STATE_MSAA;
     
+    bgfx::setState(state);
     for(const RENDER::DrawItem& mesh : m_drawQueue)
     {
         bgfx::setTransform(glm::value_ptr(mesh.transform));
         DrawMesh(m_program,mesh.mesh,state);
     }
 
-    bgfx::discard(BGFX_DISCARD_ALL);
+    //bgfx::discard(BGFX_DISCARD_ALL);
 	m_drawQueue.clear();
 }
 void bgfxRenderer::DeInit()
@@ -138,7 +139,7 @@ const void bgfxRenderer::DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state)
     // Reset to defaults
 	for (size_t i = 0; i < textures.size(); i++) 
 	{
-		//textures[i].texture->UnBind(i);
+		textures[i].texture->UnBind(i);
 	}
      
 }

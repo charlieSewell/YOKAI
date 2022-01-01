@@ -100,9 +100,9 @@ class bgfxIndexBuffer : public IndexBuffer
     ~bgfxIndexBuffer() override;
     /**
      * @brief Constructor for bgfxIndexBuffer
-     * @param indices<unsigned int> - indices
+     * @param indices<uint16_t> - indices
      */
-    bgfxIndexBuffer(std::vector<unsigned int> &indices);
+    bgfxIndexBuffer(std::vector<uint16_t> &indices);
     /**
      * @brief Binds the IndexBuffer
      */
@@ -128,7 +128,7 @@ class bgfxVertexArrayBuffer : public VertexArrayBuffer
      * @param vector<Vertex> - vertices
      * @param vector<unisigned int> - indices
      */
-    bgfxVertexArrayBuffer(std::vector<Vertex>& vertices,std::vector<unsigned int>& indices);
+    bgfxVertexArrayBuffer(std::vector<Vertex>& vertices,std::vector<uint16_t>& indices);
     /**
      * @brief Binds the VertexArrayBuffer
      */
