@@ -71,7 +71,7 @@ int bgfxRenderer::Init()
     CreateToneMapFrameBuffer();
 
     bgfx::setViewName(m_vHistogramPass, "Luminence Histogram");
-    bgfx::setViewName(m_vAveragingPass, "Avergaing the Luminence Histogram");
+    bgfx::setViewName(m_vAveragingPass, "Averaging the Luminence Histogram");
     bgfx::setViewName(m_vDefault, "Forward render pass");
     bgfx::setViewName(m_vToneMapPass, "Tonemapping");
 
@@ -92,7 +92,7 @@ void bgfxRenderer::DrawScene(float dt)
     bgfx::touch(0);
 	setViewProjection(m_vDefault);
 
-    uint64_t state = BGFX_STATE_DEFAULT & ~BGFX_STATE_CULL_MASK;
+    uint64_t state = BGFX_STATE_DEFAULT;
     
     for(const RENDER::DrawItem& mesh : m_drawQueue)
     {
