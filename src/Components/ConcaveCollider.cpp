@@ -17,51 +17,51 @@ void ConcaveCollider::Update(float deltaTime)
 
 }
 
-void ConcaveCollider::setMass(double m) {
+void ConcaveCollider::setMass(float m) {
     PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->SetMass(m);
 }
 
-double ConcaveCollider::getMass() {
+float ConcaveCollider::getMass() {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetMass();
 }
 
-double ConcaveCollider::getInverseMass() {
+float ConcaveCollider::getInverseMass() {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetInverseMass();
 }
 
-void ConcaveCollider::setCentreOfMass(glm::dvec3 com) {
+void ConcaveCollider::setCentreOfMass(glm::vec3 com) {
     PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->SetCentreOfMass(com);
 }
 
-glm::dvec3 ConcaveCollider::getCentreOfMass() {
+glm::vec3 ConcaveCollider::getCentreOfMass() {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetCentreOfMass();
 }
 
-void ConcaveCollider::setInertiaTensor(glm::dmat3x3 it) {
+void ConcaveCollider::setInertiaTensor(glm::mat3x3 it) {
     PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->SetInertiaTensor(it);
 }
 
-glm::dmat3x3 ConcaveCollider::getInertiaTensor() {
+glm::mat3x3 ConcaveCollider::getInertiaTensor() {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetInertiaTensor();
 }
 
-glm::dmat3x3 ConcaveCollider::getInverseInertiaTensor() {
+glm::mat3x3 ConcaveCollider::getInverseInertiaTensor() {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetInverseInertiaTensor();
 }
 
-void ConcaveCollider::setLinearVelocity(glm::dvec3 lv) {
+void ConcaveCollider::setLinearVelocity(glm::vec3 lv) {
     PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->SetLinearVelocity(lv);
 }
 
-glm::dvec3 ConcaveCollider::getLinearVelocity() {
+glm::vec3 ConcaveCollider::getLinearVelocity() {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetLinearVelocity();
 }
 
-void ConcaveCollider::setAngularVelocity(glm::dvec3 av) {
+void ConcaveCollider::setAngularVelocity(glm::vec3 av) {
     PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->SetAngularVelocity(av);
 }
 
-glm::dvec3 ConcaveCollider::getAngularVelocity() {
+glm::vec3 ConcaveCollider::getAngularVelocity() {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetAngularVelocity();
 }
 

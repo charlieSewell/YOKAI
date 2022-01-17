@@ -2,70 +2,11 @@
 
 bgfx::VertexLayout bgfxVertex::layout;
 bgfx::VertexLayout PosColorTexCoord0Vertex::layout;
-static bx::DefaultAllocator allocator;
 
-bgfx::TextureHandle LoadTexture(const std::string fileName)
+
+bgfxTexture::bgfxTexture(const std::string fileName, const bool sRGB)
 {
-    void* data = nullptr;
-    uint32_t size = 0;
-
-    bx::FileReader reader;
-    bx::Error err;
-    if(bx::open(&reader, fileName.c_str(), &err))
-    {
-        size = (uint32_t)bx::getSize(&reader);
-        data = BX_ALLOC(&allocator, size);
-        bx::read(&reader, data, size, &err);
-        bx::close(&reader);
-    }
-
-    if(!err.isOk())
-    {
-        BX_FREE(&allocator, data);
-        SPDLOG_ERROR(err.getMessage().getPtr());
-    }
-
-    bimg::ImageContainer* image = bimg::imageParse(&allocator, data, size);
-    if(image)
-    {
-        // the callback gets called when bgfx is done using the data (after 2 frames)
-        const bgfx::Memory* mem = bgfx::makeRef(
-            image->m_data,
-            image->m_size,
-            [](void*, void* data) { bimg::imageFree((bimg::ImageContainer*)data); },
-            image);
-        BX_FREE(&allocator, data);
-
-        // default wrap mode is repeat, there's no flag for it
-        uint64_t textureFlags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
-        /*
-        if(sRGB)
-            textureFlags |= BGFX_TEXTURE_SRGB;
-        */
-        if(bgfx::isTextureValid(0, false, image->m_numLayers, (bgfx::TextureFormat::Enum)image->m_format, textureFlags))
-        {
-            bgfx::TextureHandle tex = bgfx::createTexture2D((uint16_t)image->m_width,
-                                                            (uint16_t)image->m_height,
-                                                            image->m_numMips > 1,
-                                                            image->m_numLayers,
-                                                            (bgfx::TextureFormat::Enum)image->m_format,
-                                                            textureFlags,
-                                                            mem);
-            //bgfx::setName(tex, file); // causes debug errors with DirectX SetPrivateProperty duplicate
-            return tex;
-        }
-        else
-            SPDLOG_ERROR("Unsupported format");
-    }
-
-    BX_FREE(&allocator, data);
-    SPDLOG_ERROR(err.getMessage().getPtr());
-    return BGFX_INVALID_HANDLE;
-}
-
-bgfxTexture::bgfxTexture(const std::string fileName)
-{
-    m_textureID = LoadTexture(fileName);
+    m_textureID = LoadTexture(fileName, sRGB);
 }
 
 bgfxTexture::~bgfxTexture()

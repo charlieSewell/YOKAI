@@ -1,11 +1,9 @@
 #pragma once
 #include <bgfx/bgfx.h>
-#include <bx/file.h>
-#include <bimg/decode.h>
-#include <bx/allocator.h>
 #include <algorithm>
 #include "Renderer/DataTypes.hpp"
 #include <spdlog/spdlog.h>
+#include "bgfxutil.hpp"
 struct bgfxVertex
 {
     static void Init()
@@ -51,7 +49,7 @@ class bgfxTexture : public Texture
      * @brief Constructor for bgfxTexture
      * @param string - fileName
      */
-    bgfxTexture(const std::string fileName);
+    bgfxTexture(const std::string fileNames, const bool RGB);
     /**
      * @brief Binds the texture
      * @param size_t - slot

@@ -31,19 +31,19 @@ public:
      * @brief Set the Own Collider ID
      * @param ownColliderID 
      */
-    void SetOwnColliderID(int ownColliderID);
+    void SetOwnColliderID(unsigned int ownColliderID);
     /**
      * @brief Set the Excluded Collider ID
      * @param id 
      */
-	void SetExcludedColliderID(int id);
+	void SetExcludedColliderID(unsigned int id);
     ///map of hits based on distance and colliderID
     std::map<rp3d::decimal,uint32_t> hits;
 private:
     ///own collider ID
-    unsigned int ownColliderID;
+    unsigned int m_ownColliderID;
     ///other excluded collider ID
-	unsigned int excludedColliderID = -1;
+	unsigned int m_excludedColliderID = 0;
     
 	
 };

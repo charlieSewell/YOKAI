@@ -1,6 +1,8 @@
 function(target_ignore_header_warnings target scope)
     get_target_property(lib_include_dirs ${target} INTERFACE_INCLUDE_DIRECTORIES)
+    set_target_properties(${target} PROPERTIES INTERFACE_SYSTEM_INCLUDE_DIRECTORIES $<TARGET_PROPERTY:${target},INTERFACE_INCLUDE_DIRECTORIES>)
     target_include_directories(${target} SYSTEM ${scope} ${lib_include_dirs})
+    
 endfunction()
 
 # Library build options.

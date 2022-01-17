@@ -464,5 +464,8 @@ float Tonemap_Unreal(float x) {
     return x / (x + 0.155) * 1.019;
 }
 
+float clampDot(vec3 v1, vec3 v2) {
+    return clamp(dot(v1, v2), 0.0, 1.0);
+}
 
 #endif // __SHADERLIB_SH__

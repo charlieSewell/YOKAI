@@ -97,7 +97,7 @@ private:
     ///is paused
     bool m_isPaused;
     ///active layer
-    int m_activeLayer;
+    unsigned int m_activeLayer;
     ///Log sinks for Engine class
     std::vector<spdlog::sink_ptr> m_sinks;
     ///Model Manager

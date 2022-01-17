@@ -25,7 +25,7 @@ void Animator::BoneTransform(float TimeInSeconds)
     }
     else
     {
-        for(int i = 0;i < m_modelToAnimate->GetBonesSize();i++)
+        for(size_t i = 0;i < m_modelToAnimate->GetBonesSize();i++)
         {
             finalTransforms[i] = glm::mat4(1.0f);
         }
@@ -111,7 +111,6 @@ void Animator::SetAnimation(std::string animationToSet)
 		try
 		{
 			m_currTime = 0;
-			SkeletalAnimation* test = m_modelToAnimate->GetAnimation(animationToSet);
 			this->m_animation = std::move(animationToSet);
 		}catch (std::exception &e)
 		{

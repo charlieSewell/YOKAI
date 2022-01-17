@@ -17,7 +17,7 @@ public:
      * @param textureName
      * @return textureID
      */
-    std::shared_ptr<Texture> LoadTexture(const std::string& textureName);
+    std::shared_ptr<Texture> LoadTexture(const std::string& textureName, const bool srgb = false);
     /**
      * @brief Gets a texture from an ID
      * @param textureID

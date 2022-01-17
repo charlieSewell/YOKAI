@@ -7,7 +7,7 @@ std::shared_ptr<Texture> TextureManager::GetTexture(unsigned int textureID)
 {
     return m_textures.at(textureID).second;
 }
-std::shared_ptr<Texture> TextureManager::LoadTexture(const std::string &textureName)
+std::shared_ptr<Texture> TextureManager::LoadTexture(const std::string &textureName, const bool sRGB)
 {
     for(auto& texture : m_textures)
     {
@@ -16,7 +16,7 @@ std::shared_ptr<Texture> TextureManager::LoadTexture(const std::string &textureN
             return(m_textures.at(texture.first).second);
         }
     }
-    m_textures.emplace(m_textureCount,std::pair(textureName,Texture::Create(textureName)));
+    m_textures.emplace(m_textureCount,std::pair(textureName,Texture::Create(textureName, sRGB)));
     m_textureCount++;
     return(m_textures.at(m_textureCount-1).second);
 }

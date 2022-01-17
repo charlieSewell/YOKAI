@@ -21,7 +21,7 @@ public:
 	 * @brief Sets radius
 	 * @param radius
 	 */
-	void SetRadius(double radius);
+	void SetRadius(float radius);
 
     /**
      * @brief Starts the Collider Component
@@ -56,17 +56,17 @@ public:
      * @brief Set the Mass
      * @param m 
      */
-    void SetMass(double m);
+    void SetMass(float m);
     /**
      * @brief Get the Mass
      * @return double 
      */
-    double GetMass();
+    float GetMass();
     /**
      * @brief Get the Inverse Mass
      * @return double 
      */
-    double GetInverseMass();
+    float GetInverseMass();
     /**
      * @brief Set the Centre Of Mass
      * @param com 
@@ -110,7 +110,7 @@ public:
      * @brief Get the Angular Velocity
      * @return glm::dvec3 
      */
-    glm::dvec3 GetAngularVelocity();
+    glm::vec3 GetAngularVelocity();
     /**
      * @brief Set Is Static Object
      * @param s 
@@ -135,7 +135,7 @@ public:
      * @brief Get the Radius
      * @return double 
      */
-    double GetRadius();
+    float GetRadius();
     /**
      * @brief Set the Position of the Sphere
      * @param glm::vec3
@@ -151,7 +151,7 @@ public:
      * @brief Get the Collider ID
      * @return int 
      */
-    int GetColliderID();
+    unsigned int GetColliderID();
     /**
      * @brief Translate the ball along a heading
      * @param position 
@@ -182,5 +182,5 @@ private:
     ///Collider ID
     unsigned int m_colliderID;
 	//radius
-	double m_radius = 0.05;
+	float m_radius = 0.05f;
 };

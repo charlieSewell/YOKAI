@@ -52,7 +52,7 @@ glm::quat BoxCollider::GetOrientation()
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetOrientation();
 }
 
-int BoxCollider::GetColliderID()
+unsigned int BoxCollider::GetColliderID()
 {
 	return m_colliderID;
 }
@@ -69,17 +69,17 @@ void BoxCollider::LateUpdate(float deltaTime)
     m_parent->GetComponent<Transform>()->SetRotation(GetOrientation());
 }
 
-void BoxCollider::SetMass(double m) 
+void BoxCollider::SetMass(float m) 
 {
     PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->SetMass(m);
 }
 
-double BoxCollider::GetMass() 
+float BoxCollider::GetMass() 
 {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetMass();
 }
 
-double BoxCollider::GetInverseMass() 
+float BoxCollider::GetInverseMass() 
 {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetInverseMass();
 }

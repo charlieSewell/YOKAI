@@ -1,5 +1,5 @@
 #pragma once
-#include "Mesh.hpp"
+#include "Model/Mesh.hpp"
 #include<glm/glm.hpp>
 
 class Mesh;

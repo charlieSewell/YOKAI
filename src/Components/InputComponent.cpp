@@ -15,7 +15,7 @@ Input::Input(GameObject* parent)
 
 bool Input::GetKeyState(unsigned int key)
 {
-	key = towupper(key);
+	key = towupper(static_cast<wint_t>(key));
 
 	if(!InputManagerGLFW::getInstance().m_keyActive[key])
 	{

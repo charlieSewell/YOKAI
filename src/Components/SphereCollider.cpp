@@ -41,7 +41,7 @@ glm::quat SphereCollider::GetOrientation()
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetOrientation();
 }
 
-int SphereCollider::GetColliderID() 
+unsigned int SphereCollider::GetColliderID() 
 {
     return m_colliderID;
 }
@@ -67,17 +67,17 @@ void SphereCollider::PhysicsUpdate(float deltaTime)
     // PhysicsSystem::getInstance().getPhysicsBody(m_colliderID)->UpdateBody();
 }
 
-void SphereCollider::SetMass(double m) 
+void SphereCollider::SetMass(float m) 
 {
     PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->SetMass(m);
 }
 
-double SphereCollider::GetMass() 
+float SphereCollider::GetMass() 
 {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetMass();
 }
 
-double SphereCollider::GetInverseMass() 
+float SphereCollider::GetInverseMass() 
 {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetInverseMass();
 }
@@ -125,7 +125,7 @@ void SphereCollider::SetAngularVelocity(glm::vec3 av)
     PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->SetAngularVelocity(av);
 }
 
-glm::dvec3 SphereCollider::GetAngularVelocity() 
+glm::vec3 SphereCollider::GetAngularVelocity() 
 {
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetAngularVelocity();
 }
@@ -150,12 +150,12 @@ bool SphereCollider::GetGravityAffected()
     return PhysicsSystem::getInstance().GetPhysicsBody(m_colliderID)->GetGravityAffected();
 }
 
-void SphereCollider::SetRadius(double radius) 
+void SphereCollider::SetRadius(float radius) 
 {
     m_radius = radius;
 }
 
-double SphereCollider::GetRadius() 
+float SphereCollider::GetRadius() 
 {
     return m_radius;
 }
@@ -176,7 +176,7 @@ void SphereCollider::StaticSet()
     SetCollisionMaskBits(Physics::CATEGORY2);
     SetLinearVelocity(glm::dvec3(0, 0, 0));
     SetAngularVelocity(glm::dvec3(0, 0, 0));
-    SetMass(999999999999999.0);
+    SetMass(999999999999999.0f);
     SetIsStaticObject(true);
     SetGravityAffected(false);
     SetInertiaTensor();

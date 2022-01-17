@@ -6,6 +6,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
+#include <assimp/material.h>
+#include <assimp/GltfMaterial.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <memory>
 #include "Model/Model.hpp"
@@ -17,6 +19,7 @@
 class ModelLoader 
 {
   public:
+    ModelLoader();
     /**
      * @brief Loads a model and returns a vector of meshes
      * @param string - filename
@@ -94,6 +97,15 @@ class ModelLoader
     void LoadBones(std::vector<Mesh> &meshes, std::vector<Bone> &bones,
                    std::map<std::string,unsigned int> &boneMap,
                    unsigned int meshIndex, const aiMesh *mesh);
+
+    /**
+     * @brief Loads a Material
+     * @param material 
+     * @param dir 
+     * @return Material 
+     */
+    Material ModelLoader::LoadMaterial(const aiMaterial* material);
+    
     ///List of textures currently loaded for a model
     std::vector<ModelTexture> m_textures_loaded;
     /// Number of bones in current model
@@ -104,4 +116,6 @@ class ModelLoader
     std::string m_directory;
     ///Texture manager
     TextureManager m_textureManager;
+    ///Model Importer
+    Assimp::Importer m_importer; 
 };

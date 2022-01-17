@@ -9,6 +9,26 @@ static inline glm::mat4 to_glm(aiMatrix4x4t<float> &m){return glm::transpose(glm
 static inline glm::vec3 vec3_cast(const aiVector3D &v) { return glm::vec3(v.x, v.y, v.z); }
 static inline glm::quat quat_cast(const aiQuaternion &q) { return glm::quat(q.w, q.x, q.y, q.z); }
 
+ModelLoader::ModelLoader()
+{
+    // Settings for aiProcess_SortByPType
+    // only take triangles or higher (polygons are triangulated during import)
+    m_importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT);
+    // Settings for aiProcess_SplitLargeMeshes
+    // Limit vertices to 65k (we use 16-bit indices)
+    m_importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, std::numeric_limits<uint16_t>::max());
+
+    unsigned int flags =
+        aiProcessPreset_TargetRealtime_Quality |                     // some optimizations and safety checks
+        aiProcess_OptimizeMeshes |                                   // minimize number of meshes
+        aiProcess_PreTransformVertices |                             // apply node matrices
+        aiProcess_FixInfacingNormals | aiProcess_TransformUVCoords | // apply UV transformations
+        //aiProcess_FlipWindingOrder   | // we cull clock-wise, keep the default CCW winding order
+        aiProcess_MakeLeftHanded | // we set GLM_FORCE_LEFT_HANDED and use left-handed bx matrix functions
+        aiProcess_FlipUVs;         // bimg loads textures with flipped Y (top left is 0,0)
+
+}
+
 Model ModelLoader::LoadModel(const std::string& filename)
 {
     m_numBones = 0;
@@ -16,12 +36,12 @@ Model ModelLoader::LoadModel(const std::string& filename)
     std::vector<Bone> bones;
     std::vector<SkeletalAnimation> animations;
     std::map<std::string,unsigned int> boneMap;
-    Assimp::Importer importer; 
-    const aiScene *scene = importer.ReadFile(
+
+    const aiScene *scene = m_importer.ReadFile(
         filename, aiProcess_Triangulate | aiProcess_LimitBoneWeights| aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_OptimizeMeshes);
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
-        SPDLOG_ERROR(importer.GetErrorString());
+        SPDLOG_ERROR(m_importer.GetErrorString());
         return(Model(meshes));
     }
     // retrieve the directory path of the filepath
@@ -137,6 +157,7 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
     }
     // process materials
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+    Material newMaterial = LoadMaterial(scene->mMaterials[mesh->mMaterialIndex]);
     // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
     // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.
     // Same applies to other texture as the following list summarizes:
@@ -158,7 +179,7 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
     // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, textures,transform);
+    return Mesh(vertices, indices, textures, transform, newMaterial);
 }
 
 // checks all material textures of a given type and loads the textures if they're not loaded yet.
@@ -294,4 +315,119 @@ void ModelLoader::LoadBones(std::vector<Mesh> &meshes, std::vector<Bone> &bones,
             meshes.at(meshIndex).addBoneData(VertexID, boneIndex, Weight);
         }
     }
+}
+
+Material ModelLoader::LoadMaterial(const aiMaterial* material)
+{
+    Material out;
+
+    // there is a purpose of mask and blend but we dont need it
+    aiString alphaMode;
+    material->Get(AI_MATKEY_GLTF_ALPHAMODE, alphaMode);
+    aiString alphaModeOpaque;
+    alphaModeOpaque.Set("OPAQUE");
+    out.blend = alphaMode != alphaModeOpaque;
+
+    material->Get(AI_MATKEY_TWOSIDED, out.doubleSided);
+
+    // texture files
+
+    aiString fileBaseColor, fileMetallicRoughness, fileNormals, fileOcclusion, fileEmissive;
+    material->GetTexture(AI_MATKEY_BASE_COLOR_TEXTURE, &fileBaseColor);
+    material->GetTexture(AI_MATKEY_GLTF_PBRMETALLICROUGHNESS_METALLICROUGHNESS_TEXTURE, &fileMetallicRoughness);
+    material->GetTexture(aiTextureType_NORMALS, 0, &fileNormals);
+    material->GetTexture(aiTextureType_LIGHTMAP, 0, &fileOcclusion);
+    material->GetTexture(aiTextureType_EMISSIVE, 0, &fileEmissive);
+
+    // Base color
+
+    if(fileBaseColor.length > 0)
+    {
+        aiString pathBaseColor;
+        pathBaseColor.Set(m_directory + "/");
+        pathBaseColor.Append(fileBaseColor.C_Str());
+        SPDLOG_INFO("Loaded Base Color: {}",pathBaseColor.C_Str());
+        out.baseColorTexture = m_textureManager.LoadTexture(pathBaseColor.C_Str(), true /* sRGB */);   //THIS IS AN ERROR should be true fuck knows why its not working
+    }
+    aiColor4D baseColorFactor;
+    if(AI_SUCCESS == material->Get(AI_MATKEY_BASE_COLOR, baseColorFactor))
+        out.baseColorFactor = { baseColorFactor.r, baseColorFactor.g, baseColorFactor.b, baseColorFactor.a };
+    out.baseColorFactor = glm::clamp(out.baseColorFactor, 0.0f, 1.0f);
+
+    // metallic/roughness
+
+    if(fileMetallicRoughness.length > 0)
+    {
+        aiString pathMetallicRoughness;
+        pathMetallicRoughness.Set(m_directory + "/");
+        pathMetallicRoughness.Append(fileMetallicRoughness.C_Str());
+        SPDLOG_INFO("Loaded Metalic/Roughness Texture: {}", pathMetallicRoughness.C_Str());
+        out.metallicRoughnessTexture = m_textureManager.LoadTexture(pathMetallicRoughness.C_Str());
+    }
+
+    ai_real metallicFactor;
+    if(AI_SUCCESS == material->Get(AI_MATKEY_METALLIC_FACTOR, metallicFactor))
+        out.metallicFactor = glm::clamp(metallicFactor, 0.0f, 1.0f);
+    ai_real roughnessFactor;
+    if(AI_SUCCESS == material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughnessFactor))
+        out.roughnessFactor = glm::clamp(roughnessFactor, 0.0f, 1.0f);
+
+    // normal map
+
+    if(fileNormals.length > 0)
+    {
+        aiString pathNormals;
+        pathNormals.Set(m_directory + "/");
+        pathNormals.Append(fileNormals.C_Str());
+        SPDLOG_INFO("Normal Map Texture: {}", pathNormals.C_Str());
+        out.normalTexture = m_textureManager.LoadTexture(pathNormals.C_Str());
+    }
+
+    ai_real normalScale;
+    if(AI_SUCCESS == material->Get(AI_MATKEY_GLTF_TEXTURE_SCALE(aiTextureType_NORMALS, 0), normalScale))
+        out.normalScale = normalScale;
+
+    // occlusion texture
+
+    if(fileOcclusion == fileMetallicRoughness)
+    {
+        // some GLTF files combine metallic/roughness and occlusion values into one texture
+        // don't load it twice
+        out.occlusionTexture = out.metallicRoughnessTexture;
+    }
+    else if(fileOcclusion.length > 0)
+    {
+        aiString pathOcclusion;
+        pathOcclusion.Set(m_directory + "/");
+        pathOcclusion.Append(fileOcclusion.C_Str());
+        SPDLOG_INFO("Loaded Occlusion Texture: {}", fileMetallicRoughness.C_Str());
+        out.occlusionTexture = m_textureManager.LoadTexture(pathOcclusion.C_Str());
+    }
+
+    ai_real occlusionStrength;
+    if(AI_SUCCESS == material->Get(AI_MATKEY_GLTF_TEXTURE_STRENGTH(aiTextureType_LIGHTMAP, 0), occlusionStrength))
+        out.occlusionStrength = glm::clamp(occlusionStrength, 0.0f, 1.0f);
+
+    // emissive texture
+
+    if(fileEmissive.length > 0)
+    {
+        aiString pathEmissive;
+        pathEmissive.Set(m_directory + "/");
+        pathEmissive.Append(fileEmissive.C_Str());
+        SPDLOG_INFO("Loaded Emmisive Texture: {}", fileMetallicRoughness.C_Str());
+        out.emissiveTexture = m_textureManager.LoadTexture(pathEmissive.C_Str(), true /* sRGB */);
+    }
+
+// assimp doesn't define this
+#ifndef AI_MATKEY_GLTF_EMISSIVE_FACTOR
+#define AI_MATKEY_GLTF_EMISSIVE_FACTOR AI_MATKEY_COLOR_EMISSIVE
+#endif
+
+    aiColor3D emissiveFactor;
+    if(AI_SUCCESS == material->Get(AI_MATKEY_GLTF_EMISSIVE_FACTOR, emissiveFactor))
+        out.emissiveFactor = { emissiveFactor.r, emissiveFactor.g, emissiveFactor.b };
+    out.emissiveFactor = glm::clamp(out.emissiveFactor, 0.0f, 1.0f);
+
+    return out;
 }

@@ -60,16 +60,16 @@ public:
      * @brief Set the Mass
      * @param m 
      */
-    void SetMass(double m);
+    void SetMass(float m);
     /**
      * @brief Get the Mass
      */
-    double GetMass();
+    float GetMass();
     /**
      * @brief Get the Inverse Mass
      * @return double
      */
-    double GetInverseMass();
+    float GetInverseMass();
     /**
      * @brief Set the Centre Of Mass
      * @param com 
@@ -154,7 +154,7 @@ public:
      * @brief Get the Collider ID
      * @return int 
      */
-	int GetColliderID();
+	unsigned int GetColliderID();
     /**
      * @brief Translate the collider along a heading
      * @param velocity 

@@ -8,6 +8,7 @@
 #include "Renderer/DataTypes.hpp"
 #include "Renderer/bgfx/bgfxDataTypes.hpp"
 #include "Renderer/bgfx/bgfxShader.hpp"
+#include "Renderer/Samplers.hpp"
 /**
  * @class bgfxRenderer
  * @brief bgfx rendering api implementation
@@ -67,12 +68,16 @@ class bgfxRenderer : public RenderAPI
     void ResetLightsBuffer() override;
   private:
     const void DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state);
-    void setViewProjection(bgfx::ViewId view);
+    void SetViewProjection(bgfx::ViewId view);
     void CreateToneMapFrameBuffer();
+    void BindPBRMaterial(const Material &material);
+    void GenerateAlbedoLUT();
+    void BindAlbedoLUT(bool compute = false);
     GLFWwindow* m_window;
     
-    glm::mat4 m_projMat = glm::mat4(1.0);
-    glm::mat4 m_viewMat = glm::mat4(1.0);
+    glm::mat4 m_projMat {1.0};
+    glm::mat4 m_viewMat {1.0};
+    glm::vec3 m_viewpos {0.0};
     int m_width = 0;
     int m_height = 0;
     uint32_t m_reset = true;
@@ -84,8 +89,10 @@ class bgfxRenderer : public RenderAPI
     
     bgfxShader* m_program;
     bgfxShader* m_tonemapProgram;
+    bgfxShader* m_pbrProgram;
     bgfx::ProgramHandle m_histogramProgram;
     bgfx::ProgramHandle m_averagingProgram;
+    bgfx::ProgramHandle m_albedoLUTProgram;
     
     bgfx::ViewId m_vDefault = 0;
     bgfx::ViewId m_vHistogramPass = 2;
@@ -94,6 +101,7 @@ class bgfxRenderer : public RenderAPI
 
     bgfx::UniformHandle s_texColor;
     bgfx::UniformHandle s_texAvgLum;
+    bgfx::UniformHandle s_albedoLUT;
     bgfx::UniformHandle u_tonemap;
     bgfx::UniformHandle u_histogramParams;
 
@@ -101,6 +109,7 @@ class bgfxRenderer : public RenderAPI
 
     bgfx::TextureHandle m_fbtextures[2];
     bgfx::TextureHandle m_lumAvgTarget;
+    bgfx::TextureHandle m_albedoLUTTexture;
     bgfx::FrameBufferHandle m_fbh;
 
     bx::DefaultAllocator mAllocator;
@@ -110,4 +119,7 @@ class bgfxRenderer : public RenderAPI
     float m_threshold = 1.5f;
     float m_time = 0.0f;
     const bgfx::Caps* m_caps;
+
+    bool m_multipleScatteringEnabled = true;
+    bool m_whiteFurnaceEnabled = false;
 };

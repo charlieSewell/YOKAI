@@ -134,7 +134,7 @@ void Yokai::Run()
                 }
                 if(ImGui::BeginMenu("Switch Scene"))
                 {
-                    for(int i = 0; i < m_layers.size();i++)
+                    for(size_t i = 0; i < m_layers.size();i++)
                     {
                         if (ImGui::MenuItem(m_layers[i]->GetSceneName().c_str()))
                         {

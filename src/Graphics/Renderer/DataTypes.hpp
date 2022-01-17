@@ -58,7 +58,7 @@ class Texture
      * @param fileName
      * @return shared_ptr<Texture>
      */
-    static std::shared_ptr<Texture> Create(const std::string fileName);
+    static std::shared_ptr<Texture> Create(const std::string fileName, const bool sRGB = false);
 };
 /**
  * @struct ModelTexture

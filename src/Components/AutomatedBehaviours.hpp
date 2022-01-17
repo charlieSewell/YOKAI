@@ -54,7 +54,7 @@ public:
 	///Ai current acceleration
 	float Acceleration = 0;
 	///Ai Acceleration Rate
-	float AccelerationRate = 0.0001;
+	float AccelerationRate = 0.0001f;
 	///AI rotation speed
 	float RotationSpeed = 0;
 	///AI state

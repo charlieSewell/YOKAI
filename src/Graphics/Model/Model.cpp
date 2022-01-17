@@ -19,7 +19,7 @@ void Model::Draw(glm::mat4 transform)
 {
     for(auto& mesh: m_meshes)
     {
-        glm::mat4 model{1.0};
+        glm::mat4 model{1.0f};
         //multiply parent by child transform
         model = transform* mesh.getTransform();
         Renderer::getInstance().AddToDraw(&mesh,model);
@@ -29,7 +29,7 @@ void Model::Draw(glm::mat4 transform, std::vector<glm::mat4> &finalTransforms)
 {
     for(auto& mesh: m_meshes)
     {
-        glm::mat4 model{1.0};
+        glm::mat4 model{1.0f};
         //multiply parent by child transform
         model = transform* mesh.getTransform();
         Renderer::getInstance().AddToDraw(&mesh,model,finalTransforms);
