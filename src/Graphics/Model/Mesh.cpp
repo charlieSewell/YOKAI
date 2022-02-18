@@ -14,7 +14,7 @@ void Mesh::SetupMesh()
     m_VAO = VertexArrayBuffer::Create(this->m_vertices,this->m_indices);
 }
 
-void Mesh::addBoneData(unsigned int vertexID,unsigned int boneID, float weight)
+void Mesh::addBoneData(unsigned int vertexID, uint16_t boneID, float weight)
 {
     for (int i = 0 ; i < 4 ; ++i)
     {

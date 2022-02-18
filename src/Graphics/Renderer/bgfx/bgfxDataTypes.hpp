@@ -12,7 +12,7 @@ struct bgfxVertex
             .add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Normal, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::TexCoord0, 2, bgfx::AttribType::Float)
-            .add(bgfx::Attrib::Tangent, 3, bgfx::AttribType::Float)
+            .add(bgfx::Attrib::Tangent, 4, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Bitangent, 3, bgfx::AttribType::Float)
             .add(bgfx::Attrib::Indices, 4, bgfx::AttribType::Int16)
             .add(bgfx::Attrib::Weight, 4, bgfx::AttribType::Float)

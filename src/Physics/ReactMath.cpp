@@ -26,14 +26,7 @@ reactphysics3d::Vector3 ReactMath::glmVecToRP3d(glm::vec3 &vec) {
     newVec.z = vec.z;
     return newVec;
 }
-reactphysics3d::Vector3 ReactMath::glmVecToRP3d(glm::dvec3 &vec) {
-    rp3d::Vector3 newVec = {};
-    newVec.x             = vec.x;
-    newVec.y             = vec.y;
-    newVec.z             = vec.z;
-    return newVec;
-}
-///*
+
 glm::vec3 ReactMath::rp3dVecToGlm(reactphysics3d::Vector3 &vec){
     glm::vec3 newVec = {};
     newVec.x = vec.x;

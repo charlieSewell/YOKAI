@@ -57,7 +57,7 @@ bool bgfxShader::SetTexture(const char* samplerName, uint8_t bindPoint, std::sha
 	}
 	else
 	{
-		SPDLOG_WARN("Could not find texture sampler {}", samplerName);
+		//SPDLOG_WARN("Could not find texture sampler {}", samplerName);
 		return false;
 	}
 }
@@ -72,7 +72,7 @@ bool bgfxShader::SetUniform(const char* uniformName, const void* value) const
 	}
 	else
 	{
-		SPDLOG_WARN("Could not find uniform {}", uniformName);
+		//SPDLOG_WARN("Could not find uniform {}", uniformName);
 		return false;
 	}
 }

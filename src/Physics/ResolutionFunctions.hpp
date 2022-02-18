@@ -11,7 +11,7 @@ namespace YokaiPhysics
      * @param mass 
      * @return glm::mat3x3 
      */
-    glm::mat3x3 RectangleInertiaTensor(glm::dvec3 ext, float mass);
+    glm::mat3x3 RectangleInertiaTensor(glm::vec3 ext, float mass);
     /**
      * @brief Calculates Spherical Inertia Tensor
      * @param radius 
@@ -22,13 +22,13 @@ namespace YokaiPhysics
     /**
      * @brief Degrees To radians
      * @param degrees 
-     * @return double 
+     * @return float 
      */
-    double DegreesToRadians(double degrees);
+    float DegreesToRadians(float degrees);
     /**
      * @brief Radians to Degrees
      * @param radians 
-     * @return double 
+     * @return float 
      */
-    double RadiansToDegrees(double radians);
+    float RadiansToDegrees(float radians);
 }

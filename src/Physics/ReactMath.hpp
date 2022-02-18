@@ -26,12 +26,6 @@ namespace ReactMath {
      */
     reactphysics3d::Vector3 glmVecToRP3d(glm::vec3 &vec);
     /**
-     * @brief glm vec3 to rp3d
-     * @param glm::vec3 - vec3
-     * @return rp3d::Vector3 - vec3
-     */
-    reactphysics3d::Vector3 glmVecToRP3d(glm::dvec3 &vec);
-    /**
      * @brief Converts rp3d Vector3 to glm
      * @param rp3d::Vector3 - vec3
      * @return glm::vec3 - vec3

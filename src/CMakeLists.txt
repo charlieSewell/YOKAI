@@ -21,7 +21,8 @@ set(SHADERS
 	src/Shaders/tonemap/cs_histogram.sc
 	src/Shaders/imgui/vs_ocornut_imgui.sc
     src/Shaders/imgui/fs_ocornut_imgui.sc
-    
+    src/Shaders/IBL/cs_irradiance.sc
+	src/Shaders/IBL/cs_prefilter_env_map.sc
 	PARENT_SCOPE
 )
 

@@ -116,21 +116,21 @@ if (WarningsAsErrors)
             )
 endif()
 # Set compile flags.
-target_compile_options(${PROJECT_NAME} PUBLIC
-        # Clang
-        $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
-        -Weverything -fcolor-diagnostics
-        # Disable specific warnings.
-        -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded
-        -Wno-deprecated-declarations -Wno-exit-time-destructors
-        -Wno-switch-enum -Wno-weak-vtables -Wno-global-constructors>
-        # GCC
-        $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic -fdiagnostics-color=always>
-        # Visual Studio
-        $<$<CXX_COMPILER_ID:MSVC>:/W4>
-        # Enable the clang sanitizer.
-        $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>
-        )
+target_compile_options(${PROJECT_NAME} PRIVATE
+    # Clang
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
+    -Weverything -fcolor-diagnostics
+    # Disable specific warnings.
+    -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded
+    -Wno-deprecated-declarations -Wno-exit-time-destructors
+    -Wno-switch-enum -Wno-weak-vtables -Wno-global-constructors -fPIC>
+    # GCC
+    $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic -fdiagnostics-color=always -fPIC>
+    # Visual Studio
+    $<$<CXX_COMPILER_ID:MSVC>:/W4 /external:anglebrackets /external:W0>
+    # Enable the clang sanitizer.
+    $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>
+)
 # Link against the clang sanitizer.
 target_link_options(${PROJECT_NAME} PUBLIC
         $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>

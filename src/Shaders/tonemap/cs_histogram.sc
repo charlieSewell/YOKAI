@@ -9,7 +9,7 @@
 #define RGB_TO_LUM vec3(0.2125, 0.7154, 0.0721)
 
 // Uniforms:
-uniform vec4 u_params;
+uniform vec4 u_histogramparams;
 
 IMAGE2D_RO(s_texColor, rgba16f, 0);
 BUFFER_RW(histogram, uint, 1);
@@ -33,10 +33,10 @@ void main() {
   histogramShared[gl_LocalInvocationIndex] = 0;
 
   groupMemoryBarrier();
-  uvec2 dim = uvec2(u_params.zw);
+  uvec2 dim = uvec2(u_histogramparams.zw);
 	if (gl_GlobalInvocationID.x < dim.x && gl_GlobalInvocationID.y < dim.y) {
     vec3 hdrColor = imageLoad(s_texColor, ivec2(gl_GlobalInvocationID.xy)).rgb;
-    uint binIndex = colorToBin(hdrColor, u_params.x, u_params.y);
+    uint binIndex = colorToBin(hdrColor, u_histogramparams.x, u_histogramparams.y);
     atomicAdd(histogramShared[binIndex], 1);
   }
 

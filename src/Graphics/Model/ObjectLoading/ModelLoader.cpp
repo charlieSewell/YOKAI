@@ -94,7 +94,7 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
     {
         Vertex vertex;
-        glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
+        glm::vec4 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
         // positions
         vector.x = mesh->mVertices[i].x;
         vector.y = mesh->mVertices[i].y;
@@ -122,6 +122,7 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
             vector.x = mesh->mTangents[i].x;
             vector.y = mesh->mTangents[i].y;
             vector.z = mesh->mTangents[i].z;
+            vector.w = 0; //HACK NEED TO FIX
             vertex.tangent = vector;
             // biTangent
             vector.x = mesh->mBitangents[i].x;
@@ -347,7 +348,7 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
         pathBaseColor.Set(m_directory + "/");
         pathBaseColor.Append(fileBaseColor.C_Str());
         SPDLOG_INFO("Loaded Base Color: {}",pathBaseColor.C_Str());
-        out.baseColorTexture = m_textureManager.LoadTexture(pathBaseColor.C_Str(), true /* sRGB */);   //THIS IS AN ERROR should be true fuck knows why its not working
+        out.baseColorTexture = m_textureManager.LoadTexture(pathBaseColor.C_Str(), false /* sRGB */);   //THIS IS AN ERROR should be true fuck knows why its not working
     }
     aiColor4D baseColorFactor;
     if(AI_SUCCESS == material->Get(AI_MATKEY_BASE_COLOR, baseColorFactor))
@@ -380,7 +381,7 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
         pathNormals.Set(m_directory + "/");
         pathNormals.Append(fileNormals.C_Str());
         SPDLOG_INFO("Normal Map Texture: {}", pathNormals.C_Str());
-        out.normalTexture = m_textureManager.LoadTexture(pathNormals.C_Str());
+        out.normalTexture = m_textureManager.LoadTexture(pathNormals.C_Str(),true);
     }
 
     ai_real normalScale;
@@ -416,7 +417,7 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
         pathEmissive.Set(m_directory + "/");
         pathEmissive.Append(fileEmissive.C_Str());
         SPDLOG_INFO("Loaded Emmisive Texture: {}", fileMetallicRoughness.C_Str());
-        out.emissiveTexture = m_textureManager.LoadTexture(pathEmissive.C_Str(), true /* sRGB */);
+        out.emissiveTexture = m_textureManager.LoadTexture(pathEmissive.C_Str(), false /* sRGB */);
     }
 
 // assimp doesn't define this

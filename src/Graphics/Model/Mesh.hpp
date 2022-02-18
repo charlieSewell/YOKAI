@@ -57,7 +57,7 @@ class Mesh
      * @param boneID 
      * @param weight 
      */
-    void addBoneData(unsigned int vertexID,unsigned int boneID, float weight);
+    void addBoneData(unsigned int vertexID, uint16_t boneID, float weight);
     /**
      * @brief Get the VAO for this mesh
      * @return std::shared_ptr<VertexArrayBuffer> 

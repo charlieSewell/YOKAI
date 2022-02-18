@@ -7,15 +7,27 @@ namespace
 
 const bgfx::Memory* loadMemory( const char* filename )
 {
-	std::ifstream file( filename, std::ios::binary | std::ios::ate );
-	std::streamsize size = file.tellg();
-	file.seekg( 0, std::ios::beg );
-	const bgfx::Memory* mem = bgfx::alloc( uint32_t( size + 1 ) );
-	if ( file.read( ( char* )mem->data, size ) )
-	{
-		mem->data[ mem->size - 1 ] = '\0';
-		return mem;
-	}
+    std::ifstream file;
+    file.exceptions ( std::ifstream::failbit | std::ifstream::badbit );
+    try
+    {
+        file.open(filename, std::ios::binary | std::ios::ate);
+        std::streamsize size = file.tellg();
+        SPDLOG_INFO(file.tellg());
+	    file.seekg( 0, std::ios::beg );
+	    const bgfx::Memory* mem = bgfx::alloc( uint32_t( size + 1 ) );
+	    if ( file.read( ( char* )mem->data, size ) )
+	    {
+		    mem->data[ mem->size - 1 ] = '\0';
+		    return mem;
+	    }
+	    return nullptr;
+    }catch(std::ifstream::failure e)
+    {
+        SPDLOG_ERROR(e.what());
+        return nullptr;
+    }
+	
 	return nullptr;
 }
 
@@ -52,6 +64,7 @@ bgfx::ProgramHandle loadProgram( std::string vsName, std::string fsName )
 	{
 		bgfx::ShaderHandle cs;
 		cs = loadShader(vsName);
+        
 		program = bgfx::createProgram( cs, true );
 	}
 	
@@ -143,6 +156,7 @@ void screenSpaceQuad(float _textureWidth, float _textureHeight, bool _originBott
 
 bgfx::TextureHandle LoadTexture(const std::string fileName, const bool sRGB)
 {
+    bgfx::TextureHandle tex;
     void* data = nullptr;
     uint32_t size = 0;
 
@@ -178,15 +192,40 @@ bgfx::TextureHandle LoadTexture(const std::string fileName, const bool sRGB)
         
         if(sRGB)
             textureFlags |= BGFX_TEXTURE_SRGB;
-        if(bgfx::isTextureValid(0, false, image->m_numLayers, (bgfx::TextureFormat::Enum)image->m_format, textureFlags))
+        if (image->m_cubeMap)
+		{
+			tex = bgfx::createTextureCube(
+					uint16_t(image->m_width)
+					, 1 < image->m_numMips
+					, image->m_numLayers
+					, bgfx::TextureFormat::Enum(image->m_format)
+					, textureFlags
+					, mem
+					);
+            return tex; 
+		}
+		else if (1 < image->m_depth)
+		{
+			tex = bgfx::createTexture3D(
+				  uint16_t(image->m_width)
+				, uint16_t(image->m_height)
+				, uint16_t(image->m_depth)
+				, 1 < image->m_numMips
+				, bgfx::TextureFormat::Enum(image->m_format)
+				, textureFlags
+				, mem
+				);
+            return tex;
+	    }
+        else if(bgfx::isTextureValid(0, false, image->m_numLayers, (bgfx::TextureFormat::Enum)image->m_format, textureFlags))
         {
-            bgfx::TextureHandle tex = bgfx::createTexture2D((uint16_t)image->m_width,
-                                                            (uint16_t)image->m_height,
-                                                            image->m_numMips > 1,
-                                                            image->m_numLayers,
-                                                            (bgfx::TextureFormat::Enum)image->m_format,
-                                                            textureFlags,
-                                                            mem);
+            tex = bgfx::createTexture2D((uint16_t)image->m_width,
+                (uint16_t)image->m_height,
+                image->m_numMips > 1,
+                image->m_numLayers,
+                (bgfx::TextureFormat::Enum)image->m_format,
+                textureFlags,
+                mem);
             //bgfx::setName(tex, file); // causes debug errors with DirectX SetPrivateProperty duplicate
             return tex;
         }

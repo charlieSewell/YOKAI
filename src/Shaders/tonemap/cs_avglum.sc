@@ -2,11 +2,11 @@
 
 #define GROUP_SIZE 256
 // Uniforms:
-uniform vec4 u_params;
-#define minLogLum u_params.x
-#define logLumRange u_params.y
-#define timeCoeff u_params.z
-#define numPixels u_params.w
+uniform vec4 u_histogramparams;
+#define minLogLum u_histogramparams.x
+#define logLumRange u_histogramparams.y
+#define timeCoeff u_histogramparams.z
+#define numPixels u_histogramparams.w
 
 IMAGE2D_RW(s_target, r16f, 0);
 BUFFER_RW(histogram, uint, 1);

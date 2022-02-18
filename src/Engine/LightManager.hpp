@@ -3,6 +3,7 @@
 #include "Renderer/Renderer.hpp"
 #include <Imgui/imgui.h>
 #include "Engine/JSONTypes.hpp"
+#include "Renderer/PointLight.hpp"
 class LightManager
 {
     public:
@@ -14,15 +15,21 @@ class LightManager
          * @brief Adds a Light to the scene
          * @param color 
          * @param position 
-         * @param paddingAndRadius 
+         * @param radius
          * @return unsigned int 
          */
-        unsigned int AddLight(glm::vec4 color, glm::vec4 position, glm::vec4 paddingAndRadius);
+        unsigned int AddLight(glm::vec3 position, glm::vec3 color, float radius);
+        /**
+         * @brief Adds a Light to the scene
+         * @param light 
+         * @return unsigned int 
+         */
+        unsigned int AddLight(PointLight light);
         /**
          * @brief Deletes a Light from the scene
          * @param lightIndex 
          */
-        void DeleteLight(unsigned int lightIndex);
+        void DeleteLight(unsigned int _lightIndex);
         /**
          * @brief Get a light from an index
          * @param lightIndex 

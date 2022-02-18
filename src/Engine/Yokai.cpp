@@ -101,7 +101,7 @@ void Yokai::Run()
             isPhysicsPressed = false;
         }
 
-        window.StartFrame(deltaTime);
+        window.StartFrame(float(deltaTime));
 
         if (!m_isPaused)
         {
@@ -153,7 +153,7 @@ void Yokai::Run()
         m_layers[m_activeLayer]->GetLightManager()->UpdateLights();
         PhysicsSystem::getInstance().RendererUpdate();
         m_layers[m_activeLayer]->Draw();
-        Renderer::getInstance().DrawScene(deltaTime);
+        Renderer::getInstance().DrawScene(float(deltaTime));
         Renderer::getInstance().DrawGui();
         window.EndFrame();
 	}

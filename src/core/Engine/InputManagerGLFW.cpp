@@ -20,7 +20,7 @@ void InputManagerGLFW::processKeyboard()
 {
 	if(!glfwJoystickPresent(GLFW_JOYSTICK_1))
 	{
-		for(int i=0; i < m_activeKeys.size(); ++i)
+		for(size_t i=0; i < m_activeKeys.size(); ++i)
 		{
 			m_keyStates[m_activeKeys[i]] = (glfwGetKey(m_Window, m_keyMap[m_activeKeys[i]]) == GLFW_PRESS);
 		}

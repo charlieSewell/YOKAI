@@ -5,12 +5,16 @@ set(SOURCE
         Renderer/DataTypes.hpp
         Renderer/DrawItem.hpp
         Renderer/LightingTypes.hpp
+        Renderer/PointLight.hpp
+        Renderer/PointLight.cpp
         Renderer/RenderAPI.cpp
         Renderer/RenderAPI.hpp
         Renderer/Renderer.cpp
         Renderer/Renderer.hpp
         Renderer/Window.cpp
         Renderer/Window.hpp
+        Renderer/bgfx/LightBuffer.hpp
+        Renderer/bgfx/LightBuffer.cpp
         Renderer/bgfx/bgfxDataTypes.hpp
         Renderer/bgfx/bgfxDataTypes.cpp
         Renderer/bgfx/bgfximgui.hpp
@@ -21,6 +25,8 @@ set(SOURCE
         Renderer/bgfx/bgfxShader.cpp
         Renderer/bgfx/bgfxutil.cpp
         Renderer/bgfx/bgfxutil.hpp
+        Renderer/bgfx/CubeMapFilterer.hpp
+        Renderer/bgfx/CubeMapFilterer.cpp
         Renderer/TextureManager.hpp
         Renderer/TextureManager.cpp
         Renderer/Samplers.hpp
@@ -63,11 +69,11 @@ target_compile_options(graphics PRIVATE
         # GCC
         $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic -fdiagnostics-color=always>
         # Visual Studio
-        $<$<CXX_COMPILER_ID:MSVC>:/W4>
+        $<$<CXX_COMPILER_ID:MSVC>:/W4 /external:anglebrackets /external:W0>
         # Enable the clang sanitizer.
         $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>
         )
-target_link_libraries(graphics PRIVATE bgfx bx bimg core )
+target_link_libraries(graphics PRIVATE bgfx bx bimg core)
 target_link_libraries(graphics PUBLIC assimp)
 target_include_directories(graphics PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

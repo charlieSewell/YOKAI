@@ -4,11 +4,15 @@
 #include <glm/glm.hpp>
 #include <spdlog/spdlog.h>
 #include "bgfximgui.hpp"
-#include "Renderer/RenderAPI.hpp"
 #include "Renderer/DataTypes.hpp"
+#include "Renderer/Samplers.hpp"
+#include "Renderer/RenderAPI.hpp"
+#include "Renderer/bgfx/CubeMapFilterer.hpp"
 #include "Renderer/bgfx/bgfxDataTypes.hpp"
 #include "Renderer/bgfx/bgfxShader.hpp"
-#include "Renderer/Samplers.hpp"
+#include "Renderer/bgfx/LightBuffer.hpp"
+
+
 /**
  * @class bgfxRenderer
  * @brief bgfx rendering api implementation
@@ -74,7 +78,7 @@ class bgfxRenderer : public RenderAPI
     void GenerateAlbedoLUT();
     void BindAlbedoLUT(bool compute = false);
     GLFWwindow* m_window;
-    
+    PointLightBuffer m_lightBuffer;
     glm::mat4 m_projMat {1.0};
     glm::mat4 m_viewMat {1.0};
     glm::vec3 m_viewpos {0.0};
@@ -102,9 +106,11 @@ class bgfxRenderer : public RenderAPI
     bgfx::UniformHandle s_texColor;
     bgfx::UniformHandle s_texAvgLum;
     bgfx::UniformHandle s_albedoLUT;
+    bgfx::UniformHandle s_prefilteredEnv;
+    bgfx::UniformHandle s_irradiance;
     bgfx::UniformHandle u_tonemap;
     bgfx::UniformHandle u_histogramParams;
-
+    bgfx::UniformHandle u_envParams;
     bgfx::DynamicIndexBufferHandle m_histogramBuffer;
 
     bgfx::TextureHandle m_fbtextures[2];
@@ -122,4 +128,9 @@ class bgfxRenderer : public RenderAPI
 
     bool m_multipleScatteringEnabled = true;
     bool m_whiteFurnaceEnabled = false;
+    CubeMapFilterer* m_cubeMapFilterer;
+    bgfx::TextureHandle t_envMap;
+    FilteredCubeMap t_filteredEnvMap;
+    bool condition = true;
+    float orthoProjection[16];
 };

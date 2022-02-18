@@ -8,7 +8,7 @@
 #include "DataTypes.hpp"
 #include "DrawItem.hpp"
 #include "LightingTypes.hpp"
-
+#include "PointLight.hpp"
 
 /**
  * @class RenderAPI

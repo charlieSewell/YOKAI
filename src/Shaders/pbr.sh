@@ -1,8 +1,10 @@
+#include "common.sh"
 #ifndef PBR_SH_HEADER_GUARD
 #define PBR_SH_HEADER_GUARD
 
 #define PI     (3.14159265359)
 #define INV_PI (0.31830988618)
+#define MIN_ROUGHNESS 0.045
 
 struct PBRMaterial
 {
@@ -27,7 +29,7 @@ uniform vec4 u_multipleScatteringVec;
 
 
 #ifdef WRITE_LUT
-IMAGE2D_WR(i_texAlbedoLUT, rgba32f, 0);
+IMAGE2D_WR(i_texAlbedoLUT, rgba16f, 0);
 #else
 SAMPLER2D(s_texAlbedoLUT, 0);
 #endif
@@ -41,11 +43,17 @@ SAMPLER2D(s_texMetallicRoughness, 2);
 SAMPLER2D(s_texNormal,            3);
 SAMPLER2D(s_texOcclusion,         4);
 SAMPLER2D(s_texEmissive,          5);
+// Light Buffer has 6
+SAMPLERCUBE(s_prefilterMap,         7);
+SAMPLERCUBE(s_irradianceMap,         8);
+
 
 uniform vec4 u_baseColorFactor;
 uniform vec4 u_factors;
 uniform vec4 u_emissiveFactorVec;
 uniform vec4 u_hasTextures;
+
+
 
 #define u_hasBaseColorTexture         ((uint(u_hasTextures.x) & (1 << 0)) != 0)
 #define u_hasMetallicRoughnessTexture ((uint(u_hasTextures.x) & (1 << 1)) != 0)
@@ -58,102 +66,9 @@ uniform vec4 u_hasTextures;
 #define u_occlusionStrength       (u_factors.w)
 #define u_emissiveFactor          (u_emissiveFactorVec.xyz)
 
-vec4 pbrBaseColor(vec2 texcoord)
-{
-    if(u_hasBaseColorTexture)
-    {
-        return texture2D(s_texBaseColor, texcoord) * u_baseColorFactor;
-    }
-    else
-    {
-        return u_baseColorFactor;
-    }
-}
 
-vec2 pbrMetallicRoughness(vec2 texcoord)
-{
-    if(u_hasMetallicRoughnessTexture)
-    {
-        return texture2D(s_texMetallicRoughness, texcoord).bg * u_metallicRoughnessFactor;
-    }
-    else
-    {
-        return u_metallicRoughnessFactor;
-    }
-}
 
-vec3 pbrNormal(vec2 texcoord)
-{
-    if(u_hasNormalTexture)
-    {
-        // the normal scale can cause problems and serves no real purpose
-        // normal compression and BRDF calculations assume unit length
-        return normalize((texture2D(s_texNormal, texcoord).rgb * 2.0) - 1.0); // * u_normalScale;
-    }
-    else
-    {
-        // the up vector (w) in tangent space is the default normal
-        // thats why normal maps are mostly blue
-        return vec3(0.0, 0.0, 1.0);
-    }
-}
-float pbrOcclusion(vec2 texcoord)
-{
-    if(u_hasOcclusionTexture)
-    {
-        // occludedColor = lerp(color, color * <sampled occlusion texture value>, <occlusion strength>)
-        float occlusion = texture2D(s_texOcclusion, texcoord).r;
-        return occlusion + (1.0 - occlusion) * (1.0 - u_occlusionStrength);
-    }
-    else
-    {
-        return 1.0;
-    }
-}
-vec3 pbrEmissive(vec2 texcoord)
-{
-    if(u_hasEmissiveTexture)
-    {
-        return texture2D(s_texEmissive, texcoord).rgb * u_emissiveFactor;
-    }
-    else
-    {
-        return u_emissiveFactor;
-    }
-}
-PBRMaterial pbrInitMaterial(PBRMaterial mat);
-PBRMaterial pbrMaterial(vec2 texcoord)
-{
-    PBRMaterial mat;
-    // Read textures/uniforms
-    mat.albedo = pbrBaseColor(texcoord);
-    vec2 metallicRoughness = pbrMetallicRoughness(texcoord);
-    mat.metallic  = metallicRoughness.r;
-    mat.roughness = metallicRoughness.g;
-    mat.normal = pbrNormal(texcoord);
-    mat.occlusion = pbrOcclusion(texcoord);
-    mat.emissive = pbrEmissive(texcoord);
-    mat = pbrInitMaterial(mat);
-    return mat;
-}
 #endif // READ_MATERIAL
-PBRMaterial pbrInitMaterial(PBRMaterial mat)
-{
-    // Taken directly from GLTF 2.0 specs
-    // this can be precalculated instead of evaluating it in the BRDF for every light
-    const vec3 dielectricSpecular = vec3(0.04, 0.04, 0.04);
-    const vec3 black = vec3(0.0, 0.0, 0.0);
-    // metals have no diffuse reflection so the albedo value stores F0 (reflectance at normal incidence) instead
-    // dielectrics are assumed to have F0 = 0.04 which equals an IOR of 1.5
-    mat.diffuseColor = mix(mat.albedo.rgb * (vec3_splat(1.0) - dielectricSpecular), black, mat.metallic);
-    mat.F0 = mix(dielectricSpecular, mat.albedo.rgb, mat.metallic);
-    // perceptual roughness to roughness
-    mat.a = mat.roughness * mat.roughness;
-    // prevent division by 0
-    mat.a = max(mat.a, 0.01);
-    return mat;
-}
-// no screenspace derivatives in vertex or compute
 #if BGFX_SHADER_TYPE_FRAGMENT
 // Reduce specular aliasing by producing a modified roughness value
 // Tokuyoshi et al. 2019. Improved Geometric Specular Antialiasing.
@@ -189,6 +104,10 @@ vec3 F_Schlick(float VoH, vec3 F0)
     float f = pow(1.0 - VoH, 5.0);
     return f + F0 * (1.0 - f);
 }
+vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
+{
+    return F0 + (max(vec3(1.0 - roughness, 1.0 - roughness, 1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+}   
 
 // Normal Distribution Function
 // (aka specular distribution)
@@ -239,47 +158,27 @@ float Fd_Lambert()
 
 #ifndef WRITE_LUT
 
-// Account for multiple scattering across microfacets
-// Computes a scaling factor for the BRDF
-
-// Turquin. 2018. Practical multiple scattering compensation for microfacet models.
-// https://blog.selfshadow.com/publications/turquin/ms_comp_final.pdf
-vec3 multipleScatteringFactor(PBRMaterial mat, float NoV)
+vec3 multipleScatteringFactor(float a, float metallic, vec3 F0, float NoV)
 {
     if(u_multipleScattering)
     {
         // Turquin approximates the multiple scattering portion of the BRDF using a scaled down version of the single scattering BRDF
         // That scale factor is E: the directional albedo for single scattering, ie. the total reflectance for a viewing direction
-        vec2 E = texture2D(s_texAlbedoLUT, vec2(NoV, mat.a)).xy;
+        vec2 E = texture2D(s_texAlbedoLUT, vec2(NoV, a)).xy;
 
         // for metals, the albedo value is calculated with F = 1 (perfect reflection)
         // fresnel determines whether light is reflected or absorbed
-        vec3 factorMetallic = vec3_splat(1.0) + mat.F0 * (1.0 / E.x - 1.0);
+        vec3 factorMetallic = vec3_splat(1.0) + F0 * (1.0 / E.x - 1.0);
 
         // for dielectrics, fresnel determines the ratio between specular and diffuse energy
         // so the albedo depends on F as a variable
         // however, dielectrics in GLTF have a fixed F0 of 0.04 so we can do this with a second LUT
         vec3 factorDielectric = vec3_splat(1.0 / E.y);
 
-        return mix(factorDielectric, factorMetallic, mat.metallic);
+        return mix(factorDielectric, factorMetallic, metallic);
     }
     else
         return vec3_splat(1.0);
-}
-
-bool whiteFurnaceEnabled()
-{
-    return u_whiteFurnace;
-}
-
-// White furnace test: lighting integral against a constant white environment
-// Used to visualize energy loss/gain
-// This is exactly what the multiple scattering LUT calculates
-vec3 whiteFurnace(float NoV, PBRMaterial mat)
-{
-    vec2 Es = texture2D(s_texAlbedoLUT, vec2(NoV, mat.a)).xy;
-    float E = mix(Es.y, Es.x, mat.metallic);
-    return E * vec3_splat(u_whiteFurnaceRadiance);
 }
 
 #endif
@@ -308,4 +207,58 @@ vec3 BRDF(vec3 v, vec3 l, vec3 n, float NoV, float NoL, PBRMaterial mat)
     return Fr + (1.0 - F) * Fd;
 }
 
+vec2 hammersley(uint i, uint N)
+{
+    uint bits = (i << 16u) | (i >> 16u);
+    bits = ((bits & 0x55555555u) << 1u) | ((bits & 0xAAAAAAAAu) >> 1u);
+    bits = ((bits & 0x33333333u) << 2u) | ((bits & 0xCCCCCCCCu) >> 2u);
+    bits = ((bits & 0x0F0F0F0Fu) << 4u) | ((bits & 0xF0F0F0F0u) >> 4u);
+    bits = ((bits & 0x00FF00FFu) << 8u) | ((bits & 0xFF00FF00u) >> 8u);
+    float rdi = float(bits) * 2.3283064365386963e-10;
+    return vec2(float(i) /float(N), rdi);
+}
+
+vec3 toWorldCoords(ivec3 globalId, float size)
+{
+    vec2 uvc = (vec2(globalId.xy) + 0.5) / size;
+    uvc = 2.0 * uvc - 1.0;
+    uvc.y *= -1.0;
+    switch (globalId.z) {
+    case 0:
+        return vec3(1.0, uvc.y, -uvc.x);
+    case 1:
+        return vec3(-1.0, uvc.y, uvc.x);
+    case 2:
+        return vec3(uvc.x, 1.0, -uvc.y);
+    case 3:
+        return vec3(uvc.x, -1.0, uvc.y);
+    case 4:
+        return vec3(uvc.x, uvc.y, 1.0);
+    default:
+        return vec3(-uvc.x, uvc.y, -1.0);
+    }
+}
+
+// Based on Karis 2014
+vec3 importanceSampleGGX(vec2 Xi, float roughness, vec3 N)
+{
+    float a = roughness * roughness;
+    // Sample in spherical coordinates
+    float phi = 2.0 * PI * Xi.x;
+    float cosTheta = sqrt((1.0 - Xi.y) / (1.0 + (a * a - 1.0) * Xi.y));
+    float sinTheta = sqrt(1.0 - cosTheta * cosTheta);
+    // Construct tangent space vector
+    vec3 H = vec3(
+        sinTheta * cos(phi),
+        sinTheta * sin(phi),
+        cosTheta
+    );
+    // Tangent to world space
+    vec3 upVector = abs(N.z) < 0.999 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
+    vec3 tangentX = normalize(cross(upVector, N));
+    vec3 tangentY = normalize(cross(N, tangentX));
+    return normalize(tangentX * H.x + tangentY * H.y + N * H.z);
+    // Convert to world Space
+    return normalize(tangentX * H.x + tangentY * H.y + N * H.z);
+}
 #endif // PBR_SH_HEADER_GUARD

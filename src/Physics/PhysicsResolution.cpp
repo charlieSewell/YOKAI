@@ -20,8 +20,10 @@ void PhysicsResolution::onContact(const rp3d::CollisionCallback::CallbackData &c
                 glm::vec3 contactNormal = ReactMath::rp3dVecToGlm(const_cast<rp3d::Vector3&>(contactPoint.getWorldNormal()));
 
                 // Get the contact point on the first collider and convert it in world-space
-                glm::vec3 body1ContactPoint = ReactMath::rp3dVecToGlm(contactPair.getCollider1()->getLocalToWorldTransform() * contactPoint.getLocalPointOnCollider1());
-                glm::vec3 body2ContactPoint = ReactMath::rp3dVecToGlm(contactPair.getCollider1()->getLocalToWorldTransform() * contactPoint.getLocalPointOnCollider2());
+                rp3d::Vector3 body1Contact = contactPair.getCollider1()->getLocalToWorldTransform() * contactPoint.getLocalPointOnCollider1();
+                rp3d::Vector3 body2Contact = contactPair.getCollider1()->getLocalToWorldTransform() * contactPoint.getLocalPointOnCollider2();
+                glm::vec3 body1ContactPoint = ReactMath::rp3dVecToGlm(body1Contact);
+                glm::vec3 body2ContactPoint = ReactMath::rp3dVecToGlm(body2Contact);
 
                 //std::cout << "b1 col - (" << body1ContactPoint.x << ", " << body1ContactPoint.y << ", " << body1ContactPoint.z << ")" << std::endl;
                 //std::cout << "b2 col - (" << body2ContactPoint.x << ", " << body2ContactPoint.y << ", " << body2ContactPoint.z << ")" << std::endl;

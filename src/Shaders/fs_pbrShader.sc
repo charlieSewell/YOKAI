@@ -1,68 +1,90 @@
-$input v_position, v_normal, v_tangent, v_texcoord0
+$input v_position, v_normal, v_tangent, v_bitangent, v_texcoord0
 
-// all unit-vectors need to be normalized in the fragment shader, the interpolation of vertex shader output doesn't preserve length
-
-// define samplers and uniforms for retrieving material parameters
 #define READ_MATERIAL
+
+#define DIELECTRIC_SPECULAR 0.04
+#define MIN_ROUGHNESS 0.045
 
 #include "common.sh"
 #include "util.sh"
 #include "pbr.sh"
 #include "lights.sh"
 
+uniform vec4 u_envParams;
+#define numEnvLevels u_envParams.x
+
 uniform vec4 u_camPos;
 
 void main()
 {
-    PBRMaterial mat = pbrMaterial(v_texcoord0);
+    //MikktSpace normals
+    vec3 N = texture2D(s_texNormal, v_texcoord0).xyz * 2.0 - 1.0;
+    N = normalize(N.x * v_tangent + N.y * v_bitangent + N.z * v_normal);
+
+    //View Dir
+    vec3 V = normalize(u_camPos.xyz - v_position);
     
-    // convert normal map from tangent space -> world space (= space of v_tangent, etc.)
+    vec3 lightDir = reflect(-V, N);
     
-    vec3 N = convertTangentNormal(v_normal, v_tangent, mat.normal);
-    mat.a = specularAntiAliasing(N, mat.a);
+    vec3 H = normalize(lightDir + V);
+    float VoH = clampDot(V, H);
+    float NoV = clamp(dot(N, V), 1e-5, 1.0);
 
-    // shading
+    vec4 baseColor = toLinear(texture2D(s_texBaseColor, v_texcoord0)) * u_baseColorFactor;
+    vec2 roughnessMetal = texture2D(s_texMetallicRoughness, v_texcoord0).yz;
+    float roughness = max(roughnessMetal.x * u_metallicRoughnessFactor.g, MIN_ROUGHNESS);
+    float metallic = roughnessMetal.y * u_metallicRoughnessFactor.r;
+    float occlusion = texture2D(s_texOcclusion, v_texcoord0).x;
+    vec3 emissive = toLinear(texture2D(s_texEmissive, v_texcoord0)).xyz * u_emissiveFactor;
 
-    vec3 camPos = u_camPos.xyz;
-    vec3 fragPos = v_position;
+    // From GLTF spec
+    vec3 c_diff = baseColor * (1.0 - DIELECTRIC_SPECULAR) * (1.0 - metallic);
+    vec3 F0 = mix(vec3_splat(DIELECTRIC_SPECULAR), baseColor.xyz, metallic);
 
-    vec3 V = normalize(camPos - fragPos);
-    float NoV = abs(dot(N, V)) + 1e-5;
+    float a = roughness * roughness;
+    // prevent division by 0
+    a = max(a, 0.01);
 
-    if(whiteFurnaceEnabled())
-    {
-        mat.F0 = vec3_splat(1.0);
-        vec3 msFactor = multipleScatteringFactor(mat, NoV);
-        vec3 radianceOut = whiteFurnace(NoV, mat) * msFactor;
-        gl_FragColor = vec4(radianceOut, 1.0);
-        return;
-    }
-
-    vec3 msFactor = multipleScatteringFactor(mat, NoV);
+    vec3 msFactor = multipleScatteringFactor(a, metallic, F0, NoV);
 
     vec3 radianceOut = vec3_splat(0.0);
-
+/*
     uint lights = pointLightCount();
     for(uint i = 0; i < lights; i++)
     {
         PointLight light = getPointLight(i);
-        float dist = distance(light.position, fragPos);
+        float dist = distance(light.position, v_position);
         float attenuation = smoothAttenuation(dist, light.radius);
         if(attenuation > 0.0)
         {
-            vec3 L = normalize(light.position - fragPos);
+            vec3 L = normalize(light.position - v_position);
             vec3 radianceIn = light.intensity * attenuation;
             float NoL = saturate(dot(N, L));
             radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * radianceIn * NoL;
         }
     }
+*/
+    //radianceOut += getAmbientLight().irradiance * mat.diffuseColor * mat.occlusion;
+    //radianceOut += mat.emissive;
 
-    radianceOut += getAmbientLight().irradiance * mat.diffuseColor * mat.occlusion;
-    radianceOut += mat.emissive;
+    vec2 f_ab = texture2D(s_texAlbedoLUT, vec2(NoV, roughness)).xy;
+    float lodLevel = roughness * 10; //change later
+    vec3 radiance = textureCubeLod(s_prefilterMap, lightDir, lodLevel).xyz;
+    vec3 irradiance = textureCubeLod(s_irradianceMap, N, 0).xyz;
 
-    // output goes straight to HDR framebuffer, no clamping
-    // tonemapping happens in final blit
+    vec3 k_S = F0;
+    // Roughness dependent fresnel, from Fdez-Aguera
+    vec3 Fr = max(vec3_splat(1.0 - roughness), F0) - F0;
+    k_S += Fr * pow(1.0 - NoV, 5.0);
 
-    gl_FragColor.rgb = radianceOut;
-    gl_FragColor.a = mat.albedo.a;
+    vec3 FssEss = k_S * f_ab.x + f_ab.y;
+
+    // Multiple scattering, from Fdez-Aguera
+    float Ems = (1.0 - (f_ab.x + f_ab.y));
+    vec3 F_avg = F0 + (1.0 - F0) / 21.0;
+    vec3 FmsEms = Ems * FssEss * F_avg / (1.0 - F_avg * Ems);
+    vec3 k_D = baseColor * (1.0 - FssEss - FmsEms);
+    radianceOut = FssEss * radiance + (FmsEms + k_D) * irradiance;
+
+    gl_FragColor = vec4(radianceOut * occlusion + emissive, baseColor.w);
 }

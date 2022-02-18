@@ -20,7 +20,7 @@ struct Vertex
   ///texture coordinates of vertex
   glm::vec2 textureCoords = {};
   ///tangent of vertex
-  glm::vec3 tangent = {};
+  glm::vec4 tangent = {};
   ///biTangent of vertex
   glm::vec3 biTangent = {};
   ///bone IDs
@@ -148,17 +148,4 @@ class VertexArrayBuffer
      * @return shared_ptr<VertexArrayBuffer>
      */
     static std::shared_ptr<VertexArrayBuffer> Create(std::vector<Vertex>& vertices, std::vector<uint16_t>& indices);
-};
-/**
- * @struct PointLight
- * @brief Stores point light info for GPU
- */
-struct PointLight
-{
-  ///Color of light
-	glm::vec4 color = {};
-  ///Position of light
-	glm::vec4 position = {};
-  ///Padding and radius of light
-	glm::vec4 paddingAndRadius = {};
 };

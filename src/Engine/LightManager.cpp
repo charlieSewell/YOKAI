@@ -3,17 +3,20 @@ LightManager::LightManager()
 {
     m_LightCount = 0;
 }
-unsigned int LightManager::AddLight(glm::vec4 color, glm::vec4 position, glm::vec4 paddingAndRadius)
+unsigned int LightManager::AddLight(glm::vec3 position, glm::vec3 color, float radius)
 {
-    PointLight light;
-    light.color = color;
-    light.position = position;
-    light.paddingAndRadius = paddingAndRadius;
+    glm::vec3 power = color * radius;
+    m_Lights.push_back({position,power});
+    m_LightCount++;
+    return m_LightCount -1;
+}
+unsigned int LightManager::AddLight(PointLight light)
+{
     m_Lights.push_back(light);
     m_LightCount++;
     return m_LightCount -1;
 }
-void LightManager::DeleteLight(unsigned int lightIndex)
+void LightManager::DeleteLight(unsigned int _lightIndex)
 {
     //NOT IMPLIMENTED
 }
@@ -36,15 +39,16 @@ void LightManager::RenderGUI()
     ImGui::Begin("Lighting Manager");
     ImGui::SetColorEditOptions(ImGuiColorEditFlags_Float);
     ImGui::SetColorEditOptions(ImGuiColorEditFlags_HDR);
-    for(int i=0; i < m_Lights.size();i++)
+    for(size_t i=0; i < m_Lights.size();i++)
     {
-        glm::vec4 test;
+        glm::vec3 color;
+        float radius;
         ImGui::PushID(i);
         if(ImGui::TreeNode("Point Light"))
         {
-            ImGui::DragFloat3("Position: ",&m_Lights[i].position[0],0.1f);
-            ImGui::ColorEdit4("Color", &m_Lights[i].color[0]);
-            ImGui::DragFloat("Size: ",&m_Lights[i].paddingAndRadius[3],0.1f);
+            ImGui::DragFloat3("Position: ", &m_Lights[i].position[0], 0.1f);
+            ImGui::ColorEdit3("Color", &color[0]);
+            ImGui::DragFloat("Size: ", &radius, 0.1f);
             if(ImGui::Button("Delete Light")){
                 DeleteLight(i);
             }
@@ -55,7 +59,7 @@ void LightManager::RenderGUI()
         ImGui::PopID();
     }
     if(ImGui::Button("Add Light")){
-        AddLight(glm::vec4{4.0f,3.0f,1.0f,1.0f},glm::vec4{glm::vec3(0.0f),1.0f},glm::vec4{0.0f,0.0f,0.0f,30.0f});
+        AddLight(glm::vec3{4.0f,3.0f,1.0f}, glm::vec3{1.0f}, 1.0f);
     }
     ImGui::End();
 }
@@ -64,10 +68,12 @@ void LightManager::Serialize(nlohmann::json &j)
     j["Lights"] = nlohmann::json::array();
     for(auto& light : m_Lights)
     {
+        glm::vec3 color = glm::normalize(light.flux);
+        float radius = glm::length(light.flux);
         nlohmann::json temp = nlohmann::json::object();
-        temp["Color"] = light.color;
+        temp["Color"] = color;
         temp["Position"] = light.position;
-        temp["PaddingAndRadius"] = light.paddingAndRadius;
+        temp["Radius"] = radius;
         j["Lights"].push_back(temp);
     }
 }
@@ -75,6 +81,6 @@ void LightManager::Deserialize(const nlohmann::json &j)
 {
     for (auto &light : j.at("Lights"))
     {
-        AddLight( light.at("Color").get<glm::vec4>(),light.at("Position").get<glm::vec4>(),light.at("PaddingAndRadius").get<glm::vec4>());
+        AddLight( light.at("Color").get<glm::vec3>(),light.at("Position").get<glm::vec3>(),light.at("Radius").get<float>());
     }
 }
