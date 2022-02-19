@@ -2,6 +2,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Engine/EventManager.hpp"
 #include <glm/gtx/matrix_operation.hpp>
+#include <glm/gtx/string_cast.hpp>
 namespace
 {
     static constexpr float WHITE_FURNACE_RADIANCE = 1.0f;
@@ -88,7 +89,7 @@ int bgfxRenderer::Init()
                                              ALBEDO_LUT_SIZE,
                                              false,
                                              1,
-                                             bgfx::TextureFormat::RGBA16F,
+                                             bgfx::TextureFormat::RG16F,
                                              BGFX_TEXTURE_COMPUTE_WRITE | BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
 
     GenerateAlbedoLUT();
@@ -110,7 +111,7 @@ int bgfxRenderer::Init()
 void bgfxRenderer::DrawScene(float dt)
 {
     if(condition == true){
-        t_filteredEnvMap = m_cubeMapFilterer->CreateFilteredCubeMap(50,t_envMap);
+        t_filteredEnvMap = m_cubeMapFilterer->CreateFilteredCubeMap(0,t_envMap);
         condition = false;
     }
         
@@ -125,18 +126,17 @@ void bgfxRenderer::DrawScene(float dt)
 	SetViewProjection(m_vDefault);
     
     glm::mat4 inverseview = glm::inverse(m_viewMat);
-    m_viewpos = glm::vec3(inverseview[3].x,inverseview[3].y,inverseview[3].z);
-
-    m_pbrProgram->SetUniform("u_camPos",glm::value_ptr(m_viewpos));
-    
+    m_viewpos = glm::vec4(inverseview[3].x,inverseview[3].y,inverseview[3].z,1.0);
+    std::cout << glm::to_string(m_viewpos) << std::endl;
     uint64_t state = BGFX_STATE_DEFAULT;
     
     for(const RENDER::DrawItem& mesh : m_drawQueue)
     {
         bgfx::setTransform(glm::value_ptr(mesh.transform));
         glm::mat4 normalMat = glm::transpose(glm::inverse(mesh.transform));
+        m_pbrProgram->SetUniform("u_camPos",glm::value_ptr(m_viewpos));
         m_pbrProgram->SetUniform("u_normalMatrix", glm::value_ptr(normalMat));
-        DrawMesh(m_program,mesh.mesh,state);
+        DrawMesh(m_pbrProgram,mesh.mesh,state);
     }
     bgfx::discard(BGFX_DISCARD_ALL);
 
@@ -247,20 +247,20 @@ const void bgfxRenderer::DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state)
         //shader->SetTexture((name + number).c_str(), static_cast<uint8_t>(i), textures[i].texture);
     }
     bgfx::setBuffer(Samplers::LIGHTS_POINTLIGHTS, m_lightBuffer.buffer, bgfx::Access::Read);
-    float envParams[] = { bx::log2(float(1024)), 1.0f, 0.0f, 0.0f };
+    float envParams[] = { bx::log2(float(1024u)), 1.0f, 0.0f, 0.0f };
     bgfx::setUniform(u_envParams, envParams);
-
+    
     BindPBRMaterial(mesh->GetMaterial());
     mesh->GetVAO()->Bind();
     state |= BGFX_STATE_BLEND_ALPHA;
     bgfx::setState(state);
-    bgfx::submit(m_vDefault, m_pbrProgram->GetRawHandle());
+    bgfx::submit(m_vDefault, shader->GetRawHandle());
 }
 
 void bgfxRenderer::UpdateLights(std::vector<PointLight> &lightsArray)
 {
     m_lightBuffer.Update(lightsArray);
-    float lightCountVec[4] = { lightsArray.size()};
+    float lightCountVec[4] = { static_cast<float>(lightsArray.size())};
     m_pbrProgram->SetUniform("u_lightCountVec", lightCountVec);
     float ambientLightIrradiance[4] = { 0.03f, 0.03f, 0.03f, 1.0f};
     m_pbrProgram->SetUniform("u_ambientLightIrradiance", ambientLightIrradiance);
@@ -332,21 +332,14 @@ void bgfxRenderer::CreateToneMapFrameBuffer()
 
 void bgfxRenderer::BindPBRMaterial(const Material &material)
 { 
-    const uint32_t hasTexturesMask = 0
-        | ((m_pbrProgram->SetTexture("s_texBaseColor", Samplers::PBR_BASECOLOR, material.baseColorTexture) ? 1 : 0) << 0)
-        | ((m_pbrProgram->SetTexture("s_texMetallicRoughness", Samplers::PBR_METALROUGHNESS, material.metallicRoughnessTexture) ? 1 : 0) << 1)
-        | ((m_pbrProgram->SetTexture("s_texNormal", Samplers::PBR_NORMAL, material.normalTexture) ? 1 : 0) << 2)
-        | ((m_pbrProgram->SetTexture("s_texOcclusion", Samplers::PBR_OCCLUSION, material.occlusionTexture) ? 1 : 0) << 3)
-        | ((m_pbrProgram->SetTexture("s_texEmissive", Samplers::PBR_EMISSIVE, material.emissiveTexture) ? 1 : 0) << 4);
-    
-    float hasTexturesValues[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-    hasTexturesValues[0] = static_cast<float>(hasTexturesMask);
-
-    m_pbrProgram->SetUniform("u_hasTextures",hasTexturesValues);
+    m_pbrProgram->SetTexture("s_texBaseColor", Samplers::PBR_BASECOLOR, material.baseColorTexture);
+    m_pbrProgram->SetTexture("s_texMetallicRoughness", Samplers::PBR_METALROUGHNESS, material.metallicRoughnessTexture);
+    m_pbrProgram->SetTexture("s_texNormal", Samplers::PBR_NORMAL, material.normalTexture);
+    m_pbrProgram->SetTexture("s_texOcclusion", Samplers::PBR_OCCLUSION, material.occlusionTexture);
+    m_pbrProgram->SetTexture("s_texEmissive", Samplers::PBR_EMISSIVE, material.emissiveTexture);
 
     //Pack to alignment
-    glm::vec4 emissiveFactor = glm::vec4(material.emissiveFactor, 0.0f);
-    m_pbrProgram->SetUniform("u_emissiveFactorVec", glm::value_ptr(emissiveFactor));
+    m_pbrProgram->SetUniform("u_emissiveFactorVec", glm::value_ptr(material.emissiveFactor));
     m_pbrProgram->SetUniform("u_baseColorFactor", glm::value_ptr(material.baseColorFactor));
     
     //Pack metalic factor, roughness, normal scale and occulsion strength

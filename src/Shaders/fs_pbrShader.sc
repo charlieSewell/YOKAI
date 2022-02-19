@@ -18,9 +18,9 @@ uniform vec4 u_camPos;
 void main()
 {
     //MikktSpace normals
-    vec3 N = texture2D(s_texNormal, v_texcoord0).xyz * 2.0 - 1.0;
-    N = normalize(N.x * v_tangent + N.y * v_bitangent + N.z * v_normal);
-
+    vec3 N = normalize((texture2D(s_texNormal, v_texcoord0).rgb * 2.0) - 1.0); // * u_normalScale
+    //N = normalize(N.x * v_tangent + N.y * v_bitangent + N.z * v_normal);
+    N = convertTangentNormal(v_normal, v_tangent, N);
     //View Dir
     vec3 V = normalize(u_camPos.xyz - v_position);
     
@@ -47,7 +47,7 @@ void main()
 
     vec3 msFactor = multipleScatteringFactor(a, metallic, F0, NoV);
 
-    vec3 radianceOut = vec3_splat(0.0);
+    vec3 radianceOut;
 /*
     uint lights = pointLightCount();
     for(uint i = 0; i < lights; i++)
@@ -68,14 +68,14 @@ void main()
     //radianceOut += mat.emissive;
 
     vec2 f_ab = texture2D(s_texAlbedoLUT, vec2(NoV, roughness)).xy;
-    float lodLevel = roughness * 10; //change later
+    float lodLevel = roughness * numEnvLevels;
     vec3 radiance = textureCubeLod(s_prefilterMap, lightDir, lodLevel).xyz;
     vec3 irradiance = textureCubeLod(s_irradianceMap, N, 0).xyz;
 
     vec3 k_S = F0;
     // Roughness dependent fresnel, from Fdez-Aguera
-    vec3 Fr = max(vec3_splat(1.0 - roughness), F0) - F0;
-    k_S += Fr * pow(1.0 - NoV, 5.0);
+    //vec3 Fr = max(vec3_splat(1.0 - roughness), F0) - F0;
+    //k_S += Fr * pow(1.0 - NoV, 5.0);
 
     vec3 FssEss = k_S * f_ab.x + f_ab.y;
 

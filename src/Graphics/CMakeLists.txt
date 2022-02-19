@@ -13,6 +13,8 @@ set(SOURCE
         Renderer/Renderer.hpp
         Renderer/Window.cpp
         Renderer/Window.hpp
+        Renderer/mikktspace.h
+        Renderer/mikktspace.c
         Renderer/bgfx/LightBuffer.hpp
         Renderer/bgfx/LightBuffer.cpp
         Renderer/bgfx/bgfxDataTypes.hpp

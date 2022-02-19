@@ -81,7 +81,7 @@ class bgfxRenderer : public RenderAPI
     PointLightBuffer m_lightBuffer;
     glm::mat4 m_projMat {1.0};
     glm::mat4 m_viewMat {1.0};
-    glm::vec3 m_viewpos {0.0};
+    glm::vec4 m_viewpos {0.0};
     int m_width = 0;
     int m_height = 0;
     uint32_t m_reset = true;

@@ -173,7 +173,7 @@ bgfx::TextureHandle LoadTexture(const std::string fileName, const bool sRGB)
     if(!err.isOk())
     {
         BX_FREE(&allocator, data);
-        SPDLOG_ERROR(err.getMessage().getPtr());
+        SPDLOG_ERROR("{}: {}",err.getMessage().getPtr(),fileName);
     }
 
     bimg::ImageContainer* image = bimg::imageParse(&allocator, data, size);
@@ -188,7 +188,7 @@ bgfx::TextureHandle LoadTexture(const std::string fileName, const bool sRGB)
         BX_FREE(&allocator, data);
 
         // default wrap mode is repeat, there's no flag for it
-        uint64_t textureFlags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_MIN_ANISOTROPIC | BGFX_SAMPLER_MAG_ANISOTROPIC;
+        uint64_t textureFlags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
         
         if(sRGB)
             textureFlags |= BGFX_TEXTURE_SRGB;

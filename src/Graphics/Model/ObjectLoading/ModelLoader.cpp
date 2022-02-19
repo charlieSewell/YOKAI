@@ -322,6 +322,11 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
 {
     Material out;
 
+    out.baseColorTexture = m_textureManager.LoadTexture("content/textures/dummy/dummy_white.dds");
+    out.metallicRoughnessTexture = m_textureManager.LoadTexture("content/textures/dummy/dummy_metallicRoughness.dds");
+    out.normalTexture = m_textureManager.LoadTexture("content/textures/dummy/dummy_normal_map.dds");
+    out.emissiveTexture = m_textureManager.LoadTexture("content/textures/dummy/dummy_white.dds");
+    out.occlusionTexture = m_textureManager.LoadTexture("content/textures/dummy/dummy_white.dds");
     // there is a purpose of mask and blend but we dont need it
     aiString alphaMode;
     material->Get(AI_MATKEY_GLTF_ALPHAMODE, alphaMode);
@@ -348,12 +353,12 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
         pathBaseColor.Set(m_directory + "/");
         pathBaseColor.Append(fileBaseColor.C_Str());
         SPDLOG_INFO("Loaded Base Color: {}",pathBaseColor.C_Str());
-        out.baseColorTexture = m_textureManager.LoadTexture(pathBaseColor.C_Str(), false /* sRGB */);   //THIS IS AN ERROR should be true fuck knows why its not working
+        out.baseColorTexture = m_textureManager.LoadTexture(pathBaseColor.C_Str());
     }
+    
     aiColor4D baseColorFactor;
     if(AI_SUCCESS == material->Get(AI_MATKEY_BASE_COLOR, baseColorFactor))
         out.baseColorFactor = { baseColorFactor.r, baseColorFactor.g, baseColorFactor.b, baseColorFactor.a };
-    out.baseColorFactor = glm::clamp(out.baseColorFactor, 0.0f, 1.0f);
 
     // metallic/roughness
 
@@ -368,10 +373,10 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
 
     ai_real metallicFactor;
     if(AI_SUCCESS == material->Get(AI_MATKEY_METALLIC_FACTOR, metallicFactor))
-        out.metallicFactor = glm::clamp(metallicFactor, 0.0f, 1.0f);
+        out.metallicFactor = metallicFactor;
     ai_real roughnessFactor;
     if(AI_SUCCESS == material->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughnessFactor))
-        out.roughnessFactor = glm::clamp(roughnessFactor, 0.0f, 1.0f);
+        out.roughnessFactor = roughnessFactor;
 
     // normal map
 
@@ -395,6 +400,7 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
         // some GLTF files combine metallic/roughness and occlusion values into one texture
         // don't load it twice
         out.occlusionTexture = out.metallicRoughnessTexture;
+        SPDLOG_INFO("Loaded Occlusion Texture: {}", fileMetallicRoughness.C_Str());
     }
     else if(fileOcclusion.length > 0)
     {
@@ -416,8 +422,8 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
         aiString pathEmissive;
         pathEmissive.Set(m_directory + "/");
         pathEmissive.Append(fileEmissive.C_Str());
-        SPDLOG_INFO("Loaded Emmisive Texture: {}", fileMetallicRoughness.C_Str());
-        out.emissiveTexture = m_textureManager.LoadTexture(pathEmissive.C_Str(), false /* sRGB */);
+        SPDLOG_INFO("Loaded Emmisive Texture: {}", pathEmissive.C_Str());
+        out.emissiveTexture = m_textureManager.LoadTexture(pathEmissive.C_Str());
     }
 
 // assimp doesn't define this
@@ -427,8 +433,7 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
 
     aiColor3D emissiveFactor;
     if(AI_SUCCESS == material->Get(AI_MATKEY_GLTF_EMISSIVE_FACTOR, emissiveFactor))
-        out.emissiveFactor = { emissiveFactor.r, emissiveFactor.g, emissiveFactor.b };
-    out.emissiveFactor = glm::clamp(out.emissiveFactor, 0.0f, 1.0f);
+        out.emissiveFactor = { emissiveFactor.r, emissiveFactor.g, emissiveFactor.b , 1.0f};
 
     return out;
 }

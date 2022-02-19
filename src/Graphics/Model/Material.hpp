@@ -21,8 +21,8 @@ struct Material
     float normalScale = 1.0f;
 
     std::shared_ptr<Texture> occlusionTexture = nullptr;
-    float occlusionStrength = 1.0f;
+    float occlusionStrength = 0.5f;
 
     std::shared_ptr<Texture> emissiveTexture = nullptr;
-    glm::vec3 emissiveFactor = { 0.0f, 0.0f, 0.0f };
+    glm::vec4 emissiveFactor = { 0.0f, 0.0f, 0.0f ,1.0f};
 };

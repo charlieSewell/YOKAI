@@ -2,7 +2,7 @@
 #ifndef PBR_SH_HEADER_GUARD
 #define PBR_SH_HEADER_GUARD
 
-#define PI     (3.14159265359)
+#define PI     (3.141592653589793)
 #define INV_PI (0.31830988618)
 #define MIN_ROUGHNESS 0.045
 
@@ -29,7 +29,7 @@ uniform vec4 u_multipleScatteringVec;
 
 
 #ifdef WRITE_LUT
-IMAGE2D_WR(i_texAlbedoLUT, rgba16f, 0);
+IMAGE2D_WR(i_texAlbedoLUT, rg16f, 0);
 #else
 SAMPLER2D(s_texAlbedoLUT, 0);
 #endif
@@ -52,14 +52,6 @@ uniform vec4 u_baseColorFactor;
 uniform vec4 u_factors;
 uniform vec4 u_emissiveFactorVec;
 uniform vec4 u_hasTextures;
-
-
-
-#define u_hasBaseColorTexture         ((uint(u_hasTextures.x) & (1 << 0)) != 0)
-#define u_hasMetallicRoughnessTexture ((uint(u_hasTextures.x) & (1 << 1)) != 0)
-#define u_hasNormalTexture            ((uint(u_hasTextures.x) & (1 << 2)) != 0)
-#define u_hasOcclusionTexture         ((uint(u_hasTextures.x) & (1 << 3)) != 0)
-#define u_hasEmissiveTexture          ((uint(u_hasTextures.x) & (1 << 4)) != 0)
 
 #define u_metallicRoughnessFactor (u_factors.xy)
 #define u_normalScale             (u_factors.z)
@@ -115,11 +107,12 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 // Bruce Walter et al. 2007. Microfacet Models for Refraction through Rough Surfaces.
 // equivalent to Trowbridge-Reitz
-float D_GGX(float NoH, float a)
+float D_GGX(float NoH, float roughness)
 {
-    a = NoH * a;
-    float k = a / (1.0 - NoH * NoH + a * a);
-    return k * k * INV_PI;
+    float alpha = roughness * roughness;
+    float a = NoH * alpha;
+    float k = alpha / (1.0 - NoH * NoH + a * a);
+    return k * k * (1.0 / PI);
 }
 
 // Visibility function
@@ -129,9 +122,9 @@ float D_GGX(float NoH, float a)
 // Heitz 2014. Understanding the Masking-Shadowing Function in Microfacet-Based BRDFs.
 // http://jcgt.org/published/0003/02/03/paper.pdf
 // based on height-correlated Smith-GGX
-float V_SmithGGXCorrelated(float NoV, float NoL, float a)
+float V_SmithGGXCorrelated(float NoV, float NoL, float roughness)
 {
-    float a2 = a * a;
+    float a2 = pow(roughness, 4.0);
     float GGXV = NoL * sqrt(NoV * NoV * (1.0 - a2) + a2);
     float GGXL = NoV * sqrt(NoL * NoL * (1.0 - a2) + a2);
     return 0.5 / (GGXV + GGXL);
@@ -182,31 +175,6 @@ vec3 multipleScatteringFactor(float a, float metallic, vec3 F0, float NoV)
 }
 
 #endif
-
-// https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#appendix-b-brdf-implementation
-vec3 BRDF(vec3 v, vec3 l, vec3 n, float NoV, float NoL, PBRMaterial mat)
-{
-    // V is the normalized vector from the shading location to the eye
-    // L is the normalized vector from the shading location to the light
-    // N is the surface normal in the same space as the above values
-    // H is the half vector, where H = normalize(L+V)
-
-    vec3 h = normalize(l + v);
-    float NoH = saturate(dot(n, h));
-    float VoH = saturate(dot(v, h));
-
-    // specular BRDF
-    float D = D_GGX(NoH, mat.a);
-    vec3 F = F_Schlick(VoH, mat.F0);
-    float V = V_SmithGGXCorrelated(NoV, NoL, mat.a);
-    vec3 Fr = F * (V * D);
-
-    // diffuse BRDF
-    vec3 Fd = mat.diffuseColor * Fd_Lambert();
-
-    return Fr + (1.0 - F) * Fd;
-}
-
 vec2 hammersley(uint i, uint N)
 {
     uint bits = (i << 16u) | (i >> 16u);

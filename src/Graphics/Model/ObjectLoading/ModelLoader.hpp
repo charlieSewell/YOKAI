@@ -117,5 +117,7 @@ class ModelLoader
     ///Texture manager
     TextureManager m_textureManager;
     ///Model Importer
-    Assimp::Importer m_importer; 
+    Assimp::Importer m_importer;
+    ///Dummy Textures for when one isnt present
+    std::vector<Texture> m_dummyTextures;
 };
