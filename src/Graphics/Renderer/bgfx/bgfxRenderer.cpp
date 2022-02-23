@@ -27,7 +27,7 @@ int bgfxRenderer::Init()
         platformData.nwh = glfwGetWin32Window( m_window );
     #endif // BX_PLATFORM_
     bgfx::setPlatformData(platformData);
-    //bgfx::renderFrame();
+    
     bgfx::Init init;
     glfwGetWindowSize(m_window, &m_width, &m_height);
     m_oldHeight = m_height;
@@ -43,8 +43,8 @@ int bgfxRenderer::Init()
     {
         return false;
     }
-    const bgfx::Caps* caps = bgfx::getCaps();
-    bool computeSupported = !!(caps->supported & BGFX_CAPS_COMPUTE);
+    m_caps = bgfx::getCaps();
+    bool computeSupported = !!(m_caps->supported & BGFX_CAPS_COMPUTE);
 
     if (!computeSupported) {
          return false;
@@ -55,14 +55,11 @@ int bgfxRenderer::Init()
     m_lightBuffer.init();
 	// Setup ImGuis
 	ImGui_Implbgfx_Init(255);
-	//bgfx::setDebug(BGFX_DEBUG_TEXT);
     s_texAvgLum = bgfx::createUniform("s_texAvgLum", bgfx::UniformType::Sampler);
     s_albedoLUT = bgfx::createUniform("s_texAlbedoLUT", bgfx::UniformType::Sampler);
     s_texColor = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
     s_prefilteredEnv = bgfx::createUniform("s_prefilterMap", bgfx::UniformType::Sampler);
     s_irradiance = bgfx::createUniform("s_irradianceMap", bgfx::UniformType::Sampler);
-
-
 
     u_tonemap = bgfx::createUniform("u_tonemap", bgfx::UniformType::Vec4);
     u_histogramParams = bgfx::createUniform("u_histogramparams", bgfx::UniformType::Vec4);
@@ -78,11 +75,6 @@ int bgfxRenderer::Init()
     m_cubeMapFilterer = new CubeMapFilterer();
     
     t_envMap = LoadTexture("content/textures/pisa_with_mips.ktx");
-
-    // triangle used for blitting
-    //constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
-    //const PosColorTexCoord0Vertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
-    //m_blitTriangleBuffer = bgfx::createVertexBuffer(bgfx::copy(&vertices, sizeof(vertices)), PosColorTexCoord0Vertex::layout);
     
     //Albedo LUT Texture
     m_albedoLUTTexture = bgfx::createTexture2D(ALBEDO_LUT_SIZE,
@@ -93,7 +85,6 @@ int bgfxRenderer::Init()
                                              BGFX_TEXTURE_COMPUTE_WRITE | BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
 
     GenerateAlbedoLUT();
-    m_caps = bgfx::getCaps();
     //FrameBuffer
     m_fbh.idx = bgfx::kInvalidHandle;
     CreateToneMapFrameBuffer();
@@ -103,7 +94,8 @@ int bgfxRenderer::Init()
     bgfx::setViewName(m_vDefault, "Forward render pass");
     bgfx::setViewName(m_vToneMapPass, "Tonemapping");
     
-    bx::mtxOrtho(orthoProjection, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f, m_caps->homogeneousDepth);
+    //Ortho projection for tonemapping
+    bx::mtxOrtho(m_orthoProjection, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f, m_caps->homogeneousDepth);
    
     bgfx::reset(m_width,m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X4);
     bgfx::frame();
@@ -145,7 +137,7 @@ void bgfxRenderer::DrawScene(float dt)
     bgfx::setViewName(m_vToneMapPass, "Tonemap");
     bgfx::setViewRect(m_vToneMapPass, 0, 0, bgfx::BackbufferRatio::Equal);
     bgfx::setViewFrameBuffer(m_vToneMapPass, BGFX_INVALID_HANDLE);
-    bgfx::setViewTransform(m_vToneMapPass, nullptr, orthoProjection);
+    bgfx::setViewTransform(m_vToneMapPass, nullptr, m_orthoProjection);
 
     float minLogLum = -8.0f;
     float maxLogLum = 3.0f;
@@ -162,8 +154,6 @@ void bgfxRenderer::DrawScene(float dt)
     bgfx::setUniform(u_histogramParams, histogramParams);
     bgfx::dispatch(m_vHistogramPass, m_histogramProgram, groupsX, groupsY, 1);
 
-
-
     float tau = 1.1f;
     float timeCoeff = bx::clamp<float>(1.0f - bx::exp(-dt * tau), 0.0, 1.0);
     float avgParams[4] = {
@@ -177,13 +167,9 @@ void bgfxRenderer::DrawScene(float dt)
     bgfx::setUniform(u_histogramParams, avgParams);
     bgfx::dispatch(m_vAveragingPass, m_averagingProgram, 1, 1, 1);
 
-    //float tonemap[4] = { bx::square(m_white), 0.0f, m_threshold, m_time };
-
     bgfx::setTexture(0, s_texColor,  m_fbtextures[0], BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
     bgfx::setTexture(1, s_texAvgLum, m_lumAvgTarget, BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
     bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
-    //bgfx::setUniform(u_tonemap, tonemap);
-    //bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
     screenSpaceQuad((float)m_width, (float)m_height, m_caps->originBottomLeft);
     bgfx::submit(m_vToneMapPass, m_tonemapProgram->GetRawHandle());
 }

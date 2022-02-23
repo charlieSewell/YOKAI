@@ -31,15 +31,8 @@ Model ModelLoader::LoadModel(const std::string& filename)
     std::vector<SkeletalAnimation> animations;
     std::map<std::string,unsigned int> boneMap;
 
-    unsigned int flags =
-        aiProcessPreset_TargetRealtime_Quality |                     // some optimizations and safety checks
-        aiProcess_OptimizeMeshes |                                   // minimize number of meshes
-        aiProcess_PreTransformVertices |                             // apply node matrices
-        aiProcess_FixInfacingNormals | aiProcess_TransformUVCoords | // apply UV transformations
-        //aiProcess_FlipWindingOrder   | // we cull clock-wise, keep the default CCW winding order
-        aiProcess_FlipUVs;         // bimg loads textures with flipped Y (top left is 0,0)
     const aiScene *scene = m_importer.ReadFile(
-        filename, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+        filename, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_OptimizeMeshes);
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         SPDLOG_ERROR(m_importer.GetErrorString());
@@ -147,7 +140,7 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
         aiFace face = mesh->mFaces[i];
         // retrieve all indices of the face and store them in the indices vector
         for(unsigned int j = 0; j < face.mNumIndices; j++)
-            indices.push_back(face.mIndices[j]);
+            indices.push_back(static_cast<uint16_t>(face.mIndices[j]));
     }
     // process materials
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
@@ -263,8 +256,8 @@ void ModelLoader::LoadAnimNodes(aiNode* node,aiMesh* mesh)
 }
 void ModelLoader::LoadBones(std::vector<Mesh> &meshes, std::vector<Bone> &bones,std::map<std::string,unsigned int> &boneMap, unsigned int meshIndex, const aiMesh *mesh)
 {
-    for (unsigned i = 0 ; i < mesh->mNumBones; ++i) {
-        unsigned boneIndex;
+    for (size_t i = 0 ; i < mesh->mNumBones; ++i) {
+        unsigned int boneIndex;
         std::string boneName(mesh->mBones[i]->mName.data);
 
         if (boneMap.find(boneName) == boneMap.end())
@@ -282,11 +275,11 @@ void ModelLoader::LoadBones(std::vector<Mesh> &meshes, std::vector<Bone> &bones,
         boneMap[boneName] = boneIndex;
         bones[boneIndex].offset = to_glm(mesh->mBones[i]->mOffsetMatrix);
 
-        for (unsigned int j = 0 ; j < mesh->mBones[i]->mNumWeights; ++j)
+        for (size_t j = 0 ; j < mesh->mBones[i]->mNumWeights; ++j)
         {
             unsigned VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
             float Weight = mesh->mBones[i]->mWeights[j].mWeight;
-            meshes.at(meshIndex).addBoneData(VertexID, boneIndex, Weight);
+            meshes.at(meshIndex).addBoneData(VertexID, static_cast<uint16_t>(boneIndex), Weight);
         }
     }
 }
@@ -408,7 +401,5 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
     if(AI_SUCCESS == material->Get(AI_MATKEY_GLTF_EMISSIVE_FACTOR, emissiveFactor))
         out.emissiveFactor = { emissiveFactor.r, emissiveFactor.g, emissiveFactor.b , 1.0f};
 
-
-    int i =0;
     return out;
 }

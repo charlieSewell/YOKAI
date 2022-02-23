@@ -119,7 +119,6 @@ class bgfxRenderer : public RenderAPI
     bgfx::FrameBufferHandle m_fbh;
 
     bx::DefaultAllocator mAllocator;
-    bgfx::VertexBufferHandle m_blitTriangleBuffer;
     float m_speed = 0.37f;
     float m_white = 3.0f;
     float m_threshold = 1.5f;
@@ -132,5 +131,5 @@ class bgfxRenderer : public RenderAPI
     bgfx::TextureHandle t_envMap;
     FilteredCubeMap t_filteredEnvMap;
     bool condition = true;
-    float orthoProjection[16];
+    float m_orthoProjection[16];
 };
