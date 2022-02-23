@@ -18,9 +18,8 @@ uniform vec4 u_camPos;
 void main()
 {
     //MikktSpace normals
-    vec3 N = normalize((texture2D(s_texNormal, v_texcoord0).rgb * 2.0) - 1.0); // * u_normalScale
-    //N = normalize(N.x * v_tangent + N.y * v_bitangent + N.z * v_normal);
-    N = convertTangentNormal(v_normal, v_tangent, N);
+    vec3 N = texture2D(s_texNormal, v_texcoord0).xyz * 2.0 - 1.0;
+    N = normalize(N.x * v_tangent + N.y * v_bitangent + N.z * v_normal);
     //View Dir
     vec3 V = normalize(u_camPos.xyz - v_position);
     

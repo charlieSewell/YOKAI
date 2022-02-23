@@ -76,7 +76,7 @@ class bgfxRenderer : public RenderAPI
     void CreateToneMapFrameBuffer();
     void BindPBRMaterial(const Material &material);
     void GenerateAlbedoLUT();
-    void BindAlbedoLUT(bool compute = false);
+    void BindAlbedoLUT();
     GLFWwindow* m_window;
     PointLightBuffer m_lightBuffer;
     glm::mat4 m_projMat {1.0};
@@ -101,7 +101,7 @@ class bgfxRenderer : public RenderAPI
     bgfx::ViewId m_vDefault = 0;
     bgfx::ViewId m_vHistogramPass = 2;
     bgfx::ViewId m_vAveragingPass = 3;
-    bgfx::ViewId m_vToneMapPass = 220;
+    bgfx::ViewId m_vToneMapPass = 4;
 
     bgfx::UniformHandle s_texColor;
     bgfx::UniformHandle s_texAvgLum;

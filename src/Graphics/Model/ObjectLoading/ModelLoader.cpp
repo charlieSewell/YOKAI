@@ -5,6 +5,7 @@
 #include "ModelLoader.hpp"
 #include <algorithm>
 #include <spdlog/spdlog.h>
+#include <glm/gtx/string_cast.hpp>
 static inline glm::mat4 to_glm(aiMatrix4x4t<float> &m){return glm::transpose(glm::make_mat4(&m.a1));}
 static inline glm::vec3 vec3_cast(const aiVector3D &v) { return glm::vec3(v.x, v.y, v.z); }
 static inline glm::quat quat_cast(const aiQuaternion &q) { return glm::quat(q.w, q.x, q.y, q.z); }
@@ -18,14 +19,7 @@ ModelLoader::ModelLoader()
     // Limit vertices to 65k (we use 16-bit indices)
     m_importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, std::numeric_limits<uint16_t>::max());
 
-    unsigned int flags =
-        aiProcessPreset_TargetRealtime_Quality |                     // some optimizations and safety checks
-        aiProcess_OptimizeMeshes |                                   // minimize number of meshes
-        aiProcess_PreTransformVertices |                             // apply node matrices
-        aiProcess_FixInfacingNormals | aiProcess_TransformUVCoords | // apply UV transformations
-        //aiProcess_FlipWindingOrder   | // we cull clock-wise, keep the default CCW winding order
-        aiProcess_MakeLeftHanded | // we set GLM_FORCE_LEFT_HANDED and use left-handed bx matrix functions
-        aiProcess_FlipUVs;         // bimg loads textures with flipped Y (top left is 0,0)
+    
 
 }
 
@@ -37,8 +31,15 @@ Model ModelLoader::LoadModel(const std::string& filename)
     std::vector<SkeletalAnimation> animations;
     std::map<std::string,unsigned int> boneMap;
 
+    unsigned int flags =
+        aiProcessPreset_TargetRealtime_Quality |                     // some optimizations and safety checks
+        aiProcess_OptimizeMeshes |                                   // minimize number of meshes
+        aiProcess_PreTransformVertices |                             // apply node matrices
+        aiProcess_FixInfacingNormals | aiProcess_TransformUVCoords | // apply UV transformations
+        //aiProcess_FlipWindingOrder   | // we cull clock-wise, keep the default CCW winding order
+        aiProcess_FlipUVs;         // bimg loads textures with flipped Y (top left is 0,0)
     const aiScene *scene = m_importer.ReadFile(
-        filename, aiProcess_Triangulate | aiProcess_LimitBoneWeights| aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_OptimizeMeshes);
+        filename, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         SPDLOG_ERROR(m_importer.GetErrorString());
@@ -52,6 +53,7 @@ Model ModelLoader::LoadModel(const std::string& filename)
     
     for(auto& mesh: meshes)
     {
+        m_tangentCalculator.calc(&mesh);
         mesh.SetupMesh();
     }
     //loadAnimNodes(rootAnimNode,scene->mRootNode);
@@ -118,17 +120,6 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
             vec.x = mesh->mTextureCoords[0][i].x;
             vec.y = mesh->mTextureCoords[0][i].y;
             vertex.textureCoords = vec;
-            // tangent
-            vector.x = mesh->mTangents[i].x;
-            vector.y = mesh->mTangents[i].y;
-            vector.z = mesh->mTangents[i].z;
-            vector.w = 0; //HACK NEED TO FIX
-            vertex.tangent = vector;
-            // biTangent
-            vector.x = mesh->mBitangents[i].x;
-            vector.y = mesh->mBitangents[i].y;
-            vector.z = mesh->mBitangents[i].z;
-            vertex.biTangent = vector;
         }
         else
         {
@@ -139,11 +130,13 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
             vector.x       = mesh->mTangents[i].x;
             vector.y       = mesh->mTangents[i].y;
             vector.z       = mesh->mTangents[i].z;
+            vector.w = 0; //HACK NEED TO FIX
             vertex.tangent = vector;
             // bitangent
             vector.x         = mesh->mBitangents[i].x;
             vector.y         = mesh->mBitangents[i].y;
             vector.z         = mesh->mBitangents[i].z;
+            vector.w = 0; //HACK NEED TO FIX
             vertex.biTangent = vector;
         }
         vertices.push_back(vertex);
@@ -158,27 +151,7 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
     }
     // process materials
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    Material newMaterial = LoadMaterial(scene->mMaterials[mesh->mMaterialIndex]);
-    // we assume a convention for sampler names in the shaders. Each diffuse texture should be named
-    // as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER.
-    // Same applies to other texture as the following list summarizes:
-    // diffuse: texture_diffuseN
-    // specular: texture_specularN
-    // normal: texture_normalN
-
-    // 1. diffuse maps
-    std::vector<ModelTexture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-    textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-    // 2. specular maps
-    std::vector<ModelTexture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-    textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-    // 3. normal maps
-    std::vector<ModelTexture> heightMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-    textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-    // 4. normal maps again
-    std::vector<ModelTexture> normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
-    textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-
+    Material newMaterial = LoadMaterial(material);
     // return a mesh object created from the extracted mesh data
     return Mesh(vertices, indices, textures, transform, newMaterial);
 }
@@ -386,7 +359,7 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
         pathNormals.Set(m_directory + "/");
         pathNormals.Append(fileNormals.C_Str());
         SPDLOG_INFO("Normal Map Texture: {}", pathNormals.C_Str());
-        out.normalTexture = m_textureManager.LoadTexture(pathNormals.C_Str(),true);
+        out.normalTexture = m_textureManager.LoadTexture(pathNormals.C_Str());
     }
 
     ai_real normalScale;
@@ -412,7 +385,7 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
     }
 
     ai_real occlusionStrength;
-    if(AI_SUCCESS == material->Get(AI_MATKEY_GLTF_TEXTURE_STRENGTH(aiTextureType_LIGHTMAP, 0), occlusionStrength))
+    if(AI_SUCCESS == material->Get(AI_MATKEY_GLTF_ALPHACUTOFF, occlusionStrength))
         out.occlusionStrength = glm::clamp(occlusionStrength, 0.0f, 1.0f);
 
     // emissive texture
@@ -435,5 +408,7 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
     if(AI_SUCCESS == material->Get(AI_MATKEY_GLTF_EMISSIVE_FACTOR, emissiveFactor))
         out.emissiveFactor = { emissiveFactor.r, emissiveFactor.g, emissiveFactor.b , 1.0f};
 
+
+    int i =0;
     return out;
 }

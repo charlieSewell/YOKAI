@@ -12,6 +12,7 @@
 #include <memory>
 #include "Model/Model.hpp"
 #include "Renderer/TextureManager.hpp"
+#include "CalcTangent.hpp"
 /** @class ModelLoader
  *  @brief Class that loads models
  */
@@ -120,4 +121,5 @@ class ModelLoader
     Assimp::Importer m_importer;
     ///Dummy Textures for when one isnt present
     std::vector<Texture> m_dummyTextures;
+    CalcTangents m_tangentCalculator;
 };

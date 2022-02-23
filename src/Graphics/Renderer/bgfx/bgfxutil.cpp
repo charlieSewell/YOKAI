@@ -4,7 +4,6 @@ namespace
 {
     static bx::DefaultAllocator allocator;
 }
-
 const bgfx::Memory* loadMemory( const char* filename )
 {
     std::ifstream file;
@@ -105,7 +104,7 @@ bgfx::TextureFormat::Enum findDepthFormat(uint64_t textureFlags, bool stencil)
 
 void screenSpaceQuad(float _textureWidth, float _textureHeight, bool _originBottomLeft, float _width, float _height)
 {
-	/*
+	
     if (3 == bgfx::getAvailTransientVertexBuffer(3, PosColorTexCoord0Vertex::layout))
     {
 		float s_texelHalf = 0.0f;
@@ -135,23 +134,22 @@ void screenSpaceQuad(float _textureWidth, float _textureHeight, bool _originBott
         vertex[0].pos.y = miny;
         vertex[0].pos.z = zz;
         vertex[0].rgba = 0xffffffff;
-        vertex[0].texcood.x = minu;
-        vertex[0].texcood.y = minv;
+        vertex[0].texcoord.x = minu;
+        vertex[0].texcoord.y = minv;
         vertex[1].pos.x = maxx;
         vertex[1].pos.y = miny;
         vertex[1].pos.z = zz;
         vertex[1].rgba = 0xffffffff;
-        vertex[1].texcood.x = maxu;
-        vertex[1].texcood.y = minv;
+        vertex[1].texcoord.x = maxu;
+        vertex[1].texcoord.y = minv;
         vertex[2].pos.x = maxx;
         vertex[2].pos.y = maxy;
         vertex[2].pos.z = zz;
         vertex[2].rgba = 0xffffffff;
-        vertex[2].texcood.x = maxu;
-        vertex[2].texcood.y = maxv;
+        vertex[2].texcoord.x = maxu;
+        vertex[2].texcoord.y = maxv;
         bgfx::setVertexBuffer(0, &vb);
     }
-	*/
 }
 
 bgfx::TextureHandle LoadTexture(const std::string fileName, const bool sRGB)

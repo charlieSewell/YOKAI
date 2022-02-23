@@ -80,9 +80,9 @@ int bgfxRenderer::Init()
     t_envMap = LoadTexture("content/textures/pisa_with_mips.ktx");
 
     // triangle used for blitting
-    constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
-    const PosColorTexCoord0Vertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
-    m_blitTriangleBuffer = bgfx::createVertexBuffer(bgfx::copy(&vertices, sizeof(vertices)), PosColorTexCoord0Vertex::layout);
+    //constexpr float BOTTOM = -1.0f, TOP = 3.0f, LEFT = -1.0f, RIGHT = 3.0f;
+    //const PosColorTexCoord0Vertex vertices[3] = { { LEFT, BOTTOM, 0.0f }, { RIGHT, BOTTOM, 0.0f }, { LEFT, TOP, 0.0f } };
+    //m_blitTriangleBuffer = bgfx::createVertexBuffer(bgfx::copy(&vertices, sizeof(vertices)), PosColorTexCoord0Vertex::layout);
     
     //Albedo LUT Texture
     m_albedoLUTTexture = bgfx::createTexture2D(ALBEDO_LUT_SIZE,
@@ -93,7 +93,7 @@ int bgfxRenderer::Init()
                                              BGFX_TEXTURE_COMPUTE_WRITE | BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
 
     GenerateAlbedoLUT();
-
+    m_caps = bgfx::getCaps();
     //FrameBuffer
     m_fbh.idx = bgfx::kInvalidHandle;
     CreateToneMapFrameBuffer();
@@ -102,7 +102,9 @@ int bgfxRenderer::Init()
     bgfx::setViewName(m_vAveragingPass, "Averaging the Luminence Histogram");
     bgfx::setViewName(m_vDefault, "Forward render pass");
     bgfx::setViewName(m_vToneMapPass, "Tonemapping");
-
+    
+    bx::mtxOrtho(orthoProjection, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f, m_caps->homogeneousDepth);
+   
     bgfx::reset(m_width,m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X4);
     bgfx::frame();
     return true;
@@ -126,8 +128,7 @@ void bgfxRenderer::DrawScene(float dt)
 	SetViewProjection(m_vDefault);
     
     glm::mat4 inverseview = glm::inverse(m_viewMat);
-    m_viewpos = glm::vec4(inverseview[3].x,inverseview[3].y,inverseview[3].z,1.0);
-    std::cout << glm::to_string(m_viewpos) << std::endl;
+    m_viewpos = glm::vec4(inverseview[3].x, inverseview[3].y, inverseview[3].z,0.0);
     uint64_t state = BGFX_STATE_DEFAULT;
     
     for(const RENDER::DrawItem& mesh : m_drawQueue)
@@ -138,11 +139,12 @@ void bgfxRenderer::DrawScene(float dt)
         m_pbrProgram->SetUniform("u_normalMatrix", glm::value_ptr(normalMat));
         DrawMesh(m_pbrProgram,mesh.mesh,state);
     }
-    bgfx::discard(BGFX_DISCARD_ALL);
 
     m_drawQueue.clear();
 
-    bx::mtxOrtho(orthoProjection, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 2.0f, 0.0f, m_caps->homogeneousDepth);
+    bgfx::setViewName(m_vToneMapPass, "Tonemap");
+    bgfx::setViewRect(m_vToneMapPass, 0, 0, bgfx::BackbufferRatio::Equal);
+    bgfx::setViewFrameBuffer(m_vToneMapPass, BGFX_INVALID_HANDLE);
     bgfx::setViewTransform(m_vToneMapPass, nullptr, orthoProjection);
 
     float minLogLum = -8.0f;
@@ -160,6 +162,8 @@ void bgfxRenderer::DrawScene(float dt)
     bgfx::setUniform(u_histogramParams, histogramParams);
     bgfx::dispatch(m_vHistogramPass, m_histogramProgram, groupsX, groupsY, 1);
 
+
+
     float tau = 1.1f;
     float timeCoeff = bx::clamp<float>(1.0f - bx::exp(-dt * tau), 0.0, 1.0);
     float avgParams[4] = {
@@ -173,17 +177,14 @@ void bgfxRenderer::DrawScene(float dt)
     bgfx::setUniform(u_histogramParams, avgParams);
     bgfx::dispatch(m_vAveragingPass, m_averagingProgram, 1, 1, 1);
 
-    float tonemap[4] = { bx::square(m_white), 0.0f, m_threshold, m_time };
-    bgfx::setViewClear(m_vToneMapPass, BGFX_CLEAR_NONE);
-    bgfx::setViewRect(m_vToneMapPass, 0, 0, static_cast<uint16_t>(m_width), static_cast<uint16_t>(m_height));
+    //float tonemap[4] = { bx::square(m_white), 0.0f, m_threshold, m_time };
 
-    bgfx::setViewFrameBuffer(m_vToneMapPass, BGFX_INVALID_HANDLE);
-    bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_CULL_CW);
-    bgfx::TextureHandle frameBufferTexture = bgfx::getTexture(m_fbh, 0);
-    bgfx::setTexture(0, s_texColor, frameBufferTexture);
+    bgfx::setTexture(0, s_texColor,  m_fbtextures[0], BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
     bgfx::setTexture(1, s_texAvgLum, m_lumAvgTarget, BGFX_SAMPLER_POINT | BGFX_SAMPLER_UVW_CLAMP);
-    bgfx::setUniform(u_tonemap, tonemap);
-    bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
+    bgfx::setState(BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
+    //bgfx::setUniform(u_tonemap, tonemap);
+    //bgfx::setVertexBuffer(0, m_blitTriangleBuffer);
+    screenSpaceQuad((float)m_width, (float)m_height, m_caps->originBottomLeft);
     bgfx::submit(m_vToneMapPass, m_tonemapProgram->GetRawHandle());
 }
 void bgfxRenderer::DeInit()
@@ -226,26 +227,6 @@ void bgfxRenderer::SubmitDraw(RENDER::DrawItem drawItem)
 }
 const void bgfxRenderer::DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state)
 {
-    unsigned int diffuseNr = 1;
-    unsigned int specularNr = 1;
-    unsigned int normalNumber = 1;
-	unsigned int heightNumber = 1;
-    auto textures = mesh->getTextures();
-    for(unsigned int i = 0; i < textures.size(); i++)
-    {
-        textures[i].texture->Bind(i);
-        std::string number;
-        std::string name = textures[i].type;
-        if(name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
-        else if(name == "texture_specular")
-            number = std::to_string(specularNr++);
-        else if(name == "texture_normal")
-            number = std::to_string(normalNumber++);
-        else if(name == "texture_height")
-            number = std::to_string(heightNumber++);
-        //shader->SetTexture((name + number).c_str(), static_cast<uint8_t>(i), textures[i].texture);
-    }
     bgfx::setBuffer(Samplers::LIGHTS_POINTLIGHTS, m_lightBuffer.buffer, bgfx::Access::Read);
     float envParams[] = { bx::log2(float(1024u)), 1.0f, 0.0f, 0.0f };
     bgfx::setUniform(u_envParams, envParams);
@@ -356,20 +337,13 @@ void bgfxRenderer::BindPBRMaterial(const Material &material)
 }
 void bgfxRenderer::GenerateAlbedoLUT()
 {
-    BindAlbedoLUT(true /* compute */);
+    bgfx::setImage(Samplers::PBR_ALBEDO_LUT, m_albedoLUTTexture, 0, bgfx::Access::Write, bgfx::TextureFormat::RG16F);
     bgfx::dispatch(0, m_albedoLUTProgram, ALBEDO_LUT_SIZE / ALBEDO_LUT_THREADS, ALBEDO_LUT_SIZE / ALBEDO_LUT_THREADS, 1);
 }
 
-void bgfxRenderer::BindAlbedoLUT(bool compute)
+void bgfxRenderer::BindAlbedoLUT()
 {
-    if(compute)
-    {
-        bgfx::setImage(Samplers::PBR_ALBEDO_LUT, m_albedoLUTTexture, 0, bgfx::Access::Write, bgfx::TextureFormat::RG16F);
-    }
-    else
-    {
-        bgfx::setTexture(Samplers::PBR_ALBEDO_LUT, s_albedoLUT, m_albedoLUTTexture);
-        bgfx::setTexture(Samplers::PBR_PREFILTER_ENV_MAP, s_prefilteredEnv, t_filteredEnvMap.filteredCubeMap);
-        bgfx::setTexture(Samplers::PBR_IRRADIANCE_MAP, s_irradiance, t_filteredEnvMap.irradianceMap);
-    }
+    bgfx::setTexture(Samplers::PBR_ALBEDO_LUT, s_albedoLUT, m_albedoLUTTexture);
+    bgfx::setTexture(Samplers::PBR_PREFILTER_ENV_MAP, s_prefilteredEnv, t_filteredEnvMap.filteredCubeMap);
+    bgfx::setTexture(Samplers::PBR_IRRADIANCE_MAP, s_irradiance, t_filteredEnvMap.irradianceMap);
 }

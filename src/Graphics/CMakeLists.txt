@@ -13,8 +13,6 @@ set(SOURCE
         Renderer/Renderer.hpp
         Renderer/Window.cpp
         Renderer/Window.hpp
-        Renderer/mikktspace.h
-        Renderer/mikktspace.c
         Renderer/bgfx/LightBuffer.hpp
         Renderer/bgfx/LightBuffer.cpp
         Renderer/bgfx/bgfxDataTypes.hpp
@@ -35,8 +33,12 @@ set(SOURCE
         Renderer/imgui_impl_glfw.h
         Renderer/imgui_impl_glfw.cpp
 
+        Model/ObjectLoading/mikktspace.h
+        Model/ObjectLoading/mikktspace.c
         Model/ObjectLoading/ModelLoader.hpp
         Model/ObjectLoading/ModelLoader.cpp
+        Model/ObjectLoading/CalcTangent.hpp
+        Model/ObjectLoading/CalcTangent.cpp
         Model/Animator.hpp
         Model/Animator.cpp
         Model/Mesh.hpp

@@ -1,20 +1,17 @@
+$input v_texcoord0
+
 #include "../common.sh"
 #include <bgfx_shader.sh>
 
 SAMPLER2D(s_texColor, 0);
 SAMPLER2D(s_texAvgLum, 1);
 
-uniform vec4 u_tonemap;
-
 void main()
 {
-  vec2 texcoord = gl_FragCoord.xy / u_viewRect.zw;
-  vec3 rgb = texture2D(s_texColor, texcoord).rgb;
-  float lum = texture2D(s_texAvgLum, texcoord).r;
+  vec3 rgb = texture2D(s_texColor, v_texcoord0).rgb;
+  float lum = texture2D(s_texAvgLum, v_texcoord0).r;
 
   vec3 Yxy = convertRGB2Yxy(rgb);
-
-  float whiteSqr   = u_tonemap.x;
 
   Yxy.x /= (9.6 * lum + 0.0001);
 
