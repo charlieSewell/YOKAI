@@ -5,6 +5,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Engine/EventManager.hpp"
+#include <spdlog/spdlog.h>
 void PhysicsSystem::Init()
 {
     // Create the world settings
@@ -118,7 +119,7 @@ unsigned int PhysicsSystem::AddConcaveShape(unsigned int ID, Transform* transfor
     unsigned int temp = object.GetColliderID();
     m_colliders.emplace(object.GetColliderID(),object);
     */
-    throw new std::exception("NOT IMPLIMENTED");
+    SPDLOG_WARN("NOT IMPLIMENTED");
     return 0;
 }
 

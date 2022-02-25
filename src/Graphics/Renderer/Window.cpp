@@ -43,7 +43,7 @@ bool Window::Init()
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetWindowSizeCallback( m_window, windowSizeCallback );
 	ImGui::CreateContext();
-    ImGuiIO& _io = ImGui::GetIO();
+    ImGui::GetIO();
 	ImGui_ImplGlfw_InitForOther(m_window,true);
     SPDLOG_INFO("Window Initialised");
     return true;

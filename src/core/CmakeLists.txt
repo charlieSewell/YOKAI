@@ -16,6 +16,8 @@ add_library(core STATIC
     Transform.hpp
     Camera.hpp
     Camera.cpp
+    Time.hpp
+
 )
 
 target_compile_options(core PRIVATE

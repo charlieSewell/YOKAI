@@ -8,6 +8,7 @@
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include "core/Time.hpp"
 Yokai &Yokai::getInstance() 
 {
     static Yokai instance;
@@ -198,12 +199,7 @@ ModelManager* Yokai::GetModelManager()
 void Yokai::InitialiseLogger()
 {
     spdlog::init_thread_pool(8192, 1);
-
-    time_t ttime = time(nullptr);
-    tm* local_time = localtime(&ttime);
-    char buffer[24];
-    strftime(buffer, 24, "%Y-%m-%d %H-%M-%S.txt\0", local_time);
-    std::string filename = buffer;
+    std::string filename = YOKAI::time_stamp("%Y-%m-%d %H-%M-%S.txt\0");
 
     auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
     auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/"+ filename,"Logger");

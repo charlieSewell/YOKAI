@@ -16,7 +16,7 @@ unsigned int LightManager::AddLight(PointLight light)
     m_LightCount++;
     return m_LightCount -1;
 }
-void LightManager::DeleteLight(unsigned int _lightIndex)
+void LightManager::DeleteLight(unsigned int)
 {
     //NOT IMPLIMENTED
 }

@@ -827,7 +827,6 @@ static int GenerateInitialVerticesIndexList(STriInfo pTriInfos[], int piTriList_
 
 					bQuadDiagIs_02 = distSQ_13<distSQ_02 ? TFALSE : TTRUE;
 				}
-
 				if (bQuadDiagIs_02)
 				{
 					{

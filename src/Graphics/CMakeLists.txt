@@ -1,5 +1,9 @@
 project(graphics)
 
+set(SUPPRESS
+        Model/ObjectLoading/mikktspace.h
+        Model/ObjectLoading/mikktspace.c
+)
 set(SOURCE
         Renderer/DataTypes.cpp
         Renderer/DataTypes.hpp
@@ -33,8 +37,6 @@ set(SOURCE
         Renderer/imgui_impl_glfw.h
         Renderer/imgui_impl_glfw.cpp
 
-        Model/ObjectLoading/mikktspace.h
-        Model/ObjectLoading/mikktspace.c
         Model/ObjectLoading/ModelLoader.hpp
         Model/ObjectLoading/ModelLoader.cpp
         Model/ObjectLoading/CalcTangent.hpp
@@ -54,7 +56,8 @@ set(SOURCE
         Renderer/bgfx/fs_ocornut_imgui.bin.h
         Renderer/bgfx/vs_ocornut_imgui.bin.h
 )
-add_library(graphics STATIC ${SOURCE} ${SHADERS})
+add_library(graphics STATIC ${SOURCE} ${SUPPRESS} ${SHADERS})
+
 
 set_target_properties(graphics PROPERTIES
         CXX_STANDARD 17
@@ -77,6 +80,7 @@ target_compile_options(graphics PRIVATE
         # Enable the clang sanitizer.
         $<$<AND:$<CONFIG:Debug>,$<CXX_COMPILER_ID:Clang>,$<PLATFORM_ID:${SANITIZER_OS}>>:${SANITIZER_FLAGS}>
         )
+
 target_link_libraries(graphics PRIVATE bgfx bx bimg core)
 target_link_libraries(graphics PUBLIC assimp)
 target_include_directories(graphics PUBLIC

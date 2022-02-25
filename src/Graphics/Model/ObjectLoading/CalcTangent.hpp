@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mikktspace.h"
+#include <Model/ObjectLoading/mikktspace.h>
 #include "Model/Mesh.hpp"
 
 class CalcTangents 
