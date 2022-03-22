@@ -44,10 +44,8 @@ void main()
     // prevent division by 0
     a = max(a, 0.01);
 
-    vec3 msFactor = multipleScatteringFactor(a, metallic, F0, NoV);
+    vec3 radianceOut = vec3(0,0,0);
 
-    vec3 radianceOut;
-/*
     uint lights = pointLightCount();
     for(uint i = 0; i < lights; i++)
     {
@@ -57,14 +55,30 @@ void main()
         if(attenuation > 0.0)
         {
             vec3 L = normalize(light.position - v_position);
-            vec3 radianceIn = light.intensity * attenuation;
-            float NoL = saturate(dot(N, L));
-            radianceOut += BRDF(V, L, N, NoV, NoL, mat) * msFactor * radianceIn * NoL;
+            vec3 H = normalize(V + L);
+            vec3 radiance = light.intensity * attenuation;
+            
+            float NoL = dot(N, L);
+            float NoV = dot(N, V);
+            
+            float NDF = D_GGX(dot(N,H), roughness);
+            float G = V_SmithGGX(NoV, NoL, roughness);
+            vec3 F = F_Schlick(max(dot(H,V), 0.0),F0);
+            
+            vec3 kS = F;
+            vec3 kD = vec3(1.0,1.0,1.0) - kS;
+            kD *= 1.0 - metallic;
+            
+            vec3 numerator   = NDF * G * F;
+            vec3 denominator = 4.0 * max(NoV, 0.0) * max(NoL, 0.0) + 0.0001;
+            
+            vec3 specular = numerator / denominator;
+
+            radianceOut += (kD * c_diff / PI + specular) * radiance * max(NoL, 0.0);
         }
     }
-*/
     //radianceOut += getAmbientLight().irradiance * mat.diffuseColor * mat.occlusion;
-    //radianceOut += mat.emissive;
+    //radianceOut += emissive;
 
     vec2 f_ab = texture2D(s_texAlbedoLUT, vec2(NoV, roughness)).xy;
     float lodLevel = roughness * numEnvLevels;
@@ -73,8 +87,8 @@ void main()
 
     vec3 k_S = F0;
     // Roughness dependent fresnel, from Fdez-Aguera
-    //vec3 Fr = max(vec3_splat(1.0 - roughness), F0) - F0;
-    //k_S += Fr * pow(1.0 - NoV, 5.0);
+    vec3 Fr = max(vec3_splat(1.0 - roughness), F0) - F0;
+    k_S += Fr * pow(1.0 - NoV, 5.0);
 
     vec3 FssEss = k_S * f_ab.x + f_ab.y;
 
@@ -83,7 +97,7 @@ void main()
     vec3 F_avg = F0 + (1.0 - F0) / 21.0;
     vec3 FmsEms = Ems * FssEss * F_avg / (1.0 - F_avg * Ems);
     vec3 k_D = baseColor * (1.0 - FssEss - FmsEms);
-    radianceOut = FssEss * radiance + (FmsEms + k_D) * irradiance;
+    radianceOut += FssEss * radiance + (FmsEms + k_D) * irradiance;
 
     gl_FragColor = vec4(radianceOut * occlusion + emissive, baseColor.w);
 }

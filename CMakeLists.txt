@@ -94,8 +94,6 @@ add_subdirectory(tests)
 
 # Set C++ standard.
 
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS OFF)
 set_target_properties(${PROJECT_NAME} PROPERTIES
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON

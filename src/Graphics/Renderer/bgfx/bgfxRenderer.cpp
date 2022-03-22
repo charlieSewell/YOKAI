@@ -3,6 +3,7 @@
 #include "Engine/EventManager.hpp"
 #include <glm/gtx/matrix_operation.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include "Renderer/bgfx/LightProbe.hpp"
 namespace
 {
     static constexpr float WHITE_FURNACE_RADIANCE = 1.0f;
@@ -73,7 +74,7 @@ int bgfxRenderer::Init()
     m_histogramBuffer = bgfx::createDynamicIndexBuffer(256, BGFX_BUFFER_COMPUTE_READ_WRITE | BGFX_BUFFER_INDEX32);
     
     m_cubeMapFilterer = new CubeMapFilterer();
-    
+    LightProbe test(512);
     t_envMap = LoadTexture("content/textures/pisa_with_mips.ktx");
     
     //Albedo LUT Texture
@@ -99,6 +100,7 @@ int bgfxRenderer::Init()
    
     bgfx::reset(m_width,m_height, BGFX_RESET_VSYNC | BGFX_RESET_MSAA_X4);
     bgfx::frame();
+
     return true;
 
 }
@@ -213,14 +215,14 @@ void bgfxRenderer::SubmitDraw(RENDER::DrawItem drawItem)
 }
 const void bgfxRenderer::DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state)
 {
-    bgfx::setBuffer(Samplers::LIGHTS_POINTLIGHTS, m_lightBuffer.buffer, bgfx::Access::Read);
+    
     float envParams[] = { bx::log2(float(1024u)), 1.0f, 0.0f, 0.0f };
     bgfx::setUniform(u_envParams, envParams);
-    
+    bgfx::setBuffer(Samplers::LIGHTS_POINTLIGHTS, m_lightBuffer.buffer, bgfx::Access::Read);
     BindPBRMaterial(mesh->GetMaterial());
-    mesh->GetVAO()->Bind();
     state |= BGFX_STATE_BLEND_ALPHA;
     bgfx::setState(state);
+    mesh->GetVAO()->Bind();
     bgfx::submit(m_vDefault, shader->GetRawHandle());
 }
 
@@ -315,10 +317,6 @@ void bgfxRenderer::BindPBRMaterial(const Material &material)
     };
     m_pbrProgram->SetUniform("u_factors", factorValues);
 
-    float multipleScatteringValues[4] = {
-        m_multipleScatteringEnabled ? 1.0f : 0.0f, m_whiteFurnaceEnabled ? WHITE_FURNACE_RADIANCE : 0.0f, 0.0f, 0.0f
-    };
-    m_pbrProgram->SetUniform("u_multipleScatteringVec", multipleScatteringValues);
     BindAlbedoLUT();
 }
 void bgfxRenderer::GenerateAlbedoLUT()

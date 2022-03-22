@@ -31,6 +31,8 @@ set(SOURCE
         Renderer/bgfx/bgfxutil.hpp
         Renderer/bgfx/CubeMapFilterer.hpp
         Renderer/bgfx/CubeMapFilterer.cpp
+        Renderer/bgfx/LightProbe.hpp
+        Renderer/bgfx/LightProbe.cpp
         Renderer/TextureManager.hpp
         Renderer/TextureManager.cpp
         Renderer/Samplers.hpp

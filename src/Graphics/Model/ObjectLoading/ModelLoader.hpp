@@ -8,12 +8,18 @@
 #include <assimp/scene.h>
 #include <assimp/material.h>
 #include <assimp/GltfMaterial.h>
+#include <assimp/DefaultLogger.hpp>
+#include <assimp/LogStream.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <memory>
 #include "Model/Model.hpp"
 #include "Renderer/TextureManager.hpp"
 #include "CalcTangent.hpp"
-/** @class ModelLoader
+#include "spdlog/spdlog.h"
+
+
+/** 
+ *  @class ModelLoader
  *  @brief Class that loads models
  */
 
@@ -21,6 +27,7 @@ class ModelLoader
 {
   public:
     ModelLoader();
+    ~ModelLoader();
     /**
      * @brief Loads a model and returns a vector of meshes
      * @param string - filename
@@ -106,7 +113,6 @@ class ModelLoader
      * @return Material 
      */
     Material ModelLoader::LoadMaterial(const aiMaterial* material);
-    
     ///List of textures currently loaded for a model
     std::vector<ModelTexture> m_textures_loaded;
     /// Number of bones in current model

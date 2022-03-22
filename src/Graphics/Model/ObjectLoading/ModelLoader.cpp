@@ -10,8 +10,19 @@ static inline glm::mat4 to_glm(aiMatrix4x4t<float> &m){return glm::transpose(glm
 static inline glm::vec3 vec3_cast(const aiVector3D &v) { return glm::vec3(v.x, v.y, v.z); }
 static inline glm::quat quat_cast(const aiQuaternion &q) { return glm::quat(q.w, q.x, q.y, q.z); }
 
+class AssimpLogger : public Assimp::LogStream
+{
+  public:
+    // Write womethink using your own functionality
+    void write(const char* message)
+    {
+      SPDLOG_INFO("{}",message);
+    }
+};
+
 ModelLoader::ModelLoader()
 {
+    Assimp::DefaultLogger::create("", Assimp::Logger::VERBOSE);
     // Settings for aiProcess_SortByPType
     // only take triangles or higher (polygons are triangulated during import)
     m_importer.SetPropertyInteger(AI_CONFIG_PP_SBP_REMOVE, aiPrimitiveType_LINE | aiPrimitiveType_POINT);
@@ -19,8 +30,13 @@ ModelLoader::ModelLoader()
     // Limit vertices to 65k (we use 16-bit indices)
     m_importer.SetPropertyInteger(AI_CONFIG_PP_SLM_VERTEX_LIMIT, std::numeric_limits<uint16_t>::max());
 
-    
+    const unsigned int severity = Assimp::Logger::Debugging|Assimp::Logger::Info|Assimp::Logger::Err|Assimp::Logger::Warn;
+    Assimp::DefaultLogger::get()->attachStream(new AssimpLogger,severity);
+}
 
+ModelLoader::~ModelLoader()
+{
+    Assimp::DefaultLogger::kill();
 }
 
 Model ModelLoader::LoadModel(const std::string& filename)

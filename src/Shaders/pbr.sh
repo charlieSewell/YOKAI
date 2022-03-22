@@ -22,12 +22,6 @@ struct PBRMaterial
     float a; // remapped roughness (^2)
 };
 
-uniform vec4 u_multipleScatteringVec;
-#define u_multipleScattering      (u_multipleScatteringVec.x != 0.0)
-#define u_whiteFurnaceRadiance    (u_multipleScatteringVec.y)
-#define u_whiteFurnace            (u_whiteFurnaceRadiance > 0.0)
-
-
 #ifdef WRITE_LUT
 IMAGE2D_WR(i_texAlbedoLUT, rg16f, 0);
 #else
@@ -58,9 +52,8 @@ uniform vec4 u_hasTextures;
 #define u_occlusionStrength       (u_factors.w)
 #define u_emissiveFactor          (u_emissiveFactorVec.xyz)
 
-
-
 #endif // READ_MATERIAL
+
 #if BGFX_SHADER_TYPE_FRAGMENT
 // Reduce specular aliasing by producing a modified roughness value
 // Tokuyoshi et al. 2019. Improved Geometric Specular Antialiasing.
@@ -149,32 +142,6 @@ float Fd_Lambert()
     return INV_PI;
 }
 
-#ifndef WRITE_LUT
-
-vec3 multipleScatteringFactor(float a, float metallic, vec3 F0, float NoV)
-{
-    if(u_multipleScattering)
-    {
-        // Turquin approximates the multiple scattering portion of the BRDF using a scaled down version of the single scattering BRDF
-        // That scale factor is E: the directional albedo for single scattering, ie. the total reflectance for a viewing direction
-        vec2 E = texture2D(s_texAlbedoLUT, vec2(NoV, a)).xy;
-
-        // for metals, the albedo value is calculated with F = 1 (perfect reflection)
-        // fresnel determines whether light is reflected or absorbed
-        vec3 factorMetallic = vec3_splat(1.0) + F0 * (1.0 / E.x - 1.0);
-
-        // for dielectrics, fresnel determines the ratio between specular and diffuse energy
-        // so the albedo depends on F as a variable
-        // however, dielectrics in GLTF have a fixed F0 of 0.04 so we can do this with a second LUT
-        vec3 factorDielectric = vec3_splat(1.0 / E.y);
-
-        return mix(factorDielectric, factorMetallic, metallic);
-    }
-    else
-        return vec3_splat(1.0);
-}
-
-#endif
 vec2 hammersley(uint i, uint N)
 {
     uint bits = (i << 16u) | (i >> 16u);
