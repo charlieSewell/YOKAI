@@ -58,23 +58,24 @@ void main()
             vec3 H = normalize(V + L);
             vec3 radiance = light.intensity * attenuation;
             
-            float NoL = dot(N, L);
-            float NoV = dot(N, V);
+            float NoL = clampDot(N, L);
+            float NoH = clampDot(N, H);
+            float VoH = clampDot(V, H);
             
-            float NDF = D_GGX(dot(N,H), roughness);
-            float G = V_SmithGGX(NoV, NoL, roughness);
-            vec3 F = F_Schlick(max(dot(H,V), 0.0),F0);
+            float NDF = D_GGX(NoH, roughness);
+            float G = V_SmithGGXCorrelated(NoV, NoL, roughness);
+            vec3 F = F_Schlick(VoH, F0);
             
             vec3 kS = F;
             vec3 kD = vec3(1.0,1.0,1.0) - kS;
             kD *= 1.0 - metallic;
             
             vec3 numerator   = NDF * G * F;
-            vec3 denominator = 4.0 * max(NoV, 0.0) * max(NoL, 0.0) + 0.0001;
+            //vec3 denominator = 4.0 * max(NoV, 0.0) * max(NoL, 0.0) + 0.0001;
             
-            vec3 specular = numerator / denominator;
-
-            radianceOut += (kD * c_diff / PI + specular) * radiance * max(NoL, 0.0);
+            //vec3 specular = numerator / denominator;
+            vec3 lightColor = attenuation * light.intensity * NoL;
+            radianceOut += (c_diff + PI * numerator) * lightColor;
         }
     }
     //radianceOut += getAmbientLight().irradiance * mat.diffuseColor * mat.occlusion;

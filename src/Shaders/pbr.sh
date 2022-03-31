@@ -71,7 +71,25 @@ float specularAntiAliasing(vec3 N, float a)
     float kernelRoughness2 = min(2.0 * variance, KAPPA);
     return saturate(a + kernelRoughness2);
 }
+// Turquin. 2018. Practical multiple scattering compensation for microfacet models.
+// https://blog.selfshadow.com/publications/turquin/ms_comp_final.pdf
+vec3 multipleScatteringFactor(float a, vec3 F0, float metallic, float NoV)
+{
+    // Turquin approximates the multiple scattering portion of the BRDF using a scaled down version of the single scattering BRDF
+    // That scale factor is E: the directional albedo for single scattering, ie. the total reflectance for a viewing direction
+    vec2 E = texture2D(s_texAlbedoLUT, vec2(NoV, a)).xy;
 
+    // for metals, the albedo value is calculated with F = 1 (perfect reflection)
+    // fresnel determines whether light is reflected or absorbed
+    vec3 factorMetallic = vec3_splat(1.0) + F0 * (1.0 / E.x - 1.0);
+
+    // for dielectrics, fresnel determines the ratio between specular and diffuse energy
+    // so the albedo depends on F as a variable
+    // however, dielectrics in GLTF have a fixed F0 of 0.04 so we can do this with a second LUT
+    vec3 factorDielectric = vec3_splat(1.0 / E.y);
+
+    return mix(factorDielectric, factorMetallic, metallic);
+}
 #endif
 
 // Physically based shading
@@ -86,8 +104,8 @@ float specularAntiAliasing(vec3 N, float a)
 // Schlick approximation to Fresnel equation
 vec3 F_Schlick(float VoH, vec3 F0)
 {
-    float f = pow(1.0 - VoH, 5.0);
-    return f + F0 * (1.0 - f);
+    float val = 1.0 - VoH;
+    return F0 + (1.0 - F0) * (val*val*val*val*val); //Faster than pow
 }
 vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 {
@@ -100,12 +118,11 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 // Bruce Walter et al. 2007. Microfacet Models for Refraction through Rough Surfaces.
 // equivalent to Trowbridge-Reitz
-float D_GGX(float NoH, float roughness)
+float D_GGX(float NoH, float a)
 {
-    float alpha = roughness * roughness;
-    float a = NoH * alpha;
-    float k = alpha / (1.0 - NoH * NoH + a * a);
-    return k * k * (1.0 / PI);
+    a = NoH * a;
+    float k = a / (1.0 - NoH * NoH + a * a);
+    return k * k * INV_PI;
 }
 
 // Visibility function
@@ -115,9 +132,9 @@ float D_GGX(float NoH, float roughness)
 // Heitz 2014. Understanding the Masking-Shadowing Function in Microfacet-Based BRDFs.
 // http://jcgt.org/published/0003/02/03/paper.pdf
 // based on height-correlated Smith-GGX
-float V_SmithGGXCorrelated(float NoV, float NoL, float roughness)
+float V_SmithGGXCorrelated(float NoV, float NoL, float a)
 {
-    float a2 = pow(roughness, 4.0);
+    float a2 = a * a;
     float GGXV = NoL * sqrt(NoV * NoV * (1.0 - a2) + a2);
     float GGXL = NoV * sqrt(NoL * NoL * (1.0 - a2) + a2);
     return 0.5 / (GGXV + GGXL);
@@ -196,4 +213,5 @@ vec3 importanceSampleGGX(vec2 Xi, float roughness, vec3 N)
     // Convert to world Space
     return normalize(tangentX * H.x + tangentY * H.y + N * H.z);
 }
+
 #endif // PBR_SH_HEADER_GUARD

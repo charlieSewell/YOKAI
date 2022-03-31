@@ -29,8 +29,8 @@ void PointLightBuffer::Update(std::vector<PointLight> &lights)
         light->position = lights[i].position;
         // intensity = flux per unit solid angle (steradian)
         // there are 4*pi steradians in a sphere
-        light->intensity = lights[i].flux / (4.0f * glm::pi<float>());
-        light->radius = lights[i].CalculateRadius();
+        light->intensity = lights[i].flux;
+        light->radius = lights[i].radius;
     }
 
     bgfx::update(buffer, 0, mem);
