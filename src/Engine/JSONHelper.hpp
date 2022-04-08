@@ -3,7 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 #include "Engine/GameObjectManager.hpp"
-#include "LightManager.hpp"
+#include "Renderer/LightManager.hpp"
 namespace YOKAI_PARSE 
 {   
     /**

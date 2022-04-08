@@ -41,10 +41,10 @@ void main()
     vec3 F0 = mix(vec3_splat(DIELECTRIC_SPECULAR), baseColor.xyz, metallic);
 
     float a = roughness * roughness;
-    // prevent division by 0
-    a = max(a, 0.01);
+    a = specularAntiAliasing(N, a);
+    a = max(a, 0.00001);
 
-    vec3 radianceOut = vec3(0,0,0);
+    vec3 radianceOut = vec3_splat(0.0);
 
     uint lights = pointLightCount();
     for(uint i = 0; i < lights; i++)
@@ -56,7 +56,7 @@ void main()
         {
             vec3 L = normalize(light.position - v_position);
             vec3 H = normalize(V + L);
-            vec3 radiance = light.intensity * attenuation;
+            vec3 radiance = light.intensity * attenuation *100;
             
             float NoL = clampDot(N, L);
             float NoH = clampDot(N, H);
@@ -66,16 +66,10 @@ void main()
             float G = V_SmithGGXCorrelated(NoV, NoL, roughness);
             vec3 F = F_Schlick(VoH, F0);
             
-            vec3 kS = F;
-            vec3 kD = vec3(1.0,1.0,1.0) - kS;
-            kD *= 1.0 - metallic;
-            
-            vec3 numerator   = NDF * G * F;
-            //vec3 denominator = 4.0 * max(NoV, 0.0) * max(NoL, 0.0) + 0.0001;
-            
-            //vec3 specular = numerator / denominator;
+            vec3 BRDF   = NDF * G * F;
+
             vec3 lightColor = attenuation * light.intensity * NoL;
-            radianceOut += (c_diff + PI * numerator) * lightColor;
+            radianceOut += (c_diff + PI * BRDF) * lightColor;
         }
     }
     //radianceOut += getAmbientLight().irradiance * mat.diffuseColor * mat.occlusion;

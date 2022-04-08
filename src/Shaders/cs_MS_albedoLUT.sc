@@ -10,11 +10,11 @@ vec2 integrateBRDF(float roughness, float NoV)
 {
 	vec3 V;
     V.x = sqrt(1.0 - NoV * NoV); // sin
-    V.y = 0.0;
-    V.z = NoV; // cos
+    V.y = NoV;
+    V.z = 0.0; // cos
 
     // N points straight upwards for this integration
-    const vec3 N = vec3(0.0, 0.0, 1.0);
+    const vec3 N = vec3(0.0, 1.0, 0.0);
 
     float A = 0.0;
     float B = 0.0;
@@ -50,7 +50,7 @@ void main()
 {
     // Normalized pixel coordinates (from 0 to 1)
     vec2 uv = vec2(gl_GlobalInvocationID.xy) / vec2(imageSize(i_texAlbedoLUT).xy);
-    float mu = uv.x;
+    float mu = max(uv.x, 0.001); //Stop division by 0 and NaN
     float a = max(uv.y, MIN_ROUGHNESS);
 
 

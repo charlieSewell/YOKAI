@@ -38,7 +38,6 @@ set(SOURCES
 
 		src/Engine/Yokai.cpp
 		src/Engine/JSONHelper.cpp
-		src/Engine/LightManager.cpp
 		src/Engine/Scene.cpp
         PARENT_SCOPE
         )

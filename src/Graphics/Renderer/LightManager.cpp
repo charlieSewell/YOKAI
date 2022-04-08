@@ -41,14 +41,12 @@ void LightManager::RenderGUI()
     ImGui::SetColorEditOptions(ImGuiColorEditFlags_HDR);
     for(size_t i=0; i < m_Lights.size();i++)
     {
-        glm::vec3 color;
-        float radius;
         ImGui::PushID(i);
         if(ImGui::TreeNode("Point Light"))
         {
             ImGui::DragFloat3("Position: ", &m_Lights[i].position[0], 0.1f);
-            ImGui::ColorEdit3("Color", &color[0]);
-            ImGui::DragFloat("Size: ", &radius, 0.1f);
+            ImGui::ColorEdit3("Color", &m_Lights[i].flux[0],ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_Float);
+            ImGui::DragFloat("Size: ", &m_Lights[i].radius, 0.1f);
             if(ImGui::Button("Delete Light")){
                 DeleteLight(i);
             }
@@ -68,12 +66,10 @@ void LightManager::Serialize(nlohmann::json &j)
     j["Lights"] = nlohmann::json::array();
     for(auto& light : m_Lights)
     {
-        glm::vec3 color = glm::normalize(light.flux);
-        float radius = glm::length(light.flux);
         nlohmann::json temp = nlohmann::json::object();
-        temp["Color"] = color;
+        temp["Color"] = light.flux;
         temp["Position"] = light.position;
-        temp["Radius"] = radius;
+        temp["Radius"] = light.radius;
         j["Lights"].push_back(temp);
     }
 }

@@ -186,10 +186,8 @@ bgfx::TextureHandle LoadTexture(const std::string fileName, const bool sRGB)
         BX_FREE(&allocator, data);
 
         // default wrap mode is repeat, there's no flag for it
-        uint64_t textureFlags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE;
+        uint64_t textureFlags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_MIN_ANISOTROPIC;
         
-        if(sRGB)
-            textureFlags |= BGFX_TEXTURE_SRGB;
         if (image->m_cubeMap)
 		{
 			tex = bgfx::createTextureCube(

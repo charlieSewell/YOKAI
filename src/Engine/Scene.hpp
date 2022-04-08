@@ -2,7 +2,7 @@
 #include "Engine/JSONHelper.hpp"
 #include "Engine/GameObjectManager.hpp"
 #include "Engine/InputManagerGLFW.hpp"
-#include "Engine/LightManager.hpp"
+#include "Renderer/LightManager.hpp"
 #include "Yokai.hpp"
 
 /**
@@ -74,5 +74,5 @@ class Scene
     ///Lighting Manager
     LightManager m_lightManager;
     ///Name of scene
-    std::string m_sceneName;
+    std::string m_sceneName = "Untitled Scene";
 };

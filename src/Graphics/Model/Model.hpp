@@ -21,17 +21,19 @@ struct Node
     ///Count of children
     unsigned int childrenCount = 0;
 };
+
 /**
  * @struct Bone
  * @brief Struct to hold info about a bone
  */
 struct Bone
 {
-    ///Bones offset from position of model
-    glm::mat4 offset = glm::mat4(1.0f);
-    ///Transform of the bone
-    glm::mat4 transform = glm::mat4(1.0f);
+  ///Transform of the bone
+  glm::mat4 transform = glm::mat4(1.0f);
+  ///Bones offset from position of model
+  glm::mat4 offset = glm::mat4(1.0f);
 };
+
 /**
  * @class Model
  * @brief A class to hold model Data

@@ -46,6 +46,7 @@ bool Yokai::Init()
     {
         SPDLOG_ERROR(e.what());
     }
+    //Initialise the first layer
     m_isPaused = false;
     SPDLOG_INFO("Engine Succesfully Initialised");
     return(true);

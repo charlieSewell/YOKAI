@@ -12,6 +12,8 @@ add_library(core STATIC
     Engine/JSONTypes.cpp
     Engine/JSONTypes.hpp
     Engine/Component.hpp
+    Memory/ConcurrentQueue.hpp
+    Resource/Resource.hpp
     Transform.cpp
     Transform.hpp
     Camera.hpp

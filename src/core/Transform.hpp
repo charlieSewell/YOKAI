@@ -134,13 +134,13 @@ private:
     ///scale
 	glm::vec3 m_scale = {1.0f,1.0f,1.0f};
 	///rotation
-	glm::quat m_rotation= {};
+	glm::quat m_rotation = {};
 	///position
-	glm::vec3 m_position= {};
+	glm::vec3 m_position = {};
 	///skey
-	glm::vec3 m_skew= {};
+	glm::vec3 m_skew = {};
 	///perspective
-	glm::vec4 m_perspective= {};
+	glm::vec4 m_perspective = {};
     /**
      * @brief Decomposes a transform into their componenets
      */

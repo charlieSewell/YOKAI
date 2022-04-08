@@ -219,8 +219,10 @@ const void bgfxRenderer::DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state)
     float envParams[] = { bx::log2(float(1024u)), 1.0f, 0.0f, 0.0f };
     bgfx::setUniform(u_envParams, envParams);
     bgfx::setBuffer(Samplers::LIGHTS_POINTLIGHTS, m_lightBuffer.buffer, bgfx::Access::Read);
+    float lightCountVec[4] = { static_cast<float>(1)};
+    m_pbrProgram->SetUniform("u_lightCountVec", lightCountVec);
     BindPBRMaterial(mesh->GetMaterial());
-    state |= BGFX_STATE_BLEND_ALPHA;
+    //state |= BGFX_STATE_BLEND_ALPHA;
     bgfx::setState(state);
     mesh->GetVAO()->Bind();
     bgfx::submit(m_vDefault, shader->GetRawHandle());
@@ -229,8 +231,8 @@ const void bgfxRenderer::DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state)
 void bgfxRenderer::UpdateLights(std::vector<PointLight> &lightsArray)
 {
     m_lightBuffer.Update(lightsArray);
-    float lightCountVec[4] = { static_cast<float>(lightsArray.size())};
-    m_pbrProgram->SetUniform("u_lightCountVec", lightCountVec);
+    //float lightCountVec[4] = { static_cast<float>(lightsArray.size())};
+    //m_pbrProgram->SetUniform("u_lightCountVec", lightCountVec);
     float ambientLightIrradiance[4] = { 0.03f, 0.03f, 0.03f, 1.0f};
     m_pbrProgram->SetUniform("u_ambientLightIrradiance", ambientLightIrradiance);
 }
@@ -248,7 +250,7 @@ void bgfxRenderer::SetViewProjection(bgfx::ViewId view)
     // projection matrix
     bx::mtxProj(glm::value_ptr(m_projMat),
                 60.0f,
-                float(1920) / float(1080),
+                float(m_width) / float(m_height),
                 zNear,
                 zFar,
                 bgfx::getCaps()->homogeneousDepth,bx::Handness::Right);

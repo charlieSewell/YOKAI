@@ -10,7 +10,8 @@ set(SOURCE
         Renderer/DrawItem.hpp
         Renderer/LightingTypes.hpp
         Renderer/PointLight.hpp
-        Renderer/PointLight.cpp
+        Renderer/LightManager.cpp
+        Renderer/LightManager.hpp
         Renderer/RenderAPI.cpp
         Renderer/RenderAPI.hpp
         Renderer/Renderer.cpp

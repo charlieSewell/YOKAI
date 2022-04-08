@@ -1,3 +1,4 @@
+enable_testing()
 # Set cmake minimum version.
 cmake_minimum_required(VERSION 3.22)
 
@@ -56,44 +57,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# CppUTest
-include(FetchContent)
-FetchContent_Declare(
-    CppUTest
-    GIT_REPOSITORY https://github.com/cpputest/cpputest.git
-    GIT_TAG        v3.8 # or use release tag, eg. v3.8
-)
-# Set this to ON if you want to have the CppUTests in your project as well.
-set(TESTS OFF CACHE BOOL "Switch off CppUTest Test build")
-FetchContent_MakeAvailable(CppUTest)
-
-FetchContent_Declare(json
-  GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
-  GIT_TAG v3.10.4)
-
-FetchContent_GetProperties(json)
-if(NOT json_POPULATED)
-  FetchContent_Populate(json)
-  add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif()
 # Define source files.
 add_subdirectory(src)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES} ${SHADERS})
+
 # Build 3rd Party Libraries
 add_subdirectory(lib)
 
-# Include project header files.
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-
-# Define the Tests Executab;e
-add_executable(run_tests tests/main_tests.cpp )
-
-# Define Tests
+# Include Tests
 add_subdirectory(tests)
 
 # Set C++ standard.
-
 set_target_properties(${PROJECT_NAME} PROPERTIES
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
@@ -136,9 +111,10 @@ target_link_options(${PROJECT_NAME} PUBLIC
 # Include and link against dependencies.
 target_link_libraries(${PROJECT_NAME} PUBLIC core graphics physics ${CMAKE_DL_LIBS})
 
-target_link_libraries(run_tests PUBLIC YOKAI CppUTest CppUTestExt ${CMAKE_DL_LIBS})
-
-target_include_directories(run_tests PUBLIC ${CppUTest_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  $<INSTALL_INTERFACE:>  # <prefix>/include/mylib
+)
 
 set(SHADER_DIR ${CMAKE_BINARY_DIR}/shaders)
 # target to force all shaders to recompile on the next build

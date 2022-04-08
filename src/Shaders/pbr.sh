@@ -118,11 +118,12 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness)
 
 // Bruce Walter et al. 2007. Microfacet Models for Refraction through Rough Surfaces.
 // equivalent to Trowbridge-Reitz
-float D_GGX(float NoH, float a)
+float D_GGX(float NoH, float roughness)
 {
-    a = NoH * a;
-    float k = a / (1.0 - NoH * NoH + a * a);
-    return k * k * INV_PI;
+    float alpha = roughness * roughness;
+    float a = NoH * alpha;
+    float k = alpha / (1.0 - NoH * NoH + a * a);
+    return k * k * (1.0 / PI);
 }
 
 // Visibility function
@@ -132,9 +133,9 @@ float D_GGX(float NoH, float a)
 // Heitz 2014. Understanding the Masking-Shadowing Function in Microfacet-Based BRDFs.
 // http://jcgt.org/published/0003/02/03/paper.pdf
 // based on height-correlated Smith-GGX
-float V_SmithGGXCorrelated(float NoV, float NoL, float a)
+float V_SmithGGXCorrelated(float NoV, float NoL, float roughness)
 {
-    float a2 = a * a;
+    float a2 = pow(roughness, 4.0);
     float GGXV = NoL * sqrt(NoV * NoV * (1.0 - a2) + a2);
     float GGXL = NoV * sqrt(NoL * NoL * (1.0 - a2) + a2);
     return 0.5 / (GGXV + GGXL);

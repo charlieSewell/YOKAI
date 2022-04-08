@@ -1,6 +1,7 @@
 #include "LightProbe.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <spdlog/spdlog.h>
+#include <Model/Mesh.hpp>
 LightProbe::LightProbe(uint16_t size)
 {
     const uint64_t flags = BGFX_TEXTURE_RT;
@@ -25,7 +26,7 @@ LightProbe::LightProbe(uint16_t size)
 		}
 	}
 }
-void LightProbe::UpdateLightProbe(glm::mat4 projMatrix)
+void LightProbe::UpdateLightProbe(const std::vector<Mesh> &meshs)
 {
     glm::mat4 captureViews[] = 
     {
@@ -36,4 +37,13 @@ void LightProbe::UpdateLightProbe(glm::mat4 projMatrix)
         glm::lookAt(m_position, m_position + glm::vec3( 0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
         glm::lookAt(m_position, m_position + glm::vec3( 0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
     };
+    for (size_t index = 0; index < m_frameBuffers.size(); ++index)
+	{
+        for(auto &mesh : meshs)
+        {
+            
+        }
+    }
+    
+
 }

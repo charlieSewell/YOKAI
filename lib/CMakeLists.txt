@@ -28,6 +28,18 @@ add_compile_options(
     # Visual Studio
     $<$<CXX_COMPILER_ID:MSVC>:/W0>
 )
+
+include(FetchContent)
+FetchContent_Declare(json
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
+  GIT_TAG v3.10.4)
+
+FetchContent_GetProperties(json)
+if(NOT json_POPULATED)
+  FetchContent_Populate(json)
+  add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
 option( BGFX_BUILD_EXAMPLES OFF)
 add_subdirectory(bgfx.cmake)
 add_subdirectory(glm)

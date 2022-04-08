@@ -48,7 +48,7 @@ Model ModelLoader::LoadModel(const std::string& filename)
     std::map<std::string,unsigned int> boneMap;
 
     const aiScene *scene = m_importer.ReadFile(
-        filename, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_OptimizeMeshes);
+        filename, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_OptimizeMeshes);
     if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
         SPDLOG_ERROR(m_importer.GetErrorString());
@@ -62,7 +62,6 @@ Model ModelLoader::LoadModel(const std::string& filename)
     
     for(auto& mesh: meshes)
     {
-        m_tangentCalculator.calc(&mesh);
         mesh.SetupMesh();
     }
     //loadAnimNodes(rootAnimNode,scene->mRootNode);
@@ -99,7 +98,6 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
     // data to fill
     std::vector<Vertex> vertices;
     std::vector<uint16_t> indices;
-    std::vector<ModelTexture> textures;
 
     // walk through each of the mesh's vertices
     for(unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -134,20 +132,6 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
         {
             vertex.textureCoords = glm::vec2(0.0f, 0.0f);
         }
-        if (mesh->HasTangentsAndBitangents()) 
-        {
-            vector.x       = mesh->mTangents[i].x;
-            vector.y       = mesh->mTangents[i].y;
-            vector.z       = mesh->mTangents[i].z;
-            vector.w = 0; //HACK NEED TO FIX
-            vertex.tangent = vector;
-            // bitangent
-            vector.x         = mesh->mBitangents[i].x;
-            vector.y         = mesh->mBitangents[i].y;
-            vector.z         = mesh->mBitangents[i].z;
-            vector.w = 0; //HACK NEED TO FIX
-            vertex.biTangent = vector;
-        }
         vertices.push_back(vertex);
     }
     // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
@@ -162,7 +146,9 @@ Mesh ModelLoader::ProcessMesh(aiMesh *mesh, const aiScene *scene,glm::mat4 trans
     aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
     Material newMaterial = LoadMaterial(material);
     // return a mesh object created from the extracted mesh data
-    return Mesh(vertices, indices, textures, transform, newMaterial);
+    Mesh outMesh = Mesh(vertices, indices, transform, newMaterial);
+    m_tangentCalculator.calc(&outMesh);
+    return outMesh;
 }
 
 // checks all material textures of a given type and loads the textures if they're not loaded yet.
@@ -315,7 +301,7 @@ Material ModelLoader::LoadMaterial(const aiMaterial* material)
     aiString alphaModeOpaque;
     alphaModeOpaque.Set("OPAQUE");
     out.blend = alphaMode != alphaModeOpaque;
-
+    
     material->Get(AI_MATKEY_TWOSIDED, out.doubleSided);
 
     // texture files

@@ -7,7 +7,7 @@ class LightProbe
 {
     public:
         LightProbe(uint16_t size);
-        void UpdateLightProbe(glm::mat4 projMatrix);
+        void UpdateLightProbe(const std::vector<Mesh> &meshs);
     private:
         bgfx::TextureHandle m_cubeMap;
         std::vector<bgfx::FrameBufferHandle> m_frameBuffers;
