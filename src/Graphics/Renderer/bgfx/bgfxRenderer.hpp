@@ -11,8 +11,7 @@
 #include "Renderer/bgfx/bgfxDataTypes.hpp"
 #include "Renderer/bgfx/bgfxShader.hpp"
 #include "Renderer/bgfx/LightBuffer.hpp"
-
-
+#include "Renderer/bgfx/LightProbe.hpp"
 /**
  * @class bgfxRenderer
  * @brief bgfx rendering api implementation
@@ -71,10 +70,11 @@ class bgfxRenderer : public RenderAPI
      */
     void ResetLightsBuffer() override;
   private:
-    const void DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state);
+    const void DrawMesh(RENDER::DrawItem mesh);
+    void FlushDrawQueue();
     void SetViewProjection(bgfx::ViewId view);
     void CreateToneMapFrameBuffer();
-    void BindPBRMaterial(const Material &material);
+    void BindPBRMaterial(std::shared_ptr<bgfxShader> program, const Material &material);
     void GenerateAlbedoLUT();
     void BindAlbedoLUT();
     GLFWwindow* m_window;
@@ -91,9 +91,9 @@ class bgfxRenderer : public RenderAPI
     
     std::vector<RENDER::DrawItem> m_drawQueue;
     
-    bgfxShader* m_program;
-    bgfxShader* m_tonemapProgram;
-    bgfxShader* m_pbrProgram;
+    std::shared_ptr<bgfxShader> m_program = nullptr;
+    std::shared_ptr<bgfxShader> m_tonemapProgram = nullptr;
+    std::shared_ptr<bgfxShader> m_pbrProgram = nullptr;
     bgfx::ProgramHandle m_histogramProgram;
     bgfx::ProgramHandle m_averagingProgram;
     bgfx::ProgramHandle m_albedoLUTProgram;
@@ -117,7 +117,7 @@ class bgfxRenderer : public RenderAPI
     bgfx::TextureHandle m_lumAvgTarget;
     bgfx::TextureHandle m_albedoLUTTexture;
     bgfx::FrameBufferHandle m_fbh;
-
+    LightProbe* m_lightProbe;
     bx::DefaultAllocator mAllocator;
     float m_speed = 0.37f;
     float m_white = 3.0f;

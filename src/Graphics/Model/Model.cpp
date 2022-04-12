@@ -2,6 +2,7 @@
 #include "Model.hpp"
 
 #include <utility>
+
 Model::Model(std::vector<Mesh> meshes)
 {
     this->m_meshes = std::move(meshes);

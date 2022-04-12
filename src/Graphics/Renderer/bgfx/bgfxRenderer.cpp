@@ -3,13 +3,14 @@
 #include "Engine/EventManager.hpp"
 #include <glm/gtx/matrix_operation.hpp>
 #include <glm/gtx/string_cast.hpp>
-#include "Renderer/bgfx/LightProbe.hpp"
 namespace
 {
     static constexpr float WHITE_FURNACE_RADIANCE = 1.0f;
     
     static constexpr uint16_t ALBEDO_LUT_SIZE = 128;
     static constexpr uint16_t ALBEDO_LUT_THREADS = 16;
+    float LIGHT_COUNT_VEC[4] = { static_cast<float>(1)};
+    float ENV_PARAMS[] = { bx::log2(float(1024u)), 1.0f, 0.0f, 0.0f };
 }
 bgfxRenderer::bgfxRenderer(GLFWwindow* window) 
 	: m_window(window)
@@ -64,19 +65,17 @@ int bgfxRenderer::Init()
 
     u_tonemap = bgfx::createUniform("u_tonemap", bgfx::UniformType::Vec4);
     u_histogramParams = bgfx::createUniform("u_histogramparams", bgfx::UniformType::Vec4);
-    u_envParams = bgfx::createUniform("u_envParams", bgfx::UniformType::Vec4);
     m_histogramProgram = loadProgram("cs_histogram.bin", "");
     m_averagingProgram = loadProgram("cs_avglum.bin", "");
     m_albedoLUTProgram = loadProgram("cs_MS_albedoLUT.bin","");
-    m_program = new bgfxShader("Forward Shader","vs_shader.bin","fs_shader.bin");
-    m_pbrProgram = new bgfxShader("PBR Shader","vs_pbrshader.bin","fs_pbrshader.bin");
-    m_tonemapProgram = new bgfxShader("ToneMapping Shader","vs_tonemap.bin", "fs_tonemap.bin");
+    m_program = std::make_shared<bgfxShader>("Forward Shader","vs_shader.bin","fs_shader.bin");
+    m_pbrProgram = std::make_shared<bgfxShader>("PBR Shader","vs_pbrshader.bin","fs_iblshader.bin");
+    m_tonemapProgram = std::make_shared<bgfxShader>("ToneMapping Shader","vs_tonemap.bin", "fs_tonemap.bin");
     m_histogramBuffer = bgfx::createDynamicIndexBuffer(256, BGFX_BUFFER_COMPUTE_READ_WRITE | BGFX_BUFFER_INDEX32);
     
     m_cubeMapFilterer = new CubeMapFilterer();
-    LightProbe test(512);
+    m_lightProbe = new LightProbe{{0,2,0},512};
     t_envMap = LoadTexture("content/textures/pisa_with_mips.ktx");
-    
     //Albedo LUT Texture
     m_albedoLUTTexture = bgfx::createTexture2D(ALBEDO_LUT_SIZE,
                                              ALBEDO_LUT_SIZE,
@@ -104,37 +103,37 @@ int bgfxRenderer::Init()
     return true;
 
 }
+void bgfxRenderer::FlushDrawQueue()
+{
+    for(const RENDER::DrawItem& mesh : m_drawQueue)
+    {
+        DrawMesh(mesh);
+    }
+    m_drawQueue.clear();
+}
 void bgfxRenderer::DrawScene(float dt)
 {
     if(condition == true){
-        t_filteredEnvMap = m_cubeMapFilterer->CreateFilteredCubeMap(0,t_envMap);
+        m_lightProbe->UpdateLightProbe(m_drawQueue);
+        FlushDrawQueue();
+        t_filteredEnvMap = m_cubeMapFilterer->CreateFilteredCubeMap(100,m_lightProbe->GetCubeMap());
         condition = false;
     }
         
     m_caps = bgfx::getCaps();
-    
     bgfx::setViewClear(m_vDefault, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH | BGFX_CLEAR_STENCIL, 0x303030FF, 1.0f, 0);
     bgfx::setViewRect(m_vDefault, 0, 0, static_cast<uint16_t>(m_width), static_cast<uint16_t>(m_height));
     bgfx::setViewFrameBuffer(m_vDefault, m_fbh);
     // empty primitive in case nothing follows
     // this makes sure the clear happens
-    bgfx::touch(0);
+    bgfx::touch(m_vDefault);
 	SetViewProjection(m_vDefault);
     
     glm::mat4 inverseview = glm::inverse(m_viewMat);
     m_viewpos = glm::vec4(inverseview[3].x, inverseview[3].y, inverseview[3].z,0.0);
-    uint64_t state = BGFX_STATE_DEFAULT;
     
-    for(const RENDER::DrawItem& mesh : m_drawQueue)
-    {
-        bgfx::setTransform(glm::value_ptr(mesh.transform));
-        glm::mat4 normalMat = glm::transpose(glm::inverse(mesh.transform));
-        m_pbrProgram->SetUniform("u_camPos",glm::value_ptr(m_viewpos));
-        m_pbrProgram->SetUniform("u_normalMatrix", glm::value_ptr(normalMat));
-        DrawMesh(m_pbrProgram,mesh.mesh,state);
-    }
-
-    m_drawQueue.clear();
+    //Draws anything in the Draw Queue
+    FlushDrawQueue();
 
     bgfx::setViewName(m_vToneMapPass, "Tonemap");
     bgfx::setViewRect(m_vToneMapPass, 0, 0, bgfx::BackbufferRatio::Equal);
@@ -181,8 +180,6 @@ void bgfxRenderer::DeInit()
     {
         bgfx::destroy(m_fbh);
     }
-    delete m_tonemapProgram;
-    delete m_program;
     bgfx::destroy(s_texColor);
 
 	ImGui_Implbgfx_Shutdown();
@@ -211,32 +208,46 @@ void bgfxRenderer::SetDepthTesting(bool isEnabled)
 }
 void bgfxRenderer::SubmitDraw(RENDER::DrawItem drawItem)
 {
+    if(drawItem.shader == nullptr)
+    {
+        drawItem.shader = m_pbrProgram;
+    } 
 	m_drawQueue.push_back(drawItem);
 }
-const void bgfxRenderer::DrawMesh(bgfxShader* shader, Mesh* mesh,uint64_t state)
+const void bgfxRenderer::DrawMesh(RENDER::DrawItem mesh)
 {
-    
-    float envParams[] = { bx::log2(float(1024u)), 1.0f, 0.0f, 0.0f };
-    bgfx::setUniform(u_envParams, envParams);
+    bgfx::setTransform(glm::value_ptr(mesh.transform));
+    glm::mat4 normalMat = glm::transpose(glm::inverse(mesh.transform));
+    mesh.shader->SetUniform("u_normalMatrix", glm::value_ptr(normalMat));
+    mesh.shader->SetUniform("u_lightCountVec", LIGHT_COUNT_VEC);
+    mesh.shader->SetUniform("u_envParams", ENV_PARAMS);
+    BindPBRMaterial(mesh.shader,mesh.mesh->GetMaterial());
     bgfx::setBuffer(Samplers::LIGHTS_POINTLIGHTS, m_lightBuffer.buffer, bgfx::Access::Read);
-    float lightCountVec[4] = { static_cast<float>(1)};
-    m_pbrProgram->SetUniform("u_lightCountVec", lightCountVec);
-    BindPBRMaterial(mesh->GetMaterial());
-    //state |= BGFX_STATE_BLEND_ALPHA;
-    bgfx::setState(state);
-    mesh->GetVAO()->Bind();
-    bgfx::submit(m_vDefault, shader->GetRawHandle());
+    
+    if(mesh.camPos == glm::vec3(10000.0f,10000.0f,10000.0f)) {
+        mesh.shader->SetUniform("u_camPos",glm::value_ptr(m_viewpos));
+    }
+    else
+    {
+        mesh.shader->SetUniform("u_camPos",glm::value_ptr(mesh.camPos));
+    }
+    if(mesh.state == 0)
+    {
+        mesh.state = BGFX_STATE_DEFAULT;
+    }
+    bgfx::setState(mesh.state);
+    mesh.mesh->GetVAO()->Bind();
+    bgfx::submit(mesh.viewID, mesh.shader->GetRawHandle());
 }
 
 void bgfxRenderer::UpdateLights(std::vector<PointLight> &lightsArray)
 {
     m_lightBuffer.Update(lightsArray);
-    //float lightCountVec[4] = { static_cast<float>(lightsArray.size())};
-    //m_pbrProgram->SetUniform("u_lightCountVec", lightCountVec);
+    //LIGHT_COUNT_VEC = lightsArray.size();
     float ambientLightIrradiance[4] = { 0.03f, 0.03f, 0.03f, 1.0f};
     m_pbrProgram->SetUniform("u_ambientLightIrradiance", ambientLightIrradiance);
 }
-    
+
 void bgfxRenderer::ResetLightsBuffer()
 {
 
@@ -301,23 +312,23 @@ void bgfxRenderer::CreateToneMapFrameBuffer()
     bgfx::setName(m_lumAvgTarget, "LumAvgTarget");
 }
 
-void bgfxRenderer::BindPBRMaterial(const Material &material)
+void bgfxRenderer::BindPBRMaterial(std::shared_ptr<bgfxShader> program,const Material &material)
 { 
-    m_pbrProgram->SetTexture("s_texBaseColor", Samplers::PBR_BASECOLOR, material.baseColorTexture);
-    m_pbrProgram->SetTexture("s_texMetallicRoughness", Samplers::PBR_METALROUGHNESS, material.metallicRoughnessTexture);
-    m_pbrProgram->SetTexture("s_texNormal", Samplers::PBR_NORMAL, material.normalTexture);
-    m_pbrProgram->SetTexture("s_texOcclusion", Samplers::PBR_OCCLUSION, material.occlusionTexture);
-    m_pbrProgram->SetTexture("s_texEmissive", Samplers::PBR_EMISSIVE, material.emissiveTexture);
+    program->SetTexture("s_texBaseColor", Samplers::PBR_BASECOLOR, material.baseColorTexture);
+    program->SetTexture("s_texMetallicRoughness", Samplers::PBR_METALROUGHNESS, material.metallicRoughnessTexture);
+    program->SetTexture("s_texNormal", Samplers::PBR_NORMAL, material.normalTexture);
+    program->SetTexture("s_texOcclusion", Samplers::PBR_OCCLUSION, material.occlusionTexture);
+    program->SetTexture("s_texEmissive", Samplers::PBR_EMISSIVE, material.emissiveTexture);
 
     //Pack to alignment
-    m_pbrProgram->SetUniform("u_emissiveFactorVec", glm::value_ptr(material.emissiveFactor));
-    m_pbrProgram->SetUniform("u_baseColorFactor", glm::value_ptr(material.baseColorFactor));
+    program->SetUniform("u_emissiveFactorVec", glm::value_ptr(material.emissiveFactor));
+    program->SetUniform("u_baseColorFactor", glm::value_ptr(material.baseColorFactor));
     
     //Pack metalic factor, roughness, normal scale and occulsion strength
     float factorValues[4] = {
         material.metallicFactor, material.roughnessFactor, material.normalScale, material.occlusionStrength
     };
-    m_pbrProgram->SetUniform("u_factors", factorValues);
+    program->SetUniform("u_factors", factorValues);
 
     BindAlbedoLUT();
 }

@@ -60,6 +60,11 @@ class Renderer
      */
     void AddToDraw(Mesh* mesh, glm::mat4 model);
     /**
+     * @brief Adds a mesh to be drawn
+     * @param drawItem
+     */
+    inline void AddToDraw(RENDER::DrawItem drawItem){m_renderAPI->SubmitDraw(drawItem);}
+    /**
      * @brief Flushes lights to GPU
      * @param m_lights 
      */
