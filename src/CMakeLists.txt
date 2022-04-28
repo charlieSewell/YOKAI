@@ -14,6 +14,7 @@ set(SHADERS
 	src/Shaders/fs_shader.sc
     src/Shaders/vs_pbrshader.sc
 	src/Shaders/fs_pbrshader.sc
+	src/Shaders/fs_iblshader.sc
 	src/Shaders/cs_MS_albedoLUT.sc
 	src/Shaders/tonemap/fs_tonemap.sc
 	src/Shaders/tonemap/vs_tonemap.sc

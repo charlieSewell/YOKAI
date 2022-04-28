@@ -72,9 +72,10 @@ void main()
             radianceOut += (c_diff + PI * BRDF) * lightColor;
         }
     }
-    //radianceOut += getAmbientLight().irradiance * mat.diffuseColor * mat.occlusion;
-    //radianceOut += emissive;
-
+#ifndef IBL_LIGHTING
+    radianceOut += c_diff *0.01;
+#endif
+#ifdef IBL_LIGHTING
     vec2 f_ab = texture2D(s_texAlbedoLUT, vec2(NoV, roughness)).xy;
     float lodLevel = roughness * numEnvLevels;
     vec3 radiance = textureCubeLod(s_prefilterMap, lightDir, lodLevel).xyz;
@@ -93,6 +94,6 @@ void main()
     vec3 FmsEms = Ems * FssEss * F_avg / (1.0 - F_avg * Ems);
     vec3 k_D = baseColor * (1.0 - FssEss - FmsEms);
     radianceOut += FssEss * radiance + (FmsEms + k_D) * irradiance;
-
+#endif //IBL Code
     gl_FragColor = vec4(radianceOut * occlusion + emissive, baseColor.w);
 }

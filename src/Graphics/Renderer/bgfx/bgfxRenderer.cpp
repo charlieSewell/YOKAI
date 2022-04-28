@@ -9,7 +9,6 @@ namespace
     
     static constexpr uint16_t ALBEDO_LUT_SIZE = 128;
     static constexpr uint16_t ALBEDO_LUT_THREADS = 16;
-    float LIGHT_COUNT_VEC[4] = { static_cast<float>(1)};
     float ENV_PARAMS[] = { bx::log2(float(1024u)), 1.0f, 0.0f, 0.0f };
 }
 bgfxRenderer::bgfxRenderer(GLFWwindow* window) 
@@ -74,7 +73,7 @@ int bgfxRenderer::Init()
     m_histogramBuffer = bgfx::createDynamicIndexBuffer(256, BGFX_BUFFER_COMPUTE_READ_WRITE | BGFX_BUFFER_INDEX32);
     
     m_cubeMapFilterer = new CubeMapFilterer();
-    m_lightProbe = new LightProbe{{0,2,0},512};
+    m_lightProbe = new LightProbe{{0,2,0},1024};
     t_envMap = LoadTexture("content/textures/pisa_with_mips.ktx");
     //Albedo LUT Texture
     m_albedoLUTTexture = bgfx::createTexture2D(ALBEDO_LUT_SIZE,
@@ -114,9 +113,10 @@ void bgfxRenderer::FlushDrawQueue()
 void bgfxRenderer::DrawScene(float dt)
 {
     if(condition == true){
+        t_filteredEnvMap = m_cubeMapFilterer->CreateFilteredCubeMap(1024,100,t_envMap);
         m_lightProbe->UpdateLightProbe(m_drawQueue);
+        //t_filteredEnvMap = m_cubeMapFilterer->CreateFilteredCubeMap(1024,100,m_lightProbe->GetCubeMap());
         FlushDrawQueue();
-        t_filteredEnvMap = m_cubeMapFilterer->CreateFilteredCubeMap(100,m_lightProbe->GetCubeMap());
         condition = false;
     }
         
@@ -219,7 +219,7 @@ const void bgfxRenderer::DrawMesh(RENDER::DrawItem mesh)
     bgfx::setTransform(glm::value_ptr(mesh.transform));
     glm::mat4 normalMat = glm::transpose(glm::inverse(mesh.transform));
     mesh.shader->SetUniform("u_normalMatrix", glm::value_ptr(normalMat));
-    mesh.shader->SetUniform("u_lightCountVec", LIGHT_COUNT_VEC);
+    mesh.shader->SetUniform("u_lightCountVec", glm::value_ptr(m_lightCount));
     mesh.shader->SetUniform("u_envParams", ENV_PARAMS);
     BindPBRMaterial(mesh.shader,mesh.mesh->GetMaterial());
     bgfx::setBuffer(Samplers::LIGHTS_POINTLIGHTS, m_lightBuffer.buffer, bgfx::Access::Read);
@@ -243,9 +243,7 @@ const void bgfxRenderer::DrawMesh(RENDER::DrawItem mesh)
 void bgfxRenderer::UpdateLights(std::vector<PointLight> &lightsArray)
 {
     m_lightBuffer.Update(lightsArray);
-    //LIGHT_COUNT_VEC = lightsArray.size();
-    float ambientLightIrradiance[4] = { 0.03f, 0.03f, 0.03f, 1.0f};
-    m_pbrProgram->SetUniform("u_ambientLightIrradiance", ambientLightIrradiance);
+    m_lightCount.x = static_cast<float>(lightsArray.size());
 }
 
 void bgfxRenderer::ResetLightsBuffer()

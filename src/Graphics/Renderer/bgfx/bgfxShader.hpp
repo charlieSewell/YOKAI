@@ -25,6 +25,7 @@ class bgfxShader
         [[nodiscard]] bgfx::ProgramHandle GetRawHandle() const { return m_program; }
 
     private:
+        void LoadUniforms(bgfx::ShaderHandle handle);
         bgfx::ProgramHandle m_program;
         std::map<std::string, bgfx::UniformHandle> m_uniforms;
 };

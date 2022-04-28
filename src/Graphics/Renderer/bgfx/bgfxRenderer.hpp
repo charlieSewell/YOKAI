@@ -123,13 +123,14 @@ class bgfxRenderer : public RenderAPI
     float m_white = 3.0f;
     float m_threshold = 1.5f;
     float m_time = 0.0f;
+    glm::vec4 m_lightCount;
     const bgfx::Caps* m_caps;
-
     bool m_multipleScatteringEnabled = true;
     bool m_whiteFurnaceEnabled = false;
     CubeMapFilterer* m_cubeMapFilterer;
     bgfx::TextureHandle t_envMap;
     FilteredCubeMap t_filteredEnvMap;
     bool condition = true;
+    bool condition2 = false;
     float m_orthoProjection[16];
 };

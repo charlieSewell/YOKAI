@@ -5,8 +5,7 @@ LightManager::LightManager()
 }
 unsigned int LightManager::AddLight(glm::vec3 position, glm::vec3 color, float radius)
 {
-    glm::vec3 power = color * radius;
-    m_Lights.push_back({position,power});
+    m_Lights.push_back({position,color,radius});
     m_LightCount++;
     return m_LightCount -1;
 }
