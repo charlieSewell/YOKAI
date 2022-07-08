@@ -121,7 +121,7 @@ class Model
     std::vector<Bone> m_bones;
     ///map of bone names to index
     std::map<std::string, unsigned int> m_boneMap;
-    ///Root node of scene
+    ///Root node of Model
     Node m_rootNode;
     ///Animations
     std::vector<SkeletalAnimation> m_animations;

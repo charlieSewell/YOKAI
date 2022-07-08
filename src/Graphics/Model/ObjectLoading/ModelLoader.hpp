@@ -112,7 +112,7 @@ class ModelLoader
      * @param dir 
      * @return Material 
      */
-    Material ModelLoader::LoadMaterial(const aiMaterial* material);
+    std::shared_ptr<Material> LoadMaterial(const aiMaterial* material);
     ///List of textures currently loaded for a model
     std::vector<ModelTexture> m_textures_loaded;
     /// Number of bones in current model

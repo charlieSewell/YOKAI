@@ -310,21 +310,21 @@ void bgfxRenderer::CreateToneMapFrameBuffer()
     bgfx::setName(m_lumAvgTarget, "LumAvgTarget");
 }
 
-void bgfxRenderer::BindPBRMaterial(std::shared_ptr<bgfxShader> program,const Material &material)
+void bgfxRenderer::BindPBRMaterial(std::shared_ptr<bgfxShader> program, const std::shared_ptr<Material> &material)
 { 
-    program->SetTexture("s_texBaseColor", Samplers::PBR_BASECOLOR, material.baseColorTexture);
-    program->SetTexture("s_texMetallicRoughness", Samplers::PBR_METALROUGHNESS, material.metallicRoughnessTexture);
-    program->SetTexture("s_texNormal", Samplers::PBR_NORMAL, material.normalTexture);
-    program->SetTexture("s_texOcclusion", Samplers::PBR_OCCLUSION, material.occlusionTexture);
-    program->SetTexture("s_texEmissive", Samplers::PBR_EMISSIVE, material.emissiveTexture);
+    program->SetTexture("s_texBaseColor", Samplers::PBR_BASECOLOR, material->baseColorTexture);
+    program->SetTexture("s_texMetallicRoughness", Samplers::PBR_METALROUGHNESS, material->metallicRoughnessTexture);
+    program->SetTexture("s_texNormal", Samplers::PBR_NORMAL, material->normalTexture);
+    program->SetTexture("s_texOcclusion", Samplers::PBR_OCCLUSION, material->occlusionTexture);
+    program->SetTexture("s_texEmissive", Samplers::PBR_EMISSIVE, material->emissiveTexture);
 
     //Pack to alignment
-    program->SetUniform("u_emissiveFactorVec", glm::value_ptr(material.emissiveFactor));
-    program->SetUniform("u_baseColorFactor", glm::value_ptr(material.baseColorFactor));
+    program->SetUniform("u_emissiveFactorVec", glm::value_ptr(material->emissiveFactor));
+    program->SetUniform("u_baseColorFactor", glm::value_ptr(material->baseColorFactor));
     
     //Pack metalic factor, roughness, normal scale and occulsion strength
     float factorValues[4] = {
-        material.metallicFactor, material.roughnessFactor, material.normalScale, material.occlusionStrength
+        material->metallicFactor, material->roughnessFactor, material->normalScale, material->occlusionStrength
     };
     program->SetUniform("u_factors", factorValues);
 

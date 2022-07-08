@@ -9,6 +9,8 @@
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "core/Time.hpp"
+#include <mutex>
+
 Yokai &Yokai::getInstance() 
 {
     static Yokai instance;
@@ -35,6 +37,14 @@ bool Yokai::Init()
     }
     InputManagerGLFW::getInstance().AddWindow(window.GetWindow());
     
+    
+    m_assetSystem.AddStorage<Model>([](std::recursive_mutex &containerMutex ,std::shared_ptr<Model> &model , const std::string &fileName)
+    {
+        ModelLoader modelLoader;
+        model = std::make_shared<Model>(modelLoader.LoadModel(fileName));
+        return true;
+    });
+
     m_activeLayer = 0;
     try
     {

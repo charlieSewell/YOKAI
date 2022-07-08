@@ -74,7 +74,7 @@ class bgfxRenderer : public RenderAPI
     void FlushDrawQueue();
     void SetViewProjection(bgfx::ViewId view);
     void CreateToneMapFrameBuffer();
-    void BindPBRMaterial(std::shared_ptr<bgfxShader> program, const Material &material);
+    void BindPBRMaterial(std::shared_ptr<bgfxShader> program, const std::shared_ptr<Material> &material);
     void GenerateAlbedoLUT();
     void BindAlbedoLUT();
     GLFWwindow* m_window;

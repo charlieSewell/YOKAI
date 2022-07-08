@@ -1,6 +1,6 @@
 #include "Mesh.hpp"
 #include <glm/gtx/string_cast.hpp>
-Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint16_t> &indices, glm::mat4 &transform, Material material)
+Mesh::Mesh(const std::vector<Vertex> &vertices, const std::vector<uint16_t> &indices, glm::mat4 &transform, std::shared_ptr<Material> material)
 {
     this->m_vertices = vertices;
     this->m_indices = indices;

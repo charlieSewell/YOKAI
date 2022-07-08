@@ -8,6 +8,8 @@
 #include "Renderer/Window.hpp"
 #include "Physics/PhysicsSystem.hpp"
 #include "Physics/PhysicsResolution.hpp"
+#include "core/Resource/AssetProxy.hpp"
+#include "Model/ObjectLoading/ModelLoader.hpp"
 //workaround to allow vector of layer pointers
 class InputComponent;
 class Scene;
@@ -104,4 +106,7 @@ private:
     ModelManager m_modelManager;
     ///Physics Listener
     PhysicsResolution *m_physicsListener;
+    AssetProxy m_assetSystem;
+
+    ModelLoader m_modelLoader;
 };
