@@ -3,7 +3,8 @@
 #include "AssetStorage.hpp"
 #include <typeinfo>
 #include <mutex>
-#include <exception>
+#include <stdexcept>
+
 class AssetProxy
 {
     public:
@@ -43,7 +44,7 @@ class AssetProxy
             auto it = m_storages.find(typeID);
             if(it != m_storages.end())
             {
-                throw std::exception("Storage not found! Maybe you need to add a storage for this type");
+                throw std::runtime_error("Storage not found! Maybe you need to add a storage for this type");
             }
             return (static_cast<AssetStorage<T>&>(*it->second.get()));
         }

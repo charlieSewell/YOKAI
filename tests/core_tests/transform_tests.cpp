@@ -1,4 +1,5 @@
 #include <CppUTest/TestHarness.h>
+#include <CppUTest/MemoryLeakWarningPlugin.h>
 #include <core/Transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
@@ -48,7 +49,15 @@ namespace glm
 
 TEST_GROUP(TransformTestGroup)
 {
+    void setup()
+    {
+        MemoryLeakWarningPlugin::saveAndDisableNewDeleteOverloads();
+    }
 
+    void teardown()
+    {
+        MemoryLeakWarningPlugin::restoreNewDeleteOverloads();
+    }
 };
 
 
