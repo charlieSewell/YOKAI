@@ -49,4 +49,4 @@ target_include_directories(YOKAI_tests PUBLIC ${CppUTest_SOURCE_DIR}/include)
 
 add_custom_command(TARGET YOKAI_tests POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/test_data $<TARGET_FILE_DIR:${PROJECT_NAME}>/tests/test_data)
+                ${CMAKE_CURRENT_SOURCE_DIR}/test_data ${CMAKE_CURRENT_BINARY_DIR}/test_data)

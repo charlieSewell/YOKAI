@@ -1,7 +1,7 @@
 #pragma once
 #include "Renderer/DataTypes.hpp"
 #include "Renderer/Renderer.hpp"
-#include <Imgui/imgui.h>
+#include <imgui/imgui.h>
 #include "Engine/JSONTypes.hpp"
 #include "Renderer/PointLight.hpp"
 class LightManager

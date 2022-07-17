@@ -155,7 +155,6 @@ TEST(TransformTestGroup, TestRotate)
 
 TEST(TransformTestGroup, TestSerialize)
 {
-    EXPECT_N_LEAKS(1);
     Transform transform(testData2);
     nlohmann::json actual = {};
     nlohmann::json expected = {};
