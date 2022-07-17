@@ -1,6 +1,7 @@
 enable_testing()
 
 # CppUTest
+
 include(FetchContent)
 FetchContent_Declare(
     CppUTest
@@ -9,7 +10,6 @@ FetchContent_Declare(
 )
 # Set this to ON if you want to have the CppUTests in your project as well.
 set(TESTS OFF CACHE BOOL "Switch off CppUTest Test build")
-option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
 FetchContent_MakeAvailable(CppUTest)
 
 set(TestSource
