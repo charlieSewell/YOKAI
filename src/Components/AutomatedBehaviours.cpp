@@ -145,16 +145,16 @@ void AutomatedBehaviours::updateFeelers()
 	feelerRightHit = -1;
 
 	glm::vec3 temp1 = Heading;
-	temp1.y = 0;
-	auto temp2 = glm::vec3(0);
+	temp1.y = 0.0f;
+	auto temp2 = glm::vec3(0.0f);
 
-	temp2.x = temp1.x * cos(0.39) - temp1.z * sin(0.39);        // 0.39 rad = 22.5 deg
-	temp2.z = temp1.x * sin(0.39) + temp1.z * cos(0.39);
+	temp2.x = temp1.x * cosf(0.39f) - temp1.z * sinf(0.39f);        // 0.39 rad = 22.5 deg
+	temp2.z = temp1.x * sinf(0.39f) + temp1.z * cosf(0.39f);
 
 	feelerRight = temp2;
 
-	temp2.x = temp1.x * cos(-0.39) - temp1.z * sin(-0.39);        // 0.39 rad = 22.5 deg
-	temp2.z = temp1.x * sin(-0.39) + temp1.z * cos(-0.39);
+	temp2.x = temp1.x * cosf(-0.39f) - temp1.z * sinf(-0.39f);        // 0.39 rad = 22.5 deg
+	temp2.z = temp1.x * sinf(-0.39f) + temp1.z * cosf(-0.39f);
 
 	feelerLeft = temp2;
 

@@ -26,14 +26,7 @@ reactphysics3d::Vector3 ReactMath::glmVecToRP3d(glm::vec3 &vec) {
     newVec.z = vec.z;
     return newVec;
 }
-reactphysics3d::Vector3 ReactMath::glmVecToRP3d(glm::dvec3 &vec) {
-    rp3d::Vector3 newVec = {};
-    newVec.x             = vec.x;
-    newVec.y             = vec.y;
-    newVec.z             = vec.z;
-    return newVec;
-}
-///*
+
 glm::vec3 ReactMath::rp3dVecToGlm(reactphysics3d::Vector3 &vec){
     glm::vec3 newVec = {};
     newVec.x = vec.x;
@@ -54,7 +47,7 @@ glm::dvec3 ReactMath::rp3dVecToGlmD(reactphysics3d::Vector3 &vec) {
 
 glm::mat4 ReactMath::rp3dMat4ToGlm(reactphysics3d::Transform &transform) {
     
-    reactphysics3d::decimal *data;
+    reactphysics3d::decimal *data = nullptr;
     transform.getOpenGLMatrix(data);
 
     glm::mat4 newMat = {};

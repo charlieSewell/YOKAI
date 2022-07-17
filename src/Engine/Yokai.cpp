@@ -8,6 +8,9 @@
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
+#include "core/Time.hpp"
+#include <mutex>
+
 Yokai &Yokai::getInstance() 
 {
     static Yokai instance;
@@ -28,13 +31,20 @@ bool Yokai::Init()
     {
         return(false);
     }
-    Renderer::getInstance().Init();
-    if(!window.ImguiInit())
+    if(!Renderer::getInstance().Init(window.GetWindow()))
     {
         return(false);
     }
     InputManagerGLFW::getInstance().AddWindow(window.GetWindow());
     
+    
+    m_assetSystem.AddStorage<Model>([](std::recursive_mutex &containerMutex ,std::shared_ptr<Model> &model , const std::string &fileName)
+    {
+        ModelLoader modelLoader;
+        model = std::make_shared<Model>(modelLoader.LoadModel(fileName));
+        return true;
+    });
+
     m_activeLayer = 0;
     try
     {
@@ -46,6 +56,7 @@ bool Yokai::Init()
     {
         SPDLOG_ERROR(e.what());
     }
+    //Initialise the first layer
     m_isPaused = false;
     SPDLOG_INFO("Engine Succesfully Initialised");
     return(true);
@@ -58,8 +69,8 @@ void Yokai::Run()
     double accumulator = 0;
     bool isPausePressed = false;
     bool isPhysicsPressed = false;
-    InputManagerGLFW::getInstance().m_activeKeys.push_back(unsigned int(YOKAI_INPUT::GRAVE_ACCENT));
-    InputManagerGLFW::getInstance().m_activeKeys.push_back(unsigned int(YOKAI_INPUT::ESCAPE));
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(static_cast<unsigned int>(YOKAI_INPUT::GRAVE_ACCENT));
+    InputManagerGLFW::getInstance().m_activeKeys.push_back(static_cast<unsigned int>(YOKAI_INPUT::ESCAPE));
     InputManagerGLFW::getInstance().m_activeKeys.push_back(70);
     while(m_isRunning)
 	{
@@ -72,7 +83,7 @@ void Yokai::Run()
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        if(InputManagerGLFW::getInstance().m_keyStates[unsigned int(YOKAI_INPUT::GRAVE_ACCENT)])
+        if(InputManagerGLFW::getInstance().m_keyStates[static_cast<unsigned int>(YOKAI_INPUT::GRAVE_ACCENT)])
         {
             if(isPausePressed == false)
             {
@@ -84,12 +95,12 @@ void Yokai::Run()
         {
             isPausePressed = false;
         }
-        if(InputManagerGLFW::getInstance().m_keyStates[unsigned int(YOKAI_INPUT::ESCAPE)])
+        if(InputManagerGLFW::getInstance().m_keyStates[static_cast<unsigned int>(YOKAI_INPUT::ESCAPE)])
         {
             Shutdown();
         }
 
-        if (InputManagerGLFW::getInstance().m_keyStates[unsigned int(YOKAI_INPUT::F)])
+        if (InputManagerGLFW::getInstance().m_keyStates[static_cast<unsigned int>(YOKAI_INPUT::F)])
         {
             if (isPhysicsPressed == false) 
             {
@@ -102,7 +113,7 @@ void Yokai::Run()
             isPhysicsPressed = false;
         }
 
-        window.StartFrame();
+        window.StartFrame(float(deltaTime));
 
         if (!m_isPaused)
         {
@@ -135,11 +146,11 @@ void Yokai::Run()
                 }
                 if(ImGui::BeginMenu("Switch Scene"))
                 {
-                    for(int i = 0; i < m_layers.size();i++)
+                    for(size_t i = 0; i < m_layers.size();i++)
                     {
                         if (ImGui::MenuItem(m_layers[i]->GetSceneName().c_str()))
                         {
-                            SwitchScene(i);
+                            SwitchScene(static_cast<unsigned int>(i));
                         }
                     }
                     ImGui::EndMenu();
@@ -154,7 +165,7 @@ void Yokai::Run()
         m_layers[m_activeLayer]->GetLightManager()->UpdateLights();
         PhysicsSystem::getInstance().RendererUpdate();
         m_layers[m_activeLayer]->Draw();
-        Renderer::getInstance().DrawScene();
+        Renderer::getInstance().DrawScene(float(deltaTime));
         Renderer::getInstance().DrawGui();
         window.EndFrame();
 	}
@@ -190,6 +201,7 @@ bool Yokai::GetIsPaused() const
 {
     return m_isPaused;
 }
+
 ModelManager* Yokai::GetModelManager()
 {
     return &m_modelManager;
@@ -198,12 +210,7 @@ ModelManager* Yokai::GetModelManager()
 void Yokai::InitialiseLogger()
 {
     spdlog::init_thread_pool(8192, 1);
-
-    time_t ttime = time(nullptr);
-    tm* local_time = localtime(&ttime);
-    char buffer[24];
-    strftime(buffer, 24, "%Y-%m-%d %H-%M-%S.txt\0", local_time);
-    std::string filename = buffer;
+    std::string filename = YOKAI::time_stamp("%Y-%m-%d %H-%M-%S.txt\0");
 
     auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
     auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/"+ filename,"Logger");

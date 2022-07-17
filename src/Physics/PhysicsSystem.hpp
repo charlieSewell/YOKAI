@@ -2,18 +2,17 @@
 #include <vector>
 #include <map>
 #include "CollisionBody.hpp"
-#include "Components/Transform.hpp"
+#include "Transform.hpp"
 #include "ReactMath.hpp"
-#include "Physics/Shapes/ReactTerrainShape.hpp"
-#include "Physics/Shapes/ReactSphereShape.hpp"
-#include "Physics/Shapes/ReactBoxShape.hpp"
-#include "Physics/Shapes/ReactConcaveShape.hpp"
-#include "Export.hpp"
+#include "Shapes/ReactTerrainShape.hpp"
+#include "Shapes/ReactSphereShape.hpp"
+#include "Shapes/ReactBoxShape.hpp"
+//#include "Shapes/ReactConcaveShape.hpp"
 /**
  * @class PhysicsSystem
  * @brief Singleton that Manages physics
  */
-class YOKAI_API PhysicsSystem
+class PhysicsSystem
 {
 public:
     /**
@@ -119,7 +118,7 @@ private:
     ///object to create physics shapes
     reactphysics3d::PhysicsCommon m_physicsCommon;
     ///physics world for simulation
-    reactphysics3d::PhysicsWorld* m_physicsWorld;
+    reactphysics3d::PhysicsWorld* m_physicsWorld = nullptr;
     bool m_isDebugEnabled = false;
     ///path of vertex shader
     std::string m_vertexPath;
@@ -131,8 +130,6 @@ private:
     unsigned int m_lineCount = 0;
     ///Triangle count for Debug Renderer
     unsigned int m_triangleCount = 0;
-    /// The shared pointer to draw react objects,
-    Shader* m_debugShader = nullptr;
     ///count of map
     int m_mapCount;
     ///map of colliders

@@ -1,14 +1,15 @@
 #pragma once
 
-#include "Renderer/Renderer.hpp"
-#include "Physics/PhysicsSystem.hpp"
-#include "Renderer/Window.hpp"
-#include "Model/SplashScreen.hpp"
-#include "Engine/Scene.hpp"
 #include <spdlog/spdlog.h>
-#include "Export.hpp"
-#include "ModelManager.hpp"
+
+#include "Engine/Scene.hpp"
+#include "Model/ModelManager.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/GLFWWindow.hpp"
+#include "Physics/PhysicsSystem.hpp"
 #include "Physics/PhysicsResolution.hpp"
+#include "core/Resource/AssetProxy.hpp"
+#include "Model/ObjectLoading/ModelLoader.hpp"
 //workaround to allow vector of layer pointers
 class InputComponent;
 class Scene;
@@ -17,7 +18,7 @@ class PhysicsResolution;
  * @class Yokai
  * @brief A class which ties together all game engine components
  */
-class YOKAI_API Yokai 
+class Yokai 
 {
 public:
     /**
@@ -30,7 +31,7 @@ public:
      */
     void Run();
     ///window used by the engine
-    Window window = {};
+    GLFWWindow window = {};
     /**
      * @brief Shuts the engine down :(
      */
@@ -62,7 +63,6 @@ public:
     void SwitchScene(unsigned int scene);
     /**
      * @brief Get the Model Manager
-     * 
      * @return ModelManager* 
      */
 	ModelManager* GetModelManager();
@@ -99,11 +99,14 @@ private:
     ///is paused
     bool m_isPaused;
     ///active layer
-    int m_activeLayer;
+    unsigned int m_activeLayer;
     ///Log sinks for Engine class
     std::vector<spdlog::sink_ptr> m_sinks;
     ///Model Manager
     ModelManager m_modelManager;
     ///Physics Listener
     PhysicsResolution *m_physicsListener;
+    AssetProxy m_assetSystem;
+
+    ModelLoader m_modelLoader;
 };

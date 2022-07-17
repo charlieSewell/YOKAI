@@ -34,7 +34,7 @@ rp3d::decimal RayCaster::notifyRaycastHit(const rp3d::RaycastInfo& info)
 {
     if(info.collider != nullptr)
     {
-        if(info.collider->getEntity().id != ownColliderID && info.collider->getEntity().id != excludedColliderID)
+        if(info.collider->getEntity().id != m_ownColliderID && info.collider->getEntity().id != m_excludedColliderID)
 		{
             hits.emplace(info.hitFraction,info.collider->getEntity().id);
             return rp3d::decimal(1.0);
@@ -46,12 +46,12 @@ rp3d::decimal RayCaster::notifyRaycastHit(const rp3d::RaycastInfo& info)
     return rp3d::decimal(0.0);
 }
 
-void RayCaster::SetOwnColliderID(int ownColliderID)
+void RayCaster::SetOwnColliderID(unsigned int ownColliderID)
 { 
-	this->ownColliderID = ownColliderID;
+	m_ownColliderID = ownColliderID;
 }
 
-void RayCaster::SetExcludedColliderID(int id)
+void RayCaster::SetExcludedColliderID(unsigned int id)
 {
-	excludedColliderID = id;
+	m_excludedColliderID = id;
 }

@@ -1,57 +1,45 @@
+add_subdirectory(Graphics)
+add_subdirectory(core)
+add_subdirectory(Physics)
+
+set(SHADERS
+    	src/Shaders/common.sh
+	src/Shaders/shaderlib.sh
+	src/Shaders/util.sh
+	src/Shaders/lights.sh
+	src/Shaders/pbr.sh
+    	src/Shaders/varying.def.sc
+	src/Shaders/imgui/varying.def.sc
+    	src/Shaders/vs_shader.sc
+	src/Shaders/fs_shader.sc
+    	src/Shaders/vs_pbrShader.sc
+	src/Shaders/fs_pbrShader.sc
+	src/Shaders/fs_iblShader.sc
+	src/Shaders/cs_MS_albedoLUT.sc
+	src/Shaders/tonemap/fs_tonemap.sc
+	src/Shaders/tonemap/vs_tonemap.sc
+	src/Shaders/tonemap/cs_avglum.sc
+	src/Shaders/tonemap/cs_histogram.sc
+	src/Shaders/imgui/vs_ocornut_imgui.sc
+    	src/Shaders/imgui/fs_ocornut_imgui.sc
+    	src/Shaders/IBL/cs_irradiance.sc
+	src/Shaders/IBL/cs_prefilter_env_map.sc
+	PARENT_SCOPE
+)
+
 # Add source files.
-target_sources(${PROJECT_NAME} PRIVATE
-		Model/ObjectLoading/ModelLoader.cpp
-		Model/Mesh.cpp
-        Model/Model.cpp
-		Model/SplashScreen.cpp
-        Model/SkeletalAnimation.cpp
-		Model/Animator.cpp
-		Model/Animator.cpp
+set(SOURCES
+		src/Components/DrawableEntity.cpp
+		src/Components/ConcaveCollider.cpp
+		src/Components/SphereCollider.cpp
+		src/Components/BoxCollider.cpp
+		src/Components/RayCaster.cpp
+		src/Components/AutomatedBehaviours.cpp
+		src/Components/InputComponent.cpp
 
-		Components/Transform.cpp
-		Components/DrawableEntity.cpp
-		Components/ConcaveCollider.cpp
-		Components/SphereCollider.cpp
-		Components/BoxCollider.cpp
-		Components/Camera.cpp
-		Components/RayCaster.cpp
-		Components/AutomatedBehaviours.cpp
-		Components/InputComponent.cpp
-
-        Renderer/Shader.cpp
-        Renderer/DataTypes.cpp
-        Renderer/Renderer.cpp
-        Renderer/RenderAPI.cpp
-        Renderer/Window.cpp
-        Renderer/OpenGL/OpenGLRenderer.cpp
-        Renderer/OpenGL/OpenGLDataTypes.cpp
-        Renderer/OpenGL/FileIO.cpp
-		Renderer/LightManager.cpp
-
-		Engine/GameObject.cpp
-		Engine/Yokai.cpp
-		Engine/ModelManager.cpp
-		Engine/EventManager.cpp
-		Engine/InputManagerGLFW.cpp
-		Engine/GameObjectManager.cpp
-		Engine/TextureManager.cpp
-		Engine/JSONHelper.cpp
-		Engine/JSONTypes.cpp
-		Engine/Scene.cpp
-
-        Physics/Shapes/ReactTerrainShape.cpp
-        Physics/PhysicsSystem.cpp
-        Physics/ReactMath.cpp
-        Physics/CollisionBody.cpp
-		Physics/RigidBody.cpp
-        Physics/Shapes/ReactBoxShape.cpp
-        Physics/Shapes/ReactShape.cpp
-        Physics/Shapes/ReactSphereShape.cpp
-        Physics/Shapes/ReactTerrainShape.cpp
-        Physics/Shapes/ReactConcaveShape.cpp
-		Physics/ResolutionFunctions.cpp
-		Physics/PhysicsResolution.cpp
+		src/Engine/Yokai.cpp
+		src/Engine/JSONHelper.cpp
+		src/Engine/Scene.cpp
+        PARENT_SCOPE
         )
 
-# Include project header files.
-target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

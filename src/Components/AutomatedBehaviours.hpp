@@ -2,15 +2,15 @@
 
 #include "Transform.hpp"
 #include "Components/RayCaster.hpp"
-#include "Component.hpp"
-#include "Export.hpp"
+#include "Engine/GameObject.hpp"
+#include "Engine/Component.hpp"
 #include <glm/gtc/random.hpp>
 
 /**
  * @class AutomatedBehaviours
  * @brief Behaviours for AI
  */
-class YOKAI_API AutomatedBehaviours : public Component
+class AutomatedBehaviours : public Component
 {
 public:
 	
@@ -54,7 +54,7 @@ public:
 	///Ai current acceleration
 	float Acceleration = 0;
 	///Ai Acceleration Rate
-	float AccelerationRate = 0.0001;
+	float AccelerationRate = 0.0001f;
 	///AI rotation speed
 	float RotationSpeed = 0;
 	///AI state

@@ -74,5 +74,5 @@ class Scene
     ///Lighting Manager
     LightManager m_lightManager;
     ///Name of scene
-    std::string m_sceneName;
+    std::string m_sceneName = "Untitled Scene";
 };

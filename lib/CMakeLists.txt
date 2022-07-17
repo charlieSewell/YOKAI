@@ -1,7 +1,20 @@
+function(target_ignore_header_warnings target scope)
+    get_target_property(lib_include_dirs ${target} INTERFACE_INCLUDE_DIRECTORIES)
+    set_target_properties(${target} PROPERTIES INTERFACE_SYSTEM_INCLUDE_DIRECTORIES $<TARGET_PROPERTY:${target},INTERFACE_INCLUDE_DIRECTORIES>)
+    target_include_directories(${target} SYSTEM ${scope} ${lib_include_dirs})
+    
+endfunction()
+
 # Library build options.
 option(ASSIMP_BUILD_TESTS OFF)
+option(ASSIMP_BUILD_SAMPLES OFF)
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 option(OPTION_BUILD_TESTS OFF)
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF)
+set(ASSIMP_BUILD_GLTF_IMPORTER ON)
+set(ASSIMP_BUILD_OBJ_IMPORTER ON)
+set(ASSIMP_BUILD_FBX_IMPORTER ON)
+set(ASSIMP_BUILD_3DS_IMPORTER ON)
 
 # Build libraries.
 string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -15,9 +28,22 @@ add_compile_options(
     # Visual Studio
     $<$<CXX_COMPILER_ID:MSVC>:/W0>
 )
+
+include(FetchContent)
+FetchContent_Declare(json
+  GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
+  GIT_TAG v3.10.4)
+
+FetchContent_GetProperties(json)
+if(NOT json_POPULATED)
+  FetchContent_Populate(json)
+  add_subdirectory(${json_SOURCE_DIR} ${json_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+
+option( BGFX_BUILD_EXAMPLES OFF)
+add_subdirectory(bgfx.cmake)
 add_subdirectory(glm)
 add_subdirectory(assimp)
-add_subdirectory(glew)
 add_subdirectory(imgui)
 add_subdirectory(reactphysics3d)
 add_subdirectory(ImGuizmo)
@@ -27,26 +53,27 @@ option(GLFW_BUILD_EXAMPLES OFF)
 add_subdirectory(glfw)
 add_subdirectory(spdlog)
 
+add_definitions(-DBGFX_CONFIG_RENDERER_OPENGL_MIN_VERSION=43)
+add_definitions(-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS)
+
+set(BGFX_LIBRARY_TYPE "STATIC")
 set_target_properties(reactphysics3d PROPERTIES ENABLE_EXPORTS ON)
 set_target_properties(reactphysics3d PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
 # Puts a stop to the endlessly irritating practise postfixing 'd' onto debug libraries.
 set_target_properties(assimp PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(glfw PROPERTIES DEBUG_POSTFIX "")
-set_target_properties(glew PROPERTIES DEBUG_POSTFIX "")
 set_target_properties(reactphysics3d PROPERTIES DEBUG_POSTFIX "")
 
 # Ignore warnings from library headers.
-target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
-        glfw/include
-        glfw/src
-        glew/include
-        glew/src
-        assimp/include
-        reactphysics3d/include
-        imgui/imgui
-        imgui/imgui/backends
-	ImGuizmo/include
-        spdlog/include
-        glm
-)
+target_ignore_header_warnings(assimp INTERFACE)
+target_ignore_header_warnings(reactphysics3d INTERFACE)
+target_ignore_header_warnings(glm INTERFACE)
+target_ignore_header_warnings(glfw INTERFACE)
+target_ignore_header_warnings(imgui INTERFACE)
+target_ignore_header_warnings(imguizmo INTERFACE)
+target_ignore_header_warnings(bimg INTERFACE)
+target_ignore_header_warnings(spdlog INTERFACE)
+target_ignore_header_warnings(bgfx INTERFACE)
+target_ignore_header_warnings(bx INTERFACE)
+target_ignore_header_warnings(bimg INTERFACE)
+#Need Alloca for msvc

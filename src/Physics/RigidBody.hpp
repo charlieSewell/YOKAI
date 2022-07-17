@@ -5,7 +5,7 @@
 #include <iostream>
 #include <reactphysics3d/reactphysics3d.h>
 #include <glm/glm.hpp>
-#include "Physics/Shapes/ReactTerrainShape.hpp"
+#include "Shapes/ReactTerrainShape.hpp"
 /**
  * @class RigidBody
  * @brief Class for a physics Rigid body
@@ -91,12 +91,12 @@ public:
 	 * @brief Sets the angular damping
 	 * @param damping
 	 */
-	void SetAngularDamping(double damping);
+	void SetAngularDamping(float damping);
 	/**
 	 * @brief Sets the linear damping
 	 * @param damping
 	 */
-	void SetLinearDamping(double damping);
+	void SetLinearDamping(float damping);
 	/**
 	 * @brief Gets Linear Velocity
 	 * @return vec3

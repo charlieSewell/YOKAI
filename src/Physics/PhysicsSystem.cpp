@@ -5,6 +5,7 @@
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Engine/EventManager.hpp"
+#include <spdlog/spdlog.h>
 void PhysicsSystem::Init()
 {
     // Create the world settings
@@ -26,8 +27,9 @@ void PhysicsSystem::Init()
 	debugRenderer.setIsDebugItemDisplayed(DebugRenderer::DebugItem::CONTACT_NORMAL, true);
     m_vertexPath ="content/Shaders/debugVertex.vs";
     m_fragmentPath ="content/Shaders/debugFragment.fs";
-    m_debugShader = new Shader("content/Shaders/debugVertex.vert","content/Shaders/debugFragment.frag");
+    //m_debugShader = new Shader("content/Shaders/debugVertex.vert","content/Shaders/debugFragment.frag");
 
+/*
     //Generate line buffers for test renderer
     glGenVertexArrays(1, &l_vao_);
     assert(l_vao_ != 0);
@@ -40,6 +42,7 @@ void PhysicsSystem::Init()
     assert(t_vao_ != 0);
     glGenBuffers(1, &t_vbo_);
     assert(t_vbo_ != 0);
+    */
 }
 void PhysicsSystem::DeInit()
 {
@@ -106,6 +109,7 @@ unsigned int PhysicsSystem::AddSphere(unsigned int ID,Transform *transform, floa
 
 unsigned int PhysicsSystem::AddConcaveShape(unsigned int ID, Transform* transform,unsigned int modelID)
 {
+    /*
     CollisionBody object;
     auto* shape = new ReactConcaveShape();
     glm::vec3 newPos = glm::vec3(transform->GetPosition().x,transform->GetPosition().y,transform->GetPosition().z);
@@ -114,7 +118,9 @@ unsigned int PhysicsSystem::AddConcaveShape(unsigned int ID, Transform* transfor
     object.AddCollisionShape(shape);
     unsigned int temp = object.GetColliderID();
     m_colliders.emplace(object.GetColliderID(),object);
-    return temp;
+    */
+    SPDLOG_WARN("NOT IMPLIMENTED");
+    return 0;
 }
 
 unsigned int PhysicsSystem::AddTerrainShape(unsigned int ID, Transform* transform,std::vector<std::vector<float>> heightvals)
@@ -164,6 +170,7 @@ void PhysicsSystem::DeleteRigidBody(int ID)
 
 void PhysicsSystem::Draw()
  {
+     /*
      if(m_isDebugEnabled)
      {
         m_debugShader->UseShader();
@@ -207,9 +214,11 @@ void PhysicsSystem::Draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         //shader->Use();
      }
+     */
 }
 
 void PhysicsSystem::RendererUpdate() {
+    /*
     reactphysics3d::DebugRenderer& debug_renderer = m_physicsWorld->getDebugRenderer();
     if(Yokai::getInstance().GetIsPaused())
     {
@@ -231,4 +240,5 @@ void PhysicsSystem::RendererUpdate() {
         glBufferData(GL_ARRAY_BUFFER, sizeVertices, debug_renderer.getTrianglesArray(), GL_STREAM_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+    */
 }

@@ -35,5 +35,5 @@ class PhysicsResolution : public rp3d::EventListener {
      * @param body2ContactPoint 
      * @param eventType 
      */
-    void CollisionResolution(int body1, int body2, float penetration, glm::vec3 contactNormal, glm::vec3 body1ContactPoint, glm::vec3 body2ContactPoint, CollisionCallback::ContactPair::EventType eventType);
+    void CollisionResolution(int body1, int body2, glm::vec3 contactNormal, glm::vec3 body1ContactPoint, glm::vec3 body2ContactPoint);
 };

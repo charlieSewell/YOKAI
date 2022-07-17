@@ -60,7 +60,7 @@ float CollisionBody::GetMass()
 
 float CollisionBody::GetInverseMass() 
 {
-    return 1.0 / m_mass;
+    return 1.0f / m_mass;
 }
 
 void CollisionBody::SetCentreOfMass(glm::vec3 com) 

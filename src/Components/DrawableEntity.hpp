@@ -1,17 +1,16 @@
 #pragma once
 
-#include "Engine/ModelManager.hpp"
+#include "Model/ModelManager.hpp"
 #include "Transform.hpp"
 #include "Engine/GameObject.hpp"
-#include "Component.hpp"
-#include "Export.hpp"
+#include "Engine/Component.hpp"
 #include "Engine/Yokai.hpp"
 #include "Model/Animator.hpp"
 /**
  * @class DrawableEntity
  * @brief Draws a model to the screen
  */
-class YOKAI_API DrawableEntity : public Component {
+class DrawableEntity : public Component {
     public: 
         /**
          * @brief Construct a new Drawable Entity object

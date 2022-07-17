@@ -1,17 +1,16 @@
 #pragma once
 
-#include "Engine/ModelManager.hpp"
+#include "Model/ModelManager.hpp"
 #include "Transform.hpp"
 #include "DrawableEntity.hpp"
 #include "Engine/GameObject.hpp"
-#include "Component.hpp"
-#include "Export.hpp"
+#include "Engine/Component.hpp"
 #include "Physics/PhysicsSystem.hpp"
 /**
  * @class ConcaveCollider
  * @brief A concave bounding volume 
  */
-class YOKAI_API ConcaveCollider : public Component {
+class ConcaveCollider : public Component {
     public: 
         /**
          * @brief Construct a new Concave Collider object
@@ -31,62 +30,62 @@ class YOKAI_API ConcaveCollider : public Component {
          * @brief Set the Mass
          * @param m 
          */
-        void setMass(double m);
+        void setMass(float m);
         /**
          * @brief Get the Mass
          * @return double 
          */
-        double getMass();
+        float getMass();
         /**
          * @brief Get the Inverse Mass
          * @return double 
          */
-        double getInverseMass();
+        float getInverseMass();
         /**
          * @brief Set the Centre Of Mass
          * @param com 
          */
-        void setCentreOfMass(glm::dvec3 com);
+        void setCentreOfMass(glm::vec3 com);
         /**
          * @brief Get the Centre Of Mass
          * @return glm::dvec3 
          */
-        glm::dvec3 getCentreOfMass();
+        glm::vec3 getCentreOfMass();
         /**
          * @brief Set the Inertia Tensor
          * @param it 
          */
-        void setInertiaTensor(glm::dmat3x3 it);
+        void setInertiaTensor(glm::mat3x3 it);
         /**
          * @brief Get the Inertia Tensor
          * @return glm::dmat3x3 
          */
-        glm::dmat3x3 getInertiaTensor();
+        glm::mat3x3 getInertiaTensor();
         /**
          * @brief Get the Inverse Inertia Tensor
          * @return glm::dmat3x3 
          */
-        glm::dmat3x3 getInverseInertiaTensor();
+        glm::mat3x3 getInverseInertiaTensor();
         /**
          * @brief Set the Linear Velocity
          * @param lv 
          */
-        void setLinearVelocity(glm::dvec3 lv);
+        void setLinearVelocity(glm::vec3 lv);
         /**
          * @brief Get the Linear Velocity
          * @return glm::dvec3 
          */
-        glm::dvec3 getLinearVelocity();
+        glm::vec3 getLinearVelocity();
         /**
          * @brief Set the Angular Velocity
          * @param av 
          */
-        void setAngularVelocity(glm::dvec3 av);
+        void setAngularVelocity(glm::vec3 av);
         /**
          * @brief Get the Angular Velocity
          * @return glm::dvec3 
          */
-        glm::dvec3 getAngularVelocity();
+        glm::vec3 getAngularVelocity();
         /**
          * @brief Set Is Static Object
          * @param s 

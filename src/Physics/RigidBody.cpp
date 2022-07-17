@@ -86,10 +86,10 @@ void RigidBody::SetMass(float mass)
 {
 	body->setMass(mass);
 }
-void RigidBody::SetAngularDamping(double damping) {
+void RigidBody::SetAngularDamping(float damping) {
 	body->setAngularDamping(damping);
 }
-void RigidBody::SetLinearDamping(double damping) {
+void RigidBody::SetLinearDamping(float damping) {
 	body->setAngularDamping(damping);
 }
 void RigidBody::SetLinearVelocity(glm::vec3 velocity) {

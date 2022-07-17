@@ -1,8 +1,7 @@
 #pragma once
 #include "Transform.hpp"
 #include "Engine/GameObject.hpp"
-#include "Component.hpp"
-#include "Export.hpp"
+#include "Engine/Component.hpp"
 #include "Physics/PhysicsSystem.hpp"
 #include "Physics/CollisionBody.hpp"
 #include "Physics/ResolutionFunctions.hpp"
@@ -10,7 +9,7 @@
  * @class BoxCollider
  * @brief Box collider component
  */
-class YOKAI_API BoxCollider : public Component {
+class BoxCollider : public Component {
 public:
     /**
      * @brief Construct a new Box Collider object
@@ -61,16 +60,16 @@ public:
      * @brief Set the Mass
      * @param m 
      */
-    void SetMass(double m);
+    void SetMass(float m);
     /**
      * @brief Get the Mass
      */
-    double GetMass();
+    float GetMass();
     /**
      * @brief Get the Inverse Mass
      * @return double
      */
-    double GetInverseMass();
+    float GetInverseMass();
     /**
      * @brief Set the Centre Of Mass
      * @param com 
@@ -155,7 +154,7 @@ public:
      * @brief Get the Collider ID
      * @return int 
      */
-	int GetColliderID();
+	unsigned int GetColliderID();
     /**
      * @brief Translate the collider along a heading
      * @param velocity 
