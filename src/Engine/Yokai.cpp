@@ -150,7 +150,7 @@ void Yokai::Run()
                     {
                         if (ImGui::MenuItem(m_layers[i]->GetSceneName().c_str()))
                         {
-                            SwitchScene(i);
+                            SwitchScene(static_cast<unsigned int>(i));
                         }
                     }
                     ImGui::EndMenu();
