@@ -16,8 +16,8 @@ set(SOURCE
         Renderer/RenderAPI.hpp
         Renderer/Renderer.cpp
         Renderer/Renderer.hpp
-        Renderer/Window.cpp
-        Renderer/Window.hpp
+        Renderer/GLFWWindow.cpp
+        Renderer/GLFWWindow.hpp
         Renderer/bgfx/LightBuffer.hpp
         Renderer/bgfx/LightBuffer.cpp
         Renderer/bgfx/bgfxDataTypes.hpp

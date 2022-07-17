@@ -5,15 +5,15 @@
 #include <imgui.h>
 #include <glm/glm.hpp>
 /**
- * @class Window
+ * @class GLFWWindow
  * @brief Creates a window for rendering
  */
-class Window {
+class GLFWWindow {
   public:
     /**
      * @brief Default Constructor for window
      */
-    Window() = default;
+    GLFWWindow() = default;
     /**
      * @brief Initialises the window
      * @return bool

@@ -5,7 +5,7 @@
 #include "Engine/Scene.hpp"
 #include "Model/ModelManager.hpp"
 #include "Renderer/Renderer.hpp"
-#include "Renderer/Window.hpp"
+#include "Renderer/GLFWWindow.hpp"
 #include "Physics/PhysicsSystem.hpp"
 #include "Physics/PhysicsResolution.hpp"
 #include "core/Resource/AssetProxy.hpp"
@@ -31,7 +31,7 @@ public:
      */
     void Run();
     ///window used by the engine
-    Window window = {};
+    GLFWWindow window = {};
     /**
      * @brief Shuts the engine down :(
      */

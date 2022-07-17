@@ -2,7 +2,7 @@
 // Created by charl on 6/04/2021.
 //
 
-#include "Window.hpp"
+#include "GLFWWindow.hpp"
 #include <spdlog/spdlog.h>
 #include "bgfx/bgfximgui.hpp"
 #include "Renderer/imgui_impl_glfw.h"
@@ -21,7 +21,7 @@ void windowSizeCallback( GLFWwindow* window, int width, int height )
     */
 }
 
-bool Window::Init()
+bool GLFWWindow::Init()
 {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
@@ -48,17 +48,17 @@ bool Window::Init()
     SPDLOG_INFO("Window Initialised");
     return true;
 }
-void Window::DeInit()
+void GLFWWindow::DeInit()
 {
 	ImGui_ImplGlfw_Shutdown();
     glfwDestroyWindow(m_window);
     glfwTerminate();
 }
-GLFWwindow* Window::GetWindow()
+GLFWwindow* GLFWWindow::GetWindow()
 {
     return m_window;
 }
-void Window::StartFrame(float dt)
+void GLFWWindow::StartFrame(float dt)
 {
     glfwPollEvents();
 	ImGui_Implbgfx_NewFrame();
@@ -66,13 +66,13 @@ void Window::StartFrame(float dt)
 	
 	ImGui::NewFrame();
 }
-void Window::EndFrame()
+void GLFWWindow::EndFrame()
 {
     ImGui::Render();
 	ImGui_Implbgfx_RenderDrawLists(ImGui::GetDrawData());
 	bgfx::frame();
 }
-glm::vec2 Window::GetWindowSize()
+glm::vec2 GLFWWindow::GetWindowSize()
 {
     int width,height;
     glfwGetWindowSize(m_window, &width, &height);
