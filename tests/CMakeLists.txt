@@ -5,7 +5,7 @@ include(FetchContent)
 FetchContent_Declare(
     CppUTest
     GIT_REPOSITORY https://github.com/cpputest/cpputest.git
-    GIT_TAG        v4.0 # or use release tag, eg. v3.8
+    GIT_TAG        latest-passing-build
 )
 # Set this to ON if you want to have the CppUTests in your project as well.
 set(TESTS OFF CACHE BOOL "Switch off CppUTest Test build")
@@ -45,7 +45,6 @@ target_compile_options(YOKAI_tests PRIVATE
         )
         
 target_link_libraries(YOKAI_tests PRIVATE YOKAI CppUTest CppUTestExt ${CMAKE_DL_LIBS})
-target_include_directories(YOKAI_tests PUBLIC ${CppUTest_SOURCE_DIR}/include)
 
 add_custom_command(TARGET YOKAI_tests POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_directory

@@ -35,7 +35,7 @@ uint16_t bgfxTexture::GetID()
 bgfxVertexBuffer::bgfxVertexBuffer(std::vector<Vertex> &vertices)
 {
     uint32_t stride = bgfxVertex::layout.getStride();
-    const bgfx::Memory* vertexMem = bgfx::alloc(vertices.size() * stride);
+    const bgfx::Memory* vertexMem = bgfx::alloc(static_cast<uint32_t>(vertices.size()) * stride);
     for(unsigned int i = 0; i < vertices.size(); i++)
     {
         unsigned int offset = i * stride;
