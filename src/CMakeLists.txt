@@ -3,16 +3,17 @@ add_subdirectory(core)
 add_subdirectory(Physics)
 
 set(SHADERS
-    	src/Shaders/common.sh
+    src/Shaders/common.sh
 	src/Shaders/shaderlib.sh
 	src/Shaders/util.sh
 	src/Shaders/lights.sh
 	src/Shaders/pbr.sh
-    	src/Shaders/varying.def.sc
+    src/Shaders/varying.def.sc
 	src/Shaders/imgui/varying.def.sc
-    	src/Shaders/vs_shader.sc
+    src/Shaders/vs_shader.sc
 	src/Shaders/fs_shader.sc
-    	src/Shaders/vs_pbrShader.sc
+    src/Shaders/vs_pbrShader.sc
+	src/Shaders/vs_pbrSkinned.sc
 	src/Shaders/fs_pbrShader.sc
 	src/Shaders/fs_iblShader.sc
 	src/Shaders/cs_MS_albedoLUT.sc
@@ -21,25 +22,25 @@ set(SHADERS
 	src/Shaders/tonemap/cs_avglum.sc
 	src/Shaders/tonemap/cs_histogram.sc
 	src/Shaders/imgui/vs_ocornut_imgui.sc
-    	src/Shaders/imgui/fs_ocornut_imgui.sc
-    	src/Shaders/IBL/cs_irradiance.sc
+    src/Shaders/imgui/fs_ocornut_imgui.sc
+    src/Shaders/IBL/cs_irradiance.sc
 	src/Shaders/IBL/cs_prefilter_env_map.sc
 	PARENT_SCOPE
 )
 
 # Add source files.
 set(SOURCES
-		src/Components/DrawableEntity.cpp
-		src/Components/ConcaveCollider.cpp
-		src/Components/SphereCollider.cpp
-		src/Components/BoxCollider.cpp
-		src/Components/RayCaster.cpp
-		src/Components/AutomatedBehaviours.cpp
-		src/Components/InputComponent.cpp
+	src/Components/DrawableEntity.cpp
+	src/Components/ConcaveCollider.cpp
+	src/Components/SphereCollider.cpp
+	src/Components/BoxCollider.cpp
+	src/Components/RayCaster.cpp
+	src/Components/AutomatedBehaviours.cpp
+	src/Components/InputComponent.cpp
 
-		src/Engine/Yokai.cpp
-		src/Engine/JSONHelper.cpp
-		src/Engine/Scene.cpp
-        PARENT_SCOPE
-        )
+	src/Engine/Yokai.cpp
+	src/Engine/JSONHelper.cpp
+	src/Engine/Scene.cpp
+    PARENT_SCOPE
+    )
 

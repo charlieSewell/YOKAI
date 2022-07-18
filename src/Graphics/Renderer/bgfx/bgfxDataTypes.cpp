@@ -63,7 +63,7 @@ void bgfxVertexBuffer::UnBind()
 
 bgfxIndexBuffer::bgfxIndexBuffer(std::vector<uint16_t> &indices)
 {
-    const bgfx::Memory* iMem = bgfx::alloc(indices.size() * sizeof(uint16_t));
+    const bgfx::Memory* iMem = bgfx::alloc(static_cast<uint32_t>(indices.size() * sizeof(uint16_t)));
     uint16_t* indicesMem = (uint16_t*)iMem->data;
     for(unsigned int i = 0; i < indices.size(); i++)
     {

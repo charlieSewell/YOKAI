@@ -68,7 +68,8 @@ int bgfxRenderer::Init()
     m_averagingProgram = loadProgram("cs_avglum.bin", "");
     m_albedoLUTProgram = loadProgram("cs_MS_albedoLUT.bin","");
     m_program = std::make_shared<bgfxShader>("Forward Shader","vs_shader.bin","fs_shader.bin");
-    m_pbrProgram = std::make_shared<bgfxShader>("PBR Shader","vs_pbrshader.bin","fs_iblshader.bin");
+    m_pbrProgram = std::make_shared<bgfxShader>("PBR Shader","vs_pbrShader.bin","fs_iblShader.bin");
+    m_skinnedProgram = std::make_shared<bgfxShader>("Skinned Shader","vs_pbrSkinned.bin","fs_iblShader.bin");
     m_tonemapProgram = std::make_shared<bgfxShader>("ToneMapping Shader","vs_tonemap.bin", "fs_tonemap.bin");
     m_histogramBuffer = bgfx::createDynamicIndexBuffer(256, BGFX_BUFFER_COMPUTE_READ_WRITE | BGFX_BUFFER_INDEX32);
     
@@ -212,6 +213,10 @@ void bgfxRenderer::SubmitDraw(RENDER::DrawItem drawItem)
     {
         drawItem.shader = m_pbrProgram;
     } 
+    if(drawItem.isAnimated)
+    {
+        drawItem.shader = m_skinnedProgram;
+    }
 	m_drawQueue.push_back(drawItem);
 }
 const void bgfxRenderer::DrawMesh(RENDER::DrawItem mesh)
@@ -219,6 +224,11 @@ const void bgfxRenderer::DrawMesh(RENDER::DrawItem mesh)
     bgfx::setTransform(glm::value_ptr(mesh.transform));
     glm::mat4 normalMat = glm::transpose(glm::inverse(mesh.transform));
     mesh.shader->SetUniform("u_normalMatrix", glm::value_ptr(normalMat));
+    if(mesh.isAnimated)
+    {
+        mesh.shader->SetUniform("u_boneTransforms", mesh.finalTransforms.data(), static_cast<uint16_t>(mesh.finalTransforms.size()));
+    }
+    
     mesh.shader->SetUniform("u_lightCountVec", glm::value_ptr(m_lightCount));
     mesh.shader->SetUniform("u_envParams", ENV_PARAMS);
     BindPBRMaterial(mesh.shader,mesh.mesh->GetMaterial());
