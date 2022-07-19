@@ -3,7 +3,6 @@ $output v_texcoord0 ,v_normal
 
 #include "common.sh" 
 
-const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 boneTrans[100];
 uniform bool isAnimated;

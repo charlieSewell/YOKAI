@@ -9,5 +9,6 @@ vec3 a_normal    : NORMAL;
 vec2 a_texcoord0 : TEXCOORD0;
 vec4 a_tangent   : TANGENT;
 vec3 a_bitangent : BITANGENT;
-vec4 a_indices   : INDICES;
-vec4 a_weights   : WEIGHTS;
+ivec4 a_indices  : BLENDINDICES;
+vec4 a_weight    : BLENDWEIGHT;
+

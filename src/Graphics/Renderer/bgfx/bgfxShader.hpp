@@ -20,7 +20,7 @@ class bgfxShader
         ~bgfxShader();
 
         bool SetTexture(const char* samplerName, uint8_t slot, std::shared_ptr<Texture> texture) const;
-        bool SetUniform(const char* uniformName, const void* value) const;
+        bool SetUniform(const char* uniformName, const void* value, uint16_t numElements = 1) const;
 
         [[nodiscard]] bgfx::ProgramHandle GetRawHandle() const { return m_program; }
 

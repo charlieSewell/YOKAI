@@ -94,6 +94,7 @@ class bgfxRenderer : public RenderAPI
     std::shared_ptr<bgfxShader> m_program = nullptr;
     std::shared_ptr<bgfxShader> m_tonemapProgram = nullptr;
     std::shared_ptr<bgfxShader> m_pbrProgram = nullptr;
+    std::shared_ptr<bgfxShader> m_skinnedProgram = nullptr;
     bgfx::ProgramHandle m_histogramProgram;
     bgfx::ProgramHandle m_averagingProgram;
     bgfx::ProgramHandle m_albedoLUTProgram;

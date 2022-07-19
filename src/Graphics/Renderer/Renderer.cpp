@@ -5,6 +5,7 @@ Renderer& Renderer::getInstance()
     static Renderer instance;
     return instance;
 }
+
 int Renderer::Init(GLFWwindow* window) 
 {
     try
@@ -25,18 +26,22 @@ void Renderer::DrawArrays(VertexArrayBuffer& VAO,size_t indiceSize)
 {
     m_renderAPI->DrawArrays(VAO,indiceSize);
 }
+
 void Renderer::DrawScene(float dt)
 {
 	m_renderAPI->DrawScene(dt);
 }
+
 void Renderer::DrawGui() 
 {
     m_renderAPI->DrawGui();
 }
+
 void Renderer::ToggleWireFrame()
 {
     m_renderAPI->ToggleWireFrame();
 }
+
 void Renderer::registerToggleWireframe()
 {
 	static bool wireFrameActive = false;

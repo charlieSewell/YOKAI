@@ -49,22 +49,22 @@ bool bgfxShader::SetTexture(const char* samplerName, uint8_t bindPoint, std::sha
 	}
 	else
 	{
-		//SPDLOG_WARN("Could not find texture sampler {}", samplerName);
+		SPDLOG_WARN("Could not find texture sampler {}", samplerName);
 		return false;
 	}
 }
 
-bool bgfxShader::SetUniform(const char* uniformName, const void* value) const
+bool bgfxShader::SetUniform(const char* uniformName, const void* value, uint16_t numElements) const
 {
 	auto uniform = m_uniforms.find(uniformName);
 	if (uniform != m_uniforms.cend())
 	{
-		bgfx::setUniform(uniform->second, value);
+		bgfx::setUniform(uniform->second, value, numElements);
 		return true;
 	}
 	else
 	{
-		//SPDLOG_WARN("Could not find uniform {}", uniformName);
+		SPDLOG_WARN("Could not find uniform {}", uniformName);
 		return false;
 	}
 }
